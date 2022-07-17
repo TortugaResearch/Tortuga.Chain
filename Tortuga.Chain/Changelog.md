@@ -10,6 +10,9 @@
 ### Technical Debt
 
 
+[#497 Update interfaces to expose more functionality](https://github.com/TortugaResearch/Tortuga.Chain/issues/497)
+
+`ICrudDataSource` and `IScalarDbCommandBuilder` were updated to expose more functionality from their matching classes.
 
 ## Version 4.3
 
