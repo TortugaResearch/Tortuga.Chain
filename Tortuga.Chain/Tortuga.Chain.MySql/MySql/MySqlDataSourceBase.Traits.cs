@@ -50,12 +50,7 @@ partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		var parameters = new List<MySqlParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new MySqlParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.MySqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		if (!AuditRules.UseSoftDelete(table))
@@ -103,13 +98,9 @@ partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
-		string where = keyColumn.SqlName + " = @Param0";
+		var where = keyColumn.SqlName + " = @Param0";
 
-		var parameters = new List<MySqlParameter>();
-		var param = new MySqlParameter("@Param0", key);
-		if (keyColumn.DbType.HasValue)
-			param.MySqlDbType = keyColumn.DbType.Value;
-		parameters.Add(param);
+		var parameters = new List<MySqlParameter> { Utilities.CreateParameter(keyColumn, "@Param0", key) };
 
 		return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
 	}
@@ -126,12 +117,7 @@ partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		var parameters = new List<MySqlParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new MySqlParameter("@Param" + i, keyList[i]);
-			if (keyColumn.DbType.HasValue)
-				param.MySqlDbType = keyColumn.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(keyColumn, "@Param" + i, keyList[i]));
 
 		return new MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter, TObject>(new MySqlTableOrView<TObject>(this, tableName, where, parameters));
 	}
@@ -178,12 +164,7 @@ partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		var parameters = new List<MySqlParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new MySqlParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.MySqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		return new MySqlUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}

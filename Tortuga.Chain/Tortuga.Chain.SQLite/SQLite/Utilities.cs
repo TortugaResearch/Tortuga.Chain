@@ -1,5 +1,6 @@
 ﻿using System.Data.SQLite;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite
 {
@@ -10,6 +11,30 @@ namespace Tortuga.Chain.SQLite
 			return sqlBuilder.GetParameters(ParameterBuilderCallback);
 		}
 
+		public static SQLiteParameter CreateParameter(ISqlBuilderEntryDetails<DbType> details, string parameterName, object? value)
+		{
+			var result = new SQLiteParameter();
+			result.ParameterName = parameterName;
+
+			result.Value = value switch
+			{
+#if NET6_0_OR_GREATER
+				DateOnly dateOnly => dateOnly.ToDateTime(default),
+				TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
+#endif
+				TimeSpan timeSpan => default(DateTime) + timeSpan,
+				null => DBNull.Value,
+				_ => value
+			};
+
+			if (details.DbType.HasValue)
+				result.DbType = details.DbType.Value;
+
+			result.Direction = details.Direction;
+
+			return result;
+		}
+
 		/// <summary>
 		/// Callback for parameter builder.
 		/// </summary>
@@ -17,25 +42,7 @@ namespace Tortuga.Chain.SQLite
 		/// <returns>SqlDbType.</returns>
 		public static SQLiteParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
 		{
-			var result = new SQLiteParameter();
-			result.ParameterName = entry.Details.SqlVariableName;
-
-			result.Value = entry.ParameterValue switch
-			{
-#if NET6_0_OR_GREATER
-			DateOnly dateOnly => dateOnly.ToDateTime(default),
-			TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
-#endif
-				TimeSpan timeSpan => default(DateTime) + timeSpan,
-				_ => entry.ParameterValue
-			};
-
-			if (entry.Details.DbType.HasValue)
-				result.DbType = entry.Details.DbType.Value;
-
-			result.Direction = entry.Details.Direction;
-
-			return result;
+			return CreateParameter(entry.Details, entry.Details.SqlVariableName, entry.ParameterValue);
 		}
 
 		public static bool RequiresSorting(this SQLiteLimitOption limitOption)
