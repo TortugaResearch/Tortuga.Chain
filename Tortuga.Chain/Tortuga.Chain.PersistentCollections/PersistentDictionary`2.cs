@@ -1,8 +1,9 @@
 ﻿using System.Collections;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain;
+namespace Tortuga.Chain.PersistentCollections;
 
 /// <summary>
 /// PersistentDictionary is a table-backed dictionary. Any operations performed against this object will be resolved by the underlying database. This object is thread safe.
@@ -29,12 +30,12 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="keyColumnName">Name of the key column.</param>
 	/// <param name="valueColumnName">Name of the value column.</param>
-	/// <exception cref="Tortuga.Chain.MappingException">The table {tableName} doesn't have a column named {keyColumnName}</exception>
-	/// <exception cref="Tortuga.Chain.MappingException">The table {tableName} doesn't have a column named {valueColumnName}</exception>
-	public PersistentDictionary(ICrudDataSource dataSource, string tableName, string keyColumnName, string valueColumnName)
+	/// <exception cref="MappingException">The table {tableName} doesn't have a column named {keyColumnName}</exception>
+	/// <exception cref="MappingException">The table {tableName} doesn't have a column named {valueColumnName}</exception>
+	internal PersistentDictionary(ICrudDataSource dataSource, string tableName, string keyColumnName, string valueColumnName)
 	{
 		m_DataSource = dataSource;
-		m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+		m_Table = m_DataSource.DatabaseMetadata.GetTableOrView(tableName);
 
 		var keyColumn = m_Table.Columns.TryGetColumn(keyColumnName);
 		if (keyColumn == null)
@@ -67,13 +68,52 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the keys of the <see cref="T:System.Collections.Generic.IDictionary`2" />.
 	/// </summary>
 	/// <value>The keys.</value>
-	public ICollection<TKey> Keys => m_DataSource.From(m_Table.Name).ToXxxList(m_KeyColumnName).Execute();
+	public ICollection<TKey> Keys
+	{
+		get
+		{
+			return QueryList<TKey>(m_DataSource.From(m_Table.Name), m_KeyColumnName);
+		}
+	}
 
 	/// <summary>
 	/// Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the values in the <see cref="T:System.Collections.Generic.IDictionary`2" />.
 	/// </summary>
 	/// <value>The values.</value>
-	public ICollection<TValue> Values => m_DataSource.From(m_Table.Name).ToXxxList(m_ValueColumnName).Execute();
+	public ICollection<TValue> Values
+	{
+		get
+		{
+			return QueryList<TValue>(m_DataSource.From(m_Table.Name), m_ValueColumnName);
+		}
+	}
+
+	ICollection<T> QueryList<T>(ITableDbCommandBuilder query, string columnName)
+	{
+		var type = typeof(T);
+
+		if (type == typeof(string)) return (ICollection<T>)(object)query.ToStringList(m_ValueColumnName).Execute();
+		if (type == typeof(char)) return (ICollection<T>)(object)query.ToCharList(m_ValueColumnName).Execute();
+		if (type == typeof(short)) return (ICollection<T>)(object)query.ToInt16List(m_ValueColumnName).Execute();
+		if (type == typeof(int)) return (ICollection<T>)(object)query.ToInt32List(m_ValueColumnName).Execute(); ;
+		if (type == typeof(long)) return (ICollection<T>)(object)query.ToInt64List(m_ValueColumnName).Execute(); ;
+		//if (type == typeof(ushort)) return (TValue)(object)query.ToUInt16List(m_ValueColumnName).Execute(); ;
+		//if (type == typeof(uint)) return (TValue)(object)query.ToUInt32List(m_ValueColumnName).Execute();
+		//if (type == typeof(ulong)) return (TValue)(object)query.ToUInt64List(m_ValueColumnName).Execute();
+		if (type == typeof(float)) return (ICollection<T>)(object)query.ToSingleList(m_ValueColumnName).Execute();
+		if (type == typeof(double)) return (ICollection<T>)(object)query.ToDoubleList(m_ValueColumnName).Execute();
+		if (type == typeof(decimal)) return (ICollection<T>)(object)query.ToDecimalList(m_ValueColumnName).Execute();
+		if (type == typeof(Guid)) return (ICollection<T>)(object)query.ToGuidList(m_ValueColumnName).Execute();
+#if NET6_0_OR_GREATER
+		//if (type == typeof(DateOnly)) return (TValue)(object)query.ToDateOnlyList(m_ValueColumnName).Execute();
+		//if (type == typeof(TimeOnly)) return (TValue)(object)query.ToTimeOnlyList(m_ValueColumnName).Execute();
+#endif
+		if (type == typeof(DateTime)) return (ICollection<T>)(object)query.ToDateTimeList(m_ValueColumnName).Execute();
+		if (type == typeof(TimeSpan)) return (ICollection<T>)(object)query.ToTimeSpanList(m_ValueColumnName).Execute();
+		if (type == typeof(DateTimeOffset)) return (ICollection<T>)(object)query.ToDateTimeOffsetList(m_ValueColumnName).Execute();
+
+		throw new NotSupportedException($"Cannot use a {typeof(PersistentDictionary<,>).Name} with a T of type {type.Name}");
+	}
 
 	/// <summary>
 	/// Gets or sets the value with the specified key.
@@ -100,8 +140,8 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 			if (type == typeof(decimal)) return (TValue)(object)query.ToDecimal(m_ValueColumnName).Execute();
 			if (type == typeof(Guid)) return (TValue)(object)query.ToGuid(m_ValueColumnName).Execute();
 #if NET6_0_OR_GREATER
-			//if (type == typeof(DateOnly)) return (TValue)(object)query.ToDateOnly(m_ValueColumnName).Execute();
-			//if (type == typeof(TimeOnly)) return (TValue)(object)query.ToTimeOnly(m_ValueColumnName).Execute();
+		//if (type == typeof(DateOnly)) return (TValue)(object)query.ToDateOnly(m_ValueColumnName).Execute();
+		//if (type == typeof(TimeOnly)) return (TValue)(object)query.ToTimeOnly(m_ValueColumnName).Execute();
 #endif
 			if (type == typeof(DateTime)) return (TValue)(object)query.ToDateTime(m_ValueColumnName).Execute();
 			if (type == typeof(TimeSpan)) return (TValue)(object)query.ToTimeSpan(m_ValueColumnName).Execute();
@@ -119,7 +159,7 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// <param name="value">The object to use as the value of the element to add.</param>
 	public void Add(TKey key, TValue value)
 	{
-		m_DataSource.Insert(m_Table.Name, new Dictionary<string, object> { { m_KeyColumnName, key }, { m_ValueColumnName, value } }).Execute();
+		m_DataSource.Insert(m_Table.Name, new Dictionary<string, object?> { { m_KeyColumnName, key }, { m_ValueColumnName, value } }).Execute();
 	}
 
 	/// <summary>
@@ -147,7 +187,7 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// </summary>
 	/// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
 	/// <returns>true if <paramref name="item" /> is found in the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
+	/// <exception cref="NotImplementedException"></exception>
 	public bool Contains(KeyValuePair<TKey, TValue> item)
 	{
 		throw new NotImplementedException();
@@ -158,7 +198,7 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// </summary>
 	/// <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>
 	/// <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the key; otherwise, false.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
+	/// <exception cref="NotImplementedException"></exception>
 	public bool ContainsKey(TKey key)
 	{
 		throw new NotImplementedException();
@@ -169,7 +209,7 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// </summary>
 	/// <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1" />. The <see cref="T:System.Array" /> must have zero-based indexing.</param>
 	/// <param name="arrayIndex">The zero-based index in <paramref name="array" /> at which copying begins.</param>
-	/// <exception cref="System.NotImplementedException"></exception>
+	/// <exception cref="NotImplementedException"></exception>
 	public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
 		throw new NotImplementedException();
@@ -179,7 +219,7 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// Returns an enumerator that iterates through the collection.
 	/// </summary>
 	/// <returns>An enumerator that can be used to iterate through the collection.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
+	/// <exception cref="NotImplementedException"></exception>
 	public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 	{
 		throw new NotImplementedException();
@@ -205,7 +245,7 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// <returns>true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.</returns>
 	public bool Remove(KeyValuePair<TKey, TValue> item)
 	{
-		return (m_DataSource.DeleteSet(m_Table.Name, m_BothFilter, new { Key = item.Key, Value = item.Value }).AsNonQuery().Execute() ?? 0) > 0;
+		return (m_DataSource.DeleteSet(m_Table.Name, m_BothFilter, new { item.Key, item.Value }).AsNonQuery().Execute() ?? 0) > 0;
 	}
 
 	/// <summary>
@@ -214,7 +254,7 @@ public sealed class PersistentDictionary<TKey, TValue> : IDictionary<TKey, TValu
 	/// <param name="key">The key whose value to get.</param>
 	/// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value" /> parameter. This parameter is passed uninitialized.</param>
 	/// <returns>true if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key; otherwise, false.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
+	/// <exception cref="NotImplementedException"></exception>
 	public bool TryGetValue(TKey key, out TValue value)
 	{
 		throw new NotImplementedException();

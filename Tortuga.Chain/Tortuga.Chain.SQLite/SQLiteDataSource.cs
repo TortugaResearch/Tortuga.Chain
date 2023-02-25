@@ -134,34 +134,6 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 		get { return m_SyncLock; }
 	}
 
-	public PersistentDictionary<TKey, TValue> CreatePersistentDictionary<TKey, TValue>(string tableName, string keyColumnName = "KeyColumn", string valueColumnName = "ValueColumn")
-	{
-
-		if (DatabaseMetadata.TryGetTableOrView(tableName, out var table))
-		{
-			var keyColumn = table.Columns.TryGetColumn(keyColumnName);
-			if (keyColumn == null)
-				throw new MappingException($"A table name {tableName} already exists, but it doesn't have a column named {keyColumnName}");
-			var valueColumn = table.Columns.TryGetColumn(valueColumnName);
-			if (valueColumn == null)
-				throw new MappingException($"A table name {tableName} already exists, but it doesn't have a column named {valueColumnName}");
-		}
-		else
-		{
-			var safeTableName = new SQLiteObjectName(tableName);
-
-			//TODO Create the table
-			var sql = $@"CREATE TABLE {safeTableName.ToQuotedString()}
-(
-	{DatabaseMetadata.QuoteColumnName(keyColumnName)} {DatabaseMetadata.ClrTypeToSqlTypeName<TKey>()} PRIMARY KEY,
-	{DatabaseMetadata.QuoteColumnName(valueColumnName)} {DatabaseMetadata.ClrTypeToSqlTypeName<TKey>()} NOT NULL
-)";
-			Sql(sql).Execute();
-		}
-
-		return new PersistentDictionary<TKey, TValue>(this, tableName, keyColumnName, valueColumnName);
-	}
-
 	/// <summary>
 	/// Executes the specified implementation.
 	/// </summary>

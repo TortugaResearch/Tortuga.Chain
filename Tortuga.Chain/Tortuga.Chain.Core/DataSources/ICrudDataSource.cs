@@ -16,8 +16,6 @@ public interface ICrudDataSource :
 	ISupportsGetByColumnList,
 	ISupportsGetByKey,
 	ISupportsGetByKeyList,
-	ISupportsGetByColumn,
-	ISupportsGetByColumnList,
 	ISupportsInsert,
 	ISupportsSqlQueries,
 	ISupportsUpdate,
