@@ -8,7 +8,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 	/// <summary>
 	/// Class that represents an operation based on a raw SQL statement.
 	/// </summary>
-	internal sealed class SQLiteSqlCall : DbSqlCall<SQLiteCommand, SQLiteParameter>
+	internal sealed class SQLiteSqlCall : SqlCallCommandBuilder<SQLiteCommand, SQLiteParameter>
 	{
 		readonly LockType m_LockType;
 

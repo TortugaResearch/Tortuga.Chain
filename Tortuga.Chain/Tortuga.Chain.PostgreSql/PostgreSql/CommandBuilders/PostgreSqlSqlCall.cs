@@ -8,7 +8,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 	/// <summary>
 	/// Class PostgreSqlSqlCall
 	/// </summary>
-	public class PostgreSqlSqlCall : DbSqlCall<NpgsqlCommand, NpgsqlParameter>
+	public class PostgreSqlSqlCall : SqlCallCommandBuilder<NpgsqlCommand, NpgsqlParameter>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PostgreSqlSqlCall"/> class.

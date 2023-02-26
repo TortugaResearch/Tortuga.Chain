@@ -40,6 +40,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 		{
 			XactAbort = settings.XactAbort;
 			ArithAbort = settings.ArithAbort;
+			DefaultStringType = settings.DefaultStringType;
+			DefaultStringLength = settings.DefaultStringLength;
+			ValidateSettings();
 		}
 
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
@@ -81,6 +84,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 		{
 			XactAbort = settings.XactAbort;
 			ArithAbort = settings.ArithAbort;
+			DefaultStringType = settings.DefaultStringType;
+			DefaultStringLength = settings.DefaultStringLength;
+			ValidateSettings();
 		}
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
@@ -113,6 +119,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 		{
 			XactAbort = settings.XactAbort;
 			ArithAbort = settings.ArithAbort;
+			DefaultStringType = settings.DefaultStringType;
+			DefaultStringLength = settings.DefaultStringLength;
+			ValidateSettings();
 		}
 		m_ExtensionCache = extensionCache;
 		m_Cache = cache;
@@ -147,6 +156,18 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 	/// </summary>
 	[SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
 	public bool? XactAbort { get; }
+
+	/// <summary>
+	/// Gets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
+	/// </summary>
+	/// <remarks>Set this if encountering performance issues from type conversions in the execution plan.</remarks>
+	public override SqlDbType? DefaultStringType { get; }
+
+	/// <summary>
+	/// Gets the default length of string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public override int? DefaultStringLength { get; }
 
 	/// <summary>
 	/// Creates a new transaction
@@ -359,7 +380,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 			StrictMode = settings?.StrictMode ?? StrictMode,
 			SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode,
 			XactAbort = settings?.XactAbort ?? XactAbort,
-			ArithAbort = settings?.ArithAbort ?? ArithAbort
+			ArithAbort = settings?.ArithAbort ?? ArithAbort,
+			DefaultStringType = settings?.DefaultStringType ?? DefaultStringType,
+			DefaultStringLength = settings?.DefaultStringLength ?? DefaultStringLength
 		};
 		var result = new SqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
@@ -555,5 +578,31 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 			sql.AppendLine("SET XACT_ABORT  " + (XactAbort.Value ? "ON" : "OFF"));
 
 		return sql.ToString();
+	}
+
+	void ValidateSettings()
+	{
+		switch (DefaultStringType)
+		{
+			case SqlDbType.Char:
+			case SqlDbType.VarChar:
+				if (DefaultStringLength > 8000)
+					throw new InvalidOperationException($"{nameof(DefaultStringLength)} must be less than or equal to {8000} if the {nameof(DefaultStringType)} is {DefaultStringType}");
+				break;
+			case SqlDbType.NChar:
+			case SqlDbType.NVarChar:
+				if (DefaultStringLength > 4000)
+					throw new InvalidOperationException($"{nameof(DefaultStringLength)} must be less than or equal to {4000} if the {nameof(DefaultStringType)} is {DefaultStringType}");
+				break;
+			case null:
+			case SqlDbType.Text:
+			case SqlDbType.NText:
+				break;
+			default:
+				throw new ArgumentOutOfRangeException("m_DefaultStringType", DefaultStringType, "Must be set to a string type.");
+		}
+
+		if (DefaultStringLength == -1 && !(DefaultStringType == SqlDbType.VarChar || DefaultStringType == SqlDbType.NVarChar))
+			throw new InvalidOperationException($"{nameof(DefaultStringLength)} may only be -1 if the {nameof(DefaultStringType)} is VarChar or NVarChar");
 	}
 }

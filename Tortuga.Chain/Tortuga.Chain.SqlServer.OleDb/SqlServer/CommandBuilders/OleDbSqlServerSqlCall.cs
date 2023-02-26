@@ -8,7 +8,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// Class OleDbSqlServerSqlCall.
 /// </summary>
-internal sealed class OleDbSqlServerSqlCall : DbSqlCall<OleDbCommand, OleDbParameter>
+internal sealed class OleDbSqlServerSqlCall : SqlCallCommandBuilder<OleDbCommand, OleDbParameter>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="OleDbSqlServerSqlCall" /> class.

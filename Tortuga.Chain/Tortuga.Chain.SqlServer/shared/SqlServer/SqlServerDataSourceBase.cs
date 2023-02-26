@@ -27,4 +27,16 @@ public abstract partial class SqlServerDataSourceBase : DataSource<SqlConnection
 	/// </summary>
 	/// <returns></returns>
 	protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
+	/// <summary>
+	/// Gets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
+	/// </summary>
+	/// <remarks>Set this if encountering performance issues from type conversions in the execution plan.</remarks>
+	public abstract SqlDbType? DefaultStringType { get; }
+
+	/// <summary>
+	/// Gets the default length of string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public abstract int? DefaultStringLength { get; }
 }

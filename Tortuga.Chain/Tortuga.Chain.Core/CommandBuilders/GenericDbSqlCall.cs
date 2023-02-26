@@ -6,7 +6,7 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.CommandBuilders;
 
 [SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
-class GenericDbSqlCall : DbSqlCall<DbCommand, DbParameter>
+class GenericDbSqlCall : SqlCallCommandBuilder<DbCommand, DbParameter>
 {
 	readonly GenericDbDataSource m_DataSource;
 
@@ -32,7 +32,7 @@ class GenericDbSqlCall : DbSqlCall<DbCommand, DbParameter>
 	/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 	public override CommandExecutionToken<DbCommand, DbParameter> Prepare(Materializer<DbCommand, DbParameter> materializer)
 	{
-		var parameters = SqlBuilder.GetParameters(ArgumentValue, () => m_DataSource.CreateParameter());
+		var parameters = SqlBuilder.GetParameters(ArgumentValue, _ => m_DataSource.CreateParameter());
 		return new CommandExecutionToken<DbCommand, DbParameter>(DataSource, "Raw SQL call", SqlStatement, parameters);
 	}
 }

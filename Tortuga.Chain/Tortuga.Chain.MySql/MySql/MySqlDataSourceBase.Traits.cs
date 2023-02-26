@@ -202,7 +202,7 @@ where TArgument : class
 		return new AbstractScalarFunction(this, scalarFunctionName, argumentValue);
 	}
 
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
+	private partial SqlCallCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new MySqlSqlCall(this, sqlStatement, argumentValue);
 	}

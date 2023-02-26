@@ -8,8 +8,11 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// Class SqlServerSqlCall.
 /// </summary>
-internal sealed partial class SqlServerSqlCall : DbSqlCall<SqlCommand, SqlParameter>
+internal sealed partial class SqlServerSqlCall : SqlCallCommandBuilder<SqlCommand, SqlParameter>
 {
+	SqlDbType? m_DefaultStringType;
+	int? m_DefaultStringLength;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerSqlCall" /> class.
 	/// </summary>
@@ -21,6 +24,9 @@ internal sealed partial class SqlServerSqlCall : DbSqlCall<SqlCommand, SqlParame
 	{
 		if (string.IsNullOrEmpty(sqlStatement))
 			throw new ArgumentException($"{nameof(sqlStatement)} is null or empty.", nameof(sqlStatement));
+
+		m_DefaultStringType = dataSource.DefaultStringType;
+		m_DefaultStringLength = dataSource.DefaultStringLength;
 	}
 
 	/// <summary>
@@ -30,7 +36,35 @@ internal sealed partial class SqlServerSqlCall : DbSqlCall<SqlCommand, SqlParame
 	/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 	public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
 	{
-		return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", SqlStatement, SqlBuilder.GetParameters<SqlParameter>(ArgumentValue));
+		return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", SqlStatement, SqlBuilder.GetParameters<SqlParameter>(ArgumentValue, CreateParameter));
+	}
+
+	SqlParameter CreateParameter(object? value)
+	{
+		var result = new SqlParameter();
+		if (value is string s)
+		{
+			if (m_DefaultStringType != null)
+				result.SqlDbType = m_DefaultStringType.Value;
+
+			if (m_DefaultStringLength == -1)
+				result.Size = -1;
+			else if (m_DefaultStringLength != null)
+				result.Size = Math.Max(m_DefaultStringLength.Value, s.Length);
+		}
+		return result;
+	}
+
+	internal SqlCallCommandBuilder<SqlCommand, SqlParameter> WithStringLength(int? defaultStringLength)
+	{
+		m_DefaultStringLength = defaultStringLength;
+		return this;
+	}
+
+	internal SqlCallCommandBuilder<SqlCommand, SqlParameter> WithStringType(SqlDbType? defaultStringType)
+	{
+		m_DefaultStringType = defaultStringType;
+		return this;
 	}
 }
 

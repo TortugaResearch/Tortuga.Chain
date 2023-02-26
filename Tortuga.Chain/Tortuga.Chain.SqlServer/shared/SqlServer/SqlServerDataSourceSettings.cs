@@ -29,6 +29,8 @@ public class SqlServerDataSourceSettings : DataSourceSettings
 		SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
 		ArithAbort = dataSource.ArithAbort;
 		XactAbort = dataSource.XactAbort;
+		DefaultStringType = dataSource.DefaultStringType;
+		DefaultStringLength = dataSource.DefaultStringLength;
 	}
 
 #elif SQL_SERVER_OLEDB
@@ -60,4 +62,16 @@ public class SqlServerDataSourceSettings : DataSourceSettings
 	/// </summary>
 	[SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
 	public bool? XactAbort { get; set; }
+
+	/// <summary>
+	/// Gets or sets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
+	/// </summary>
+	/// <remarks>Set this if encountering performance issues from type conversions in the execution plan.</remarks>
+	public SqlDbType? DefaultStringType { get; set; }
+
+	/// <summary>
+	/// Gets or sets the default length of string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this is encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public int? DefaultStringLength { get; set; }
 }

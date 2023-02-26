@@ -44,7 +44,7 @@ public static class SqlBuilder
 	public static List<TParameter> GetParameters<TParameter>(object? argumentValue)
 		where TParameter : DbParameter, new()
 	{
-		return GetParameters(argumentValue, () => new TParameter());
+		return GetParameters(argumentValue, _ => new TParameter());
 	}
 
 	/// <summary>
@@ -55,7 +55,7 @@ public static class SqlBuilder
 	/// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
 	/// <returns></returns>
 	[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-	public static List<TParameter> GetParameters<TParameter>(object? argumentValue, Func<TParameter> parameterBuilder)
+	public static List<TParameter> GetParameters<TParameter>(object? argumentValue, Func<object?, TParameter> parameterBuilder)
 		where TParameter : DbParameter
 	{
 		if (parameterBuilder == null)
@@ -71,7 +71,7 @@ public static class SqlBuilder
 		else if (argumentValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
 			foreach (var item in readOnlyDictionary)
 			{
-				var param = parameterBuilder();
+				var param = parameterBuilder(item.Value);
 				param.ParameterName = (item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? item.Key : "@" + item.Key;
 				param.Value = item.Value ?? DBNull.Value;
 				result.Add(param);
@@ -79,9 +79,10 @@ public static class SqlBuilder
 		else if (argumentValue != null)
 			foreach (var property in MetadataCache.GetMetadata(argumentValue.GetType()).Properties.Where(x => x.MappedColumnName != null))
 			{
-				var param = parameterBuilder();
+				var value = property.InvokeGet(argumentValue);
+				var param = parameterBuilder(value);
 				param.ParameterName = (property.MappedColumnName!.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? property.MappedColumnName : "@" + property.MappedColumnName;
-				param.Value = property.InvokeGet(argumentValue) ?? DBNull.Value;
+				param.Value = value ?? DBNull.Value;
 				result.Add(param);
 			}
 

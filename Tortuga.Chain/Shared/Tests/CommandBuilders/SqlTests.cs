@@ -1,7 +1,9 @@
 ﻿#if SQL_SERVER_SDS
+using Tortuga.Chain;
 using System.Data.SqlClient;
 #elif SQL_SERVER_MDS
 using Microsoft.Data.SqlClient;
+using Tortuga.Chain;
 #elif SQL_SERVER_OLEDB
 using System.Data.OleDb;
 #elif MYSQL
@@ -19,7 +21,7 @@ namespace Tests.CommandBuilders;
 
 
 [TestClass]
-public class SqlTests : TestBase
+public class SqlCallTests : TestBase
 {
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
@@ -68,6 +70,102 @@ public class SqlTests : TestBase
 			Release(dataSource);
 		}
 	}
+
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+
+	[DataTestMethod, RootData(DataSourceGroup.All)]
+	public void Sql_Object_TypeDefault(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName).WithSettings(new() { DefaultStringType = SqlDbType.NChar });
+		try
+		{
+			var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+			Assert.IsTrue(countA >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, RootData(DataSourceGroup.All)]
+	public void Sql_Object_SizeDefault(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName).WithSettings(new() { DefaultStringLength = 25 });
+		try
+		{
+			var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+			Assert.IsTrue(countA >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void Sql_Object_SizeOverride(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringLength(50).ToInt32().Execute();
+			Assert.IsTrue(countA >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void Sql_Object_SizeOverride_TooSmall(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringLength(1).ToInt32().Execute();
+			Assert.IsTrue(countA >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void Sql_Object_SizeOverride_Max(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringType(SqlDbType.VarChar).WithStringLength(-1).ToInt32().Execute();
+			Assert.IsTrue(countA >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void Sql_Object_TypeOverride(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringType(SqlDbType.Char).ToInt32().Execute();
+			Assert.IsTrue(countA >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+#endif
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Dictionary(string dataSourceName, DataSourceType mode)
