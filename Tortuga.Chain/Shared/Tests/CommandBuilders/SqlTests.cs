@@ -1,6 +1,6 @@
 ﻿#if SQL_SERVER_SDS
-using Tortuga.Chain;
 using System.Data.SqlClient;
+using Tortuga.Chain;
 #elif SQL_SERVER_MDS
 using Microsoft.Data.SqlClient;
 using Tortuga.Chain;
@@ -112,7 +112,7 @@ public class SqlCallTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringLength(50).ToInt32().Execute();
+			var countA = dataSource.Sql(CheckA, CheckParameter1, new() { StringLength = 50 }).ToInt32().Execute();
 			Assert.IsTrue(countA >= 0);
 		}
 		finally
@@ -127,7 +127,7 @@ public class SqlCallTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringLength(1).ToInt32().Execute();
+			var countA = dataSource.Sql(CheckA, CheckParameter1, new() { StringLength = 1 }).ToInt32().Execute();
 			Assert.IsTrue(countA >= 0);
 		}
 		finally
@@ -142,7 +142,10 @@ public class SqlCallTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringType(SqlDbType.VarChar).WithStringLength(-1).ToInt32().Execute();
+			//Normally this would be kept in a static readonly field.
+			var defaults = new SqlServerParameterDefaults() { StringType = SqlDbType.VarChar, StringLength = SqlServerParameterDefaults.Max };
+
+			var countA = dataSource.Sql(CheckA, CheckParameter1, defaults).ToInt32().Execute();
 			Assert.IsTrue(countA >= 0);
 		}
 		finally
@@ -157,7 +160,7 @@ public class SqlCallTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var countA = dataSource.Sql(CheckA, CheckParameter1).WithStringType(SqlDbType.Char).ToInt32().Execute();
+			var countA = dataSource.Sql(CheckA, CheckParameter1, new() { StringType = SqlDbType.Char }).ToInt32().Execute();
 			Assert.IsTrue(countA >= 0);
 		}
 		finally

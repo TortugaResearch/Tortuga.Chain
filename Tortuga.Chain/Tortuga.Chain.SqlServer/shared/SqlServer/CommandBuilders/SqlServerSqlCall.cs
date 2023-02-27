@@ -29,6 +29,12 @@ internal sealed partial class SqlServerSqlCall : SqlCallCommandBuilder<SqlComman
 		m_DefaultStringLength = dataSource.DefaultStringLength;
 	}
 
+	public SqlServerSqlCall(SqlServerDataSourceBase dataSource, string sqlStatement, object? argumentValue, SqlServerParameterDefaults defaults) : this(dataSource, sqlStatement, argumentValue)
+	{
+		m_DefaultStringType = defaults.StringType ?? dataSource.DefaultStringType;
+		m_DefaultStringLength = defaults.StringLength ?? dataSource.DefaultStringLength;
+	}
+
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.
 	/// </summary>
@@ -47,25 +53,14 @@ internal sealed partial class SqlServerSqlCall : SqlCallCommandBuilder<SqlComman
 			if (m_DefaultStringType != null)
 				result.SqlDbType = m_DefaultStringType.Value;
 
-			if (m_DefaultStringLength == -1)
-				result.Size = -1;
+			if (m_DefaultStringLength == SqlServerParameterDefaults.Max)
+				result.Size = SqlServerParameterDefaults.Max;
 			else if (m_DefaultStringLength != null)
 				result.Size = Math.Max(m_DefaultStringLength.Value, s.Length);
 		}
 		return result;
 	}
 
-	internal SqlCallCommandBuilder<SqlCommand, SqlParameter> WithStringLength(int? defaultStringLength)
-	{
-		m_DefaultStringLength = defaultStringLength;
-		return this;
-	}
-
-	internal SqlCallCommandBuilder<SqlCommand, SqlParameter> WithStringType(SqlDbType? defaultStringType)
-	{
-		m_DefaultStringType = defaultStringType;
-		return this;
-	}
 }
 
 partial class SqlServerSqlCall : ISupportsChangeListener

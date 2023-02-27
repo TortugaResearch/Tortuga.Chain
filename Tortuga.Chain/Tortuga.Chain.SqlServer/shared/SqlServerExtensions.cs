@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.SqlServer;
-using Tortuga.Chain.SqlServer.CommandBuilders;
 
 namespace Tortuga.Chain;
 
@@ -47,22 +45,25 @@ public static class SqlServerExtensions
 		return new SqlServerOpenDataSource(dataSourceBase, connection, transaction);
 	}
 
-	/// <summary>
-	/// Sets the default length of string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
-	/// </summary>
-	/// <remarks>Set this is encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
-	public static SqlCallCommandBuilder<SqlCommand, SqlParameter> WithStringLength(this SqlCallCommandBuilder<SqlCommand, SqlParameter> commandBuilder, int? defaultStringLength)
-	{
-		return ((SqlServerSqlCall)commandBuilder).WithStringLength(defaultStringLength);
-	}
+	///// <summary>
+	///// Set the default type/size for parameters to address performance issues in SQL Server.
+	///// </summary>
+	///// <param name="commandBuilder"/>
+	///// <param name="stringLength">Sets the default length of string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.</param>
+	///// <param name="stringType">Sets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.</param>
+	///// <remarks>Set stringType if encountering performance issues from type conversions in the execution plan. Set stringLength when encountering an excessive number of execution plans that only differ by the length of a string.</remarks>
+	//public static SqlCallCommandBuilder<SqlCommand, SqlParameter> WithDefaults(this SqlCallCommandBuilder<SqlCommand, SqlParameter> commandBuilder, SqlDbType? stringType, int? stringLength)
+	//{
+	//	return ((SqlServerSqlCall)commandBuilder).WithDefaults(new SqlServerParameterDefaults() { StringType = stringType, StringLength = stringLength });
+	//}
 
-	/// <summary>
-	/// Sets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
-	/// </summary>
-	/// <remarks>Set this if encountering performance issues from type conversions in the execution plan.</remarks>
-	public static SqlCallCommandBuilder<SqlCommand, SqlParameter> WithStringType(this SqlCallCommandBuilder<SqlCommand, SqlParameter> commandBuilder, SqlDbType? defaultStringType)
-	{
-		return ((SqlServerSqlCall)commandBuilder).WithStringType(defaultStringType);
-	}
+
+	///// <summary>
+	///// Set the default type/size for parameters to address performance issues in SQL Server.
+	///// </summary>
+	//public static SqlCallCommandBuilder<SqlCommand, SqlParameter> WithDefaults2(this SqlCallCommandBuilder<SqlCommand, SqlParameter> commandBuilder, SqlServerParameterDefaults defaults)
+	//{
+	//	return ((SqlServerSqlCall)commandBuilder).WithDefaults(defaults);
+	//}
 
 }
