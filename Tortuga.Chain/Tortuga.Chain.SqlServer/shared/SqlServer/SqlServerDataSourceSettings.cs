@@ -30,7 +30,8 @@ public class SqlServerDataSourceSettings : DataSourceSettings
 		ArithAbort = dataSource.ArithAbort;
 		XactAbort = dataSource.XactAbort;
 		DefaultStringType = dataSource.DefaultStringType;
-		DefaultStringLength = dataSource.DefaultStringLength;
+		DefaultVarCharLength = dataSource.DefaultVarCharLength;
+		DefaultNVarCharLength = dataSource.DefaultNVarCharLength;
 	}
 
 #elif SQL_SERVER_OLEDB
@@ -70,8 +71,15 @@ public class SqlServerDataSourceSettings : DataSourceSettings
 	public SqlDbType? DefaultStringType { get; set; }
 
 	/// <summary>
-	/// Gets or sets the default length of string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// Gets or sets the default length of varChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
 	/// </summary>
 	/// <remarks>Set this is encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
-	public int? DefaultStringLength { get; set; }
+	public int? DefaultVarCharLength { get; set; }
+
+
+	/// <summary>
+	/// Gets or sets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this is encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public int? DefaultNVarCharLength { get; set; }
 }

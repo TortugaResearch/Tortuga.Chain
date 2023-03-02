@@ -23,4 +23,16 @@ public struct SqlServerParameterDefaults
 	/// </summary>
 	public const int Max = -1;
 
+	/// <summary>
+	/// The maximum size of a nVarChar parameter without switching to nVarChar(max).
+	/// </summary>
+	public const int MaxNVarChar = 4000;
+
+	/// <summary>
+	/// The maximum size of a varChar parameter without switching to varChar(max).
+	/// </summary>
+	public const int MaxVarChar = 8000;
+
+
+
 }

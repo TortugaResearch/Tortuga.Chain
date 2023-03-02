@@ -32,7 +32,13 @@ class GenericDbSqlCall : SqlCallCommandBuilder<DbCommand, DbParameter>
 	/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 	public override CommandExecutionToken<DbCommand, DbParameter> Prepare(Materializer<DbCommand, DbParameter> materializer)
 	{
-		var parameters = SqlBuilder.GetParameters(ArgumentValue, _ => m_DataSource.CreateParameter());
+		var parameters = SqlBuilder.GetParameters(ArgumentValue, (n, v) =>
+		{
+			var result = m_DataSource.CreateParameter();
+			result.ParameterName = n;
+			result.Value = v ?? DBNull.Value;
+			return result;
+		});
 		return new CommandExecutionToken<DbCommand, DbParameter>(DataSource, "Raw SQL call", SqlStatement, parameters);
 	}
 }

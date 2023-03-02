@@ -38,24 +38,23 @@ public static class SqlBuilder
 	/// Gets parameters from an argument value.
 	/// </summary>
 	/// <typeparam name="TParameter">The type of the parameter.</typeparam>
-	/// <param name="argumentValue">The argument value .</param>
-	/// <returns></returns>
+	/// <param name="argumentValue">The argument value. This could be a DbParameter, collection of DbParameters, dictionary, or object.</param>	/// <returns></returns>
 	[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
 	public static List<TParameter> GetParameters<TParameter>(object? argumentValue)
-		where TParameter : DbParameter, new()
+	where TParameter : DbParameter, new()
 	{
-		return GetParameters(argumentValue, _ => new TParameter());
+		return GetParameters(argumentValue, (n, v) => new TParameter() { ParameterName = n, Value = v ?? DBNull.Value });
 	}
 
 	/// <summary>
 	/// Gets parameters from an argument value.
 	/// </summary>
 	/// <typeparam name="TParameter">The type of the parameter.</typeparam>
-	/// <param name="argumentValue">The argument value .</param>
+	/// <param name="argumentValue">The argument value. This could be a DbParameter, collection of DbParameters, dictionary, or object.</param>
 	/// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
 	/// <returns></returns>
 	[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-	public static List<TParameter> GetParameters<TParameter>(object? argumentValue, Func<object?, TParameter> parameterBuilder)
+	public static List<TParameter> GetParameters<TParameter>(object? argumentValue, Func<string, object?, TParameter> parameterBuilder)
 		where TParameter : DbParameter
 	{
 		if (parameterBuilder == null)
@@ -71,18 +70,16 @@ public static class SqlBuilder
 		else if (argumentValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
 			foreach (var item in readOnlyDictionary)
 			{
-				var param = parameterBuilder(item.Value);
-				param.ParameterName = (item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? item.Key : "@" + item.Key;
-				param.Value = item.Value ?? DBNull.Value;
+				var name = (item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? item.Key : "@" + item.Key;
+				var param = parameterBuilder(name, item.Value);
 				result.Add(param);
 			}
 		else if (argumentValue != null)
 			foreach (var property in MetadataCache.GetMetadata(argumentValue.GetType()).Properties.Where(x => x.MappedColumnName != null))
 			{
+				var name = (property.MappedColumnName!.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? property.MappedColumnName : "@" + property.MappedColumnName;
 				var value = property.InvokeGet(argumentValue);
-				var param = parameterBuilder(value);
-				param.ParameterName = (property.MappedColumnName!.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? property.MappedColumnName : "@" + property.MappedColumnName;
-				param.Value = value ?? DBNull.Value;
+				var param = parameterBuilder(name, value);
 				result.Add(param);
 			}
 

@@ -93,7 +93,7 @@ public class SqlCallTests : TestBase
 	[DataTestMethod, RootData(DataSourceGroup.All)]
 	public void Sql_Object_SizeDefault(string dataSourceName)
 	{
-		var dataSource = DataSource(dataSourceName).WithSettings(new() { DefaultStringLength = 25 });
+		var dataSource = DataSource(dataSourceName).WithSettings(new() { DefaultVarCharLength = 80, DefaultNVarCharLength = 40 });
 		try
 		{
 			var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();

@@ -41,7 +41,8 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 			XactAbort = settings.XactAbort;
 			ArithAbort = settings.ArithAbort;
 			DefaultStringType = settings.DefaultStringType;
-			DefaultStringLength = settings.DefaultStringLength;
+			DefaultVarCharLength = settings.DefaultVarCharLength;
+			DefaultNVarCharLength = settings.DefaultNVarCharLength;
 			ValidateSettings();
 		}
 
@@ -85,7 +86,8 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 			XactAbort = settings.XactAbort;
 			ArithAbort = settings.ArithAbort;
 			DefaultStringType = settings.DefaultStringType;
-			DefaultStringLength = settings.DefaultStringLength;
+			DefaultVarCharLength = settings.DefaultVarCharLength;
+			DefaultNVarCharLength = settings.DefaultNVarCharLength;
 			ValidateSettings();
 		}
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
@@ -120,7 +122,8 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 			XactAbort = settings.XactAbort;
 			ArithAbort = settings.ArithAbort;
 			DefaultStringType = settings.DefaultStringType;
-			DefaultStringLength = settings.DefaultStringLength;
+			DefaultVarCharLength = settings.DefaultVarCharLength;
+			DefaultNVarCharLength = settings.DefaultNVarCharLength;
 			ValidateSettings();
 		}
 		m_ExtensionCache = extensionCache;
@@ -164,10 +167,16 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 	public override SqlDbType? DefaultStringType { get; }
 
 	/// <summary>
-	/// Gets the default length of string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// Gets the default length of varChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
 	/// </summary>
 	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
-	public override int? DefaultStringLength { get; }
+	public override int? DefaultVarCharLength { get; }
+
+	/// <summary>
+	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public override int? DefaultNVarCharLength { get; }
 
 	/// <summary>
 	/// Creates a new transaction
@@ -382,8 +391,10 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 			XactAbort = settings?.XactAbort ?? XactAbort,
 			ArithAbort = settings?.ArithAbort ?? ArithAbort,
 			DefaultStringType = settings?.DefaultStringType ?? DefaultStringType,
-			DefaultStringLength = settings?.DefaultStringLength ?? DefaultStringLength
+			DefaultVarCharLength = settings?.DefaultVarCharLength,
+			DefaultNVarCharLength = settings?.DefaultNVarCharLength
 		};
+
 		var result = new SqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
 		result.AuditRules = AuditRules;
@@ -582,27 +593,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 
 	void ValidateSettings()
 	{
-		switch (DefaultStringType)
-		{
-			case SqlDbType.Char:
-			case SqlDbType.VarChar:
-				if (DefaultStringLength > 8000)
-					throw new InvalidOperationException($"{nameof(DefaultStringLength)} must be less than or equal to {8000} if the {nameof(DefaultStringType)} is {DefaultStringType}");
-				break;
-			case SqlDbType.NChar:
-			case SqlDbType.NVarChar:
-				if (DefaultStringLength > 4000)
-					throw new InvalidOperationException($"{nameof(DefaultStringLength)} must be less than or equal to {4000} if the {nameof(DefaultStringType)} is {DefaultStringType}");
-				break;
-			case null:
-			case SqlDbType.Text:
-			case SqlDbType.NText:
-				break;
-			default:
-				throw new ArgumentOutOfRangeException("m_DefaultStringType", DefaultStringType, "Must be set to a string type.");
-		}
-
-		if (DefaultStringLength == -1 && !(DefaultStringType == SqlDbType.VarChar || DefaultStringType == SqlDbType.NVarChar))
-			throw new InvalidOperationException($"{nameof(DefaultStringLength)} may only be -1 if the {nameof(DefaultStringType)} is VarChar or NVarChar");
+		if (DefaultVarCharLength > 8000)
+			throw new InvalidOperationException($"{nameof(DefaultVarCharLength)} must be less than or equal to {8000} or {nameof(SqlServerParameterDefaults.Max)}.");
+		if (DefaultNVarCharLength > 4000)
+			throw new InvalidOperationException($"{nameof(DefaultNVarCharLength)} must be less than or equal to {4000} or {nameof(SqlServerParameterDefaults.Max)}.");
 	}
 }
