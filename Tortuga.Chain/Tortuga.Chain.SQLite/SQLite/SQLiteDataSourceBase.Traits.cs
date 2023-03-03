@@ -178,7 +178,7 @@ where TArgument : class
 		return OnTruncate(tableName);
 	}
 
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
+	private partial SqlCallCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
 	}

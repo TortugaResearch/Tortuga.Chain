@@ -175,7 +175,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
-	private partial MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
+	private partial SqlCallCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new AccessSqlCall(this, sqlStatement, argumentValue);
 	}

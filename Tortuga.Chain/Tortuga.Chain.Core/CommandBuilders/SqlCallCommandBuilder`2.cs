@@ -6,13 +6,13 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.CommandBuilders;
 
 /// <summary>
-/// Class DbSqlCall.
+/// Class SqlCallCommandBuilder.
 /// Implements the <see cref="MultipleTableDbCommandBuilder{TCommand, TParameter}" />
 /// </summary>
 /// <typeparam name="TCommand">The type of the t command.</typeparam>
 /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
 /// <seealso cref="MultipleTableDbCommandBuilder{TCommand, TParameter}" />
-public abstract class DbSqlCall<TCommand, TParameter> : MultipleTableDbCommandBuilder<TCommand, TParameter>
+public abstract class SqlCallCommandBuilder<TCommand, TParameter> : MultipleTableDbCommandBuilder<TCommand, TParameter>
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 {
@@ -23,7 +23,7 @@ public abstract class DbSqlCall<TCommand, TParameter> : MultipleTableDbCommandBu
 	/// <param name="sqlStatement">The SQL statement.</param>
 	/// <param name="argumentValue">The argument value.</param>
 	/// <exception cref="ArgumentException">sqlStatement is null or empty.;sqlStatement</exception>
-	public DbSqlCall(ICommandDataSource<TCommand, TParameter> dataSource, string sqlStatement, object? argumentValue) : base(dataSource)
+	public SqlCallCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, string sqlStatement, object? argumentValue) : base(dataSource)
 	{
 		SqlStatement = sqlStatement;
 		ArgumentValue = argumentValue;

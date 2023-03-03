@@ -158,4 +158,16 @@ partial class SqlServerDataSourceBase
 	{
 		return InsertBulk<TObject>(objects).WithOptions(options);
 	}
+
+	/// <summary>
+	/// Creates a operation based on a raw SQL statement.
+	/// </summary>
+	/// <param name="sqlStatement">The SQL statement.</param>
+	/// <param name="argumentValue">The argument value.</param>
+	/// <param name="defaults">Set the default type/size for parameters to address performance issues in SQL Server.</param>>
+	/// <returns>SqlServerSqlCall.</returns>
+	public SqlCallCommandBuilder<AbstractCommand, AbstractParameter> Sql(string sqlStatement, object argumentValue, SqlServerParameterDefaults defaults)
+	{
+		return new SqlServerSqlCall(this, sqlStatement, argumentValue, defaults);
+	}
 }

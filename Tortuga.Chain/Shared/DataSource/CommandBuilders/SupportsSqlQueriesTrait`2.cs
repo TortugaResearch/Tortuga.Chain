@@ -21,7 +21,7 @@ class SupportsSqlQueriesTrait<TCommand, TParameter> : ISupportsSqlQueries
 	/// <param name="sqlStatement">The SQL statement.</param>
 	/// <returns></returns>
 	[Expose]
-	public MultipleTableDbCommandBuilder<TCommand, TParameter> Sql(string sqlStatement)
+	public SqlCallCommandBuilder<TCommand, TParameter> Sql(string sqlStatement)
 	{
 		return OnSql(sqlStatement, null);
 	}
@@ -33,12 +33,12 @@ class SupportsSqlQueriesTrait<TCommand, TParameter> : ISupportsSqlQueries
 	/// <param name="argumentValue">The argument value.</param>
 	/// <returns>SqlServerSqlCall.</returns>
 	[Expose]
-	public MultipleTableDbCommandBuilder<TCommand, TParameter> Sql(string sqlStatement, object argumentValue)
+	public SqlCallCommandBuilder<TCommand, TParameter> Sql(string sqlStatement, object argumentValue)
 	{
 		return OnSql(sqlStatement, argumentValue);
 	}
 
 	[Partial("sqlStatement,argumentValue")]
-	public Func<string, object?, MultipleTableDbCommandBuilder<TCommand, TParameter>> OnSql { get; set; } = null!;
+	public Func<string, object?, SqlCallCommandBuilder<TCommand, TParameter>> OnSql { get; set; } = null!;
 }
 

@@ -281,4 +281,22 @@ public partial class SqlServerOpenDataSource : SqlServerDataSourceBase
 
 		return this;
 	}
+
+	/// <summary>
+	/// Gets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
+	/// </summary>
+	/// <remarks>Set this if encountering performance issues from type conversions in the execution plan.</remarks>
+	public override SqlDbType? DefaultStringType => m_BaseDataSource.DefaultStringType;
+
+	/// <summary>
+	/// Gets the default length of varChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public override int? DefaultVarCharLength => m_BaseDataSource.DefaultVarCharLength;
+
+	/// <summary>
+	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public override int? DefaultNVarCharLength => m_BaseDataSource.DefaultNVarCharLength;
 }
