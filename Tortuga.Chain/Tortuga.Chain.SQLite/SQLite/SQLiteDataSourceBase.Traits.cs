@@ -47,12 +47,7 @@ partial class SQLiteDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		var parameters = new List<SQLiteParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new SQLiteParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.DbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		if (!AuditRules.UseSoftDelete(table))
@@ -100,13 +95,9 @@ partial class SQLiteDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
-		string where = keyColumn.SqlName + " = @Param0";
+		var where = keyColumn.SqlName + " = @Param0";
 
-		var parameters = new List<SQLiteParameter>();
-		var param = new SQLiteParameter("@Param0", key);
-		if (keyColumn.DbType.HasValue)
-			param.DbType = keyColumn.DbType.Value;
-		parameters.Add(param);
+		var parameters = new List<SQLiteParameter> { Utilities.CreateParameter(keyColumn, "@Param0", key) };
 
 		return new SQLiteTableOrView<TObject>(this, tableName, where, parameters);
 	}
@@ -123,12 +114,7 @@ partial class SQLiteDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		var parameters = new List<SQLiteParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new SQLiteParameter("@Param" + i, keyList[i]);
-			if (keyColumn.DbType.HasValue)
-				param.DbType = keyColumn.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(keyColumn, "@Param" + i, keyList[i]));
 
 		return new MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter, TObject>(new SQLiteTableOrView<TObject>(this, tableName, where, parameters));
 	}
@@ -165,12 +151,7 @@ where TArgument : class
 
 		var parameters = new List<SQLiteParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new SQLiteParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.DbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		return new SQLiteUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}

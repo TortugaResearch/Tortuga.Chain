@@ -48,12 +48,7 @@ partial class OleDbSqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataS
 
 		var parameters = new List<OleDbParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new OleDbParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.OleDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		if (!AuditRules.UseSoftDelete(table))
@@ -97,13 +92,9 @@ partial class OleDbSqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataS
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
-		string where = keyColumn.SqlName + " = ?";
+		var where = keyColumn.SqlName + " = ?";
 
-		var parameters = new List<OleDbParameter>();
-		var param = new OleDbParameter("@Param0", key);
-		if (keyColumn.DbType.HasValue)
-			param.OleDbType = keyColumn.DbType.Value;
-		parameters.Add(param);
+		var parameters = new List<OleDbParameter>() { Utilities.CreateParameter(keyColumn, "@Param0", key) };
 
 		return new OleDbSqlServerTableOrView<TObject>(this, tableName, where, parameters);
 	}
@@ -119,12 +110,7 @@ partial class OleDbSqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataS
 
 		var parameters = new List<OleDbParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new OleDbParameter("@Param" + i, keyList[i]);
-			if (keyColumn.DbType.HasValue)
-				param.OleDbType = keyColumn.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(keyColumn, "@Param" + i, keyList[i]));
 
 		return new MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter, TObject>(new OleDbSqlServerTableOrView<TObject>(this, tableName, where, parameters));
 	}
@@ -156,12 +142,7 @@ where TArgument : class
 
 		var parameters = new List<OleDbParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new OleDbParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.OleDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		return new OleDbSqlServerUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}

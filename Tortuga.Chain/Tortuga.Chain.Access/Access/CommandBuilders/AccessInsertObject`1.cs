@@ -79,9 +79,7 @@ internal sealed class AccessInsertObject<TArgument> : AccessObjectCommand<TArgum
 
 		var parameters = new List<OleDbParameter>();
 
-		var param = new OleDbParameter(columnMetadata.SqlVariableName, previousValue);
-		if (columnMetadata.DbType.HasValue)
-			param.OleDbType = columnMetadata.DbType.Value;
+		var param = Utilities.CreateParameter(columnMetadata, columnMetadata.SqlVariableName, previousValue);
 		parameters.Add(param);
 
 		var sqlBuilder = Table.CreateSqlBuilder(StrictMode);

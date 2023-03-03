@@ -1,6 +1,7 @@
 ﻿using System.Data.OleDb;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Access;
 
@@ -35,25 +36,31 @@ internal static class Utilities
 		return sqlBuilder.GetParametersKeysLast(ParameterBuilderCallback);
 	}
 
-	public static OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
+	public static OleDbParameter CreateParameter(ISqlBuilderEntryDetails<OleDbType> details, string parameterName, object? value)
 	{
 		var result = new OleDbParameter();
-		result.ParameterName = entry.Details.SqlVariableName;
+		result.ParameterName = parameterName;
 
-		result.Value = entry.ParameterValue switch
+		result.Value = value switch
 		{
 #if NET6_0_OR_GREATER
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
 			TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
 #endif
 			TimeSpan timeSpan => default(DateTime) + timeSpan,
-			_ => entry.ParameterValue
+			null => DBNull.Value,
+			_ => value
 		};
 
-		if (entry.Details.DbType.HasValue)
-			result.OleDbType = entry.Details.DbType.Value;
+		if (details.DbType.HasValue)
+			result.OleDbType = details.DbType.Value;
 
 		return result;
+	}
+
+	public static OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
+	{
+		return CreateParameter(entry.Details, entry.Details.SqlVariableName, entry.ParameterValue);
 	}
 
 	public static bool RequiresSorting(this AccessLimitOption limitOption)
