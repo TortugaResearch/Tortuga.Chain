@@ -47,6 +47,39 @@ public class ProcedureTests : TestBase
 	static readonly object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
 #endif
 
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void Tuncation_Test(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource3(dataSourceName, mode);
+		try
+		{
+			const int ansiLength = 10000;
+			const int uniLength = 15000;
+			var ansi = new string('A', ansiLength);
+			var uni = new string('U', uniLength);
+
+			var result = dataSource.Procedure("dbo.UploadToMaxTest", new { ansi, uni }).ToInt32().Execute();
+
+			var getAnsi = dataSource.GetByKey("dbo.MaxTest", result).ToString("Ansi").Execute();
+			var getUni = dataSource.GetByKey("dbo.MaxTest", result).ToString("Uni").Execute();
+
+			Assert.AreEqual(ansi.Length, getAnsi.Length, "varChar was truncated");
+			Assert.AreEqual(uni.Length, getUni.Length, "NVarChar was truncated.");
+
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
+
+
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Object(string dataSourceName, DataSourceType mode)
 	{

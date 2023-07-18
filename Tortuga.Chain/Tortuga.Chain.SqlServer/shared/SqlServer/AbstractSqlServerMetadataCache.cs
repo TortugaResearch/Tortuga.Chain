@@ -231,11 +231,13 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 				break;
 
 			case "nvarchar":
-				maxLength = maxLength / 2;
 				precision = null;
 				scale = null;
 				if (maxLength > 0)
+				{
+					maxLength = maxLength / 2;
 					fullTypeName = $"nvarchar({maxLength})";
+				}
 				else
 					fullTypeName = $"nvarchar(max)";
 				break;
