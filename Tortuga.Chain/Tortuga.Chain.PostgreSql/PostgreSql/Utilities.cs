@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql;
 
@@ -16,14 +17,23 @@ internal static class Utilities
 		return sqlBuilder.GetParameters(ParameterBuilderCallback);
 	}
 
-	public static NpgsqlParameter ParameterBuilderCallback(SqlBuilderEntry<NpgsqlDbType> entry)
+	public static NpgsqlParameter CreateParameter(ISqlBuilderEntryDetails<NpgsqlDbType> details, string parameterName, object? value)
 	{
 		var result = new NpgsqlParameter();
-		result.ParameterName = entry.Details.SqlVariableName;
-		result.Value = entry.ParameterValue;
-		if (entry.Details.DbType.HasValue)
-			result.NpgsqlDbType = entry.Details.DbType.Value;
+		result.ParameterName = parameterName;
+		result.Value = value switch
+		{
+			null => DBNull.Value,
+			_ => value
+		};
+		if (details.DbType.HasValue)
+			result.NpgsqlDbType = details.DbType.Value;
 		return result;
+	}
+
+	public static NpgsqlParameter ParameterBuilderCallback(SqlBuilderEntry<NpgsqlDbType> entry)
+	{
+		return CreateParameter(entry.Details, entry.Details.SqlVariableName, entry.ParameterValue);
 	}
 
 	public static bool PrimaryKeyIsIdentity(this SqlBuilder<NpgsqlDbType> sqlBuilder, out List<NpgsqlParameter> keyParameters)

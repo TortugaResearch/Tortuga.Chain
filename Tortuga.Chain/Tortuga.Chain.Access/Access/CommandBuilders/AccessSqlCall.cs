@@ -8,7 +8,7 @@ namespace Tortuga.Chain.Access.CommandBuilders;
 /// <summary>
 /// Class that represents an operation based on a raw SQL statement.
 /// </summary>
-internal sealed class AccessSqlCall : DbSqlCall<OleDbCommand, OleDbParameter>
+internal sealed class AccessSqlCall : SqlCallCommandBuilder<OleDbCommand, OleDbParameter>
 {
 	/// <summary>
 	/// Creates a new instance of <see cref="AccessSqlCall" />

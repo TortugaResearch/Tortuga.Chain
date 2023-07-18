@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
 
@@ -15,27 +16,26 @@ internal static class Utilities
 		return sqlBuilder.GetParameters(ParameterBuilderCallback);
 	}
 
-	public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
+	public static SqlParameter CreateParameter(ISqlBuilderEntryDetails<SqlDbType> details, string parameterName, object? value)
 	{
 		var result = new SqlParameter();
-		result.ParameterName = entry.Details.SqlVariableName;
+		result.ParameterName = parameterName;
 
-#if NET6_0_OR_GREATER
-		result.Value = entry.ParameterValue switch
+		result.Value = value switch
 		{
+#if NET6_0_OR_GREATER
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
 			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
-			_ => entry.ParameterValue
-		};
-#else
-		result.Value = entry.ParameterValue;
 #endif
+			null => DBNull.Value,
+			_ => value ?? DBNull.Value
+		};
 
-		if (entry.Details.DbType.HasValue)
+		if (details.DbType.HasValue)
 		{
-			result.SqlDbType = entry.Details.DbType.Value;
+			result.SqlDbType = details.DbType.Value;
 
-			if (entry.Details.MaxLength.HasValue)
+			if (details.MaxLength.HasValue)
 			{
 				switch (result.SqlDbType)
 				{
@@ -45,18 +45,23 @@ internal static class Utilities
 					case SqlDbType.NVarChar:
 					case SqlDbType.Binary:
 					case SqlDbType.VarBinary:
-						result.Size = entry.Details.MaxLength.Value;
+						result.Size = details.MaxLength.Value;
 						break;
 				}
 			}
 		}
 
-		if (entry.ParameterValue is DbDataReader)
+		if (value is DbDataReader)
 			result.SqlDbType = SqlDbType.Structured;
 
-		result.Direction = entry.Details.Direction;
+		result.Direction = details.Direction;
 
 		return result;
+	}
+
+	public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
+	{
+		return CreateParameter(entry.Details, entry.Details.SqlVariableName, entry.ParameterValue);
 	}
 
 	public static bool RequiresSorting(this SqlServerLimitOption limitOption)

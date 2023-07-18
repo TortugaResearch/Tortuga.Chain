@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql;
 
@@ -15,14 +16,23 @@ internal static class Utilities
 		return sqlBuilder.GetParameters(ParameterBuilderCallback);
 	}
 
-	public static MySqlParameter ParameterBuilderCallback(SqlBuilderEntry<MySqlDbType> entry)
+	public static MySqlParameter CreateParameter(ISqlBuilderEntryDetails<MySqlDbType> details, string parameterName, object? value)
 	{
 		var result = new MySqlParameter();
-		result.ParameterName = entry.Details.SqlVariableName;
-		result.Value = entry.ParameterValue;
-		if (entry.Details.DbType.HasValue)
-			result.MySqlDbType = entry.Details.DbType.Value;
+		result.ParameterName = parameterName;
+		result.Value = value switch
+		{
+			null => DBNull.Value,
+			_ => value
+		};
+		if (details.DbType.HasValue)
+			result.MySqlDbType = details.DbType.Value;
 		return result;
+	}
+
+	public static MySqlParameter ParameterBuilderCallback(SqlBuilderEntry<MySqlDbType> entry)
+	{
+		return CreateParameter(entry.Details, entry.Details.SqlVariableName, entry.ParameterValue);
 	}
 
 	public static bool PrimaryKeyIsIdentity(this SqlBuilder<MySqlDbType> sqlBuilder, out List<MySqlParameter> keyParameters)

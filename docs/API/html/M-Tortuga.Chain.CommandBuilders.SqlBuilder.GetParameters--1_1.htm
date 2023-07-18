@@ -3,7 +3,7 @@
   <head><link rel="shortcut icon" href="../favicon.ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="save" content="history" />
-    <title>GetParameters(TParameter) Method (Nullable(Object), Func(TParameter))</title>
+    <title>GetParameters(TParameter) Method (Nullable(Object), Func(String, Nullable(Object), TParameter))</title>
     <link rel="stylesheet" type="text/css" href="../styles/lightweight.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <link rel="stylesheet" type="text/css" href="../styles/lw-code.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <script type="text/javascript" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" src="../scripts/languageSelector.js"> </script>
@@ -11,10 +11,10 @@
     <meta name="file" content="M-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters--1_1" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <meta name="guid" content="M-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters--1_1" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <xml xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters``1(System.Nullable{System.Object},Func{``0})" />
-      <MSHelp:TOCTitle Title="GetParameters(TParameter) Method (Nullable(Object), Func(TParameter))" />
-      <MSHelp:RLTitle Title="SqlBuilder.GetParameters(TParameter) Method (Nullable(Object), Func(TParameter)) (Tortuga.Chain.CommandBuilders)" />
-      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters``1(System.Nullable{System.Object},Func{``0})" />
+      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters``1(System.Nullable{System.Object},Func{System.String, System.Nullable{System.Object}, ``0})" />
+      <MSHelp:TOCTitle Title="GetParameters(TParameter) Method (Nullable(Object), Func(String, Nullable(Object), TParameter))" />
+      <MSHelp:RLTitle Title="SqlBuilder.GetParameters(TParameter) Method (Nullable(Object), Func(String, Nullable(Object), TParameter)) (Tortuga.Chain.CommandBuilders)" />
+      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters``1(System.Nullable{System.Object},Func{System.String, System.Nullable{System.Object}, ``0})" />
       <MSHelp:Attr Name="APIType" Value="Managed" />
       <MSHelp:Attr Name="APILocation" Value="Tortuga.Chain.Core.dll" />
       <MSHelp:Attr Name="APIName" Value="Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters" />
@@ -308,6 +308,16 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.SqlServerLimitOption.htm" target="_self">SqlServerLimitOption Enumeration</a>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServerParameterDefaults.htm" target="_self">SqlServerParameterDefaults Structure</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServerParameterDefaults.htm" target="_self">SqlServerParameterDefaults Structure</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Table.htm" target="_self">Table Class</a>
 <div class="Hidden">
 </div>
@@ -546,11 +556,6 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" target="_self">DbSqlCall(TCommand, TParameter) Class</a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.htm" target="_self">DeleteSetDbCommandBuilder(TCommand, TParameter) Class</a>
 <div class="Hidden">
 </div>
@@ -692,7 +697,7 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters--1.htm" target="_self">GetParameters(TParameter) Method (Nullable(Object))</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters--1_1.htm" target="_self">GetParameters(TParameter) Method (Nullable(Object), Func(TParameter))</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters--1_1.htm" target="_self">GetParameters(TParameter) Method (Nullable(Object), Func(String, Nullable(Object), TParameter))</a>
 </div>
 </div>
 </div>
@@ -707,6 +712,11 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.htm" target="_self">SqlBuilderEntry(TDbType) Structure</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" target="_self">SqlCallCommandBuilder(TCommand, TParameter) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1720,7 +1730,7 @@
         <div class="topicContainer">
           <div class="topic">
             <p class="majorTitle" />
-            <h1 class="title">SqlBuilder<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>GetParameters<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TParameter</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method (Nullable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>Object<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>, Func<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TParameter</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>)</h1>
+            <h1 class="title">SqlBuilder<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>GetParameters<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TParameter</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method (Nullable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>Object<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>, Func<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>String, Nullable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>Object<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>, <span class="typeparameter">TParameter</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>)</h1>
             <div id="mainSection">
               <div id="mainBody">
                 <div class="summary">
@@ -1732,19 +1742,19 @@
     <b>Assembly:</b>
    <span sdata="assembly">Tortuga.Chain.Core</span> (in Tortuga.Chain.Core.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <span class="keyword">static</span> <span class="nolink">List</span>&lt;TParameter&gt; <span class="identifier">GetParameters</span>&lt;TParameter&gt;(
 	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>&gt; <span class="parameter">argumentValue</span>,
-	<span class="nolink">Func</span>&lt;TParameter&gt; <span class="parameter">parameterBuilder</span>
+	<span class="nolink">Func</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">string</a>, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>&gt;, TParameter&gt; <span class="parameter">parameterBuilder</span>
 )
 <span class="keyword">where</span> TParameter : <span class="nolink">DbParameter</span>, <span class="nolink">DbParameter</span>
 </pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">Public</span> <span class="keyword">Shared</span> <span class="keyword">Function</span> <span class="identifier">GetParameters</span>(<span class="keyword">Of</span> TParameter <span class="keyword">As</span> {<span class="nolink">DbParameter</span>, <span class="nolink">DbParameter</span>}) ( _
 	<span class="parameter">argumentValue</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>), _
-	<span class="parameter">parameterBuilder</span> <span class="keyword">As</span> <span class="nolink">Func</span>(<span class="keyword">Of</span> TParameter) _
+	<span class="parameter">parameterBuilder</span> <span class="keyword">As</span> <span class="nolink">Func</span>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>), TParameter) _
 ) <span class="keyword">As</span> <span class="nolink">List</span>(<span class="keyword">Of</span> TParameter)</pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span>:
 <span class="keyword">generic</span>&lt;<span class="keyword">typename</span> TParameter&gt;
 <span class="keyword">where</span> TParameter : <span class="nolink">DbParameter</span>, <span class="nolink">DbParameter</span>
 <span class="keyword">static</span> <span class="nolink">List</span>&lt;TParameter&gt;^ <span class="identifier">GetParameters</span>(
 	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>^&gt; <span class="parameter">argumentValue</span>, 
-	<span class="nolink">Func</span>&lt;TParameter&gt;^ <span class="parameter">parameterBuilder</span>
-)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TParameter</span></dt><dd>The type of the parameter.</dd></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="argumentValue"><dt><span class="parameterItalic">argumentValue</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The argument value .</dd></dl><dl paramName="parameterBuilder"><dt><span class="parameterItalic">parameterBuilder</span></dt><dd>Type: <span class="nolink">Func</span><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="selflink"><span class="typeparam">TParameter</span></span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The parameter builder. This should set the parameter's database specific DbType property.</dd></dl></div><h4 class="subHeading">Return Value</h4></div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.CommandBuilders.SqlBuilder.htm">SqlBuilder Class</a></div><div class="seeAlsoStyle"><a href="Overload-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters-.htm">GetParameters Overload</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.CommandBuilders.htm">Tortuga.Chain.CommandBuilders Namespace</a></div></div></div>
+	<span class="nolink">Func</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>^&gt;, TParameter&gt;^ <span class="parameter">parameterBuilder</span>
+)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TParameter</span></dt><dd>The type of the parameter.</dd></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="argumentValue"><dt><span class="parameterItalic">argumentValue</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The argument value. This could be a DbParameter, collection of DbParameters, dictionary, or object.</dd></dl><dl paramName="parameterBuilder"><dt><span class="parameterItalic">parameterBuilder</span></dt><dd>Type: <span class="nolink">Func</span><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>, <span class="selflink"><span class="typeparam">TParameter</span></span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The parameter builder. This should set the parameter's database specific DbType property.</dd></dl></div><h4 class="subHeading">Return Value</h4></div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.CommandBuilders.SqlBuilder.htm">SqlBuilder Class</a></div><div class="seeAlsoStyle"><a href="Overload-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters-.htm">GetParameters Overload</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.CommandBuilders.htm">Tortuga.Chain.CommandBuilders Namespace</a></div></div></div>
             </div>
           </div>
         </div>

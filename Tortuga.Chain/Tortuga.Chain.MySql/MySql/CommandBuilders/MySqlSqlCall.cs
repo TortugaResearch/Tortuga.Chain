@@ -8,7 +8,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders;
 /// <summary>
 /// Class MySqlSqlCall
 /// </summary>
-public class MySqlSqlCall : DbSqlCall<MySqlCommand, MySqlParameter>
+public class MySqlSqlCall : SqlCallCommandBuilder<MySqlCommand, MySqlParameter>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MySqlSqlCall"/> class.

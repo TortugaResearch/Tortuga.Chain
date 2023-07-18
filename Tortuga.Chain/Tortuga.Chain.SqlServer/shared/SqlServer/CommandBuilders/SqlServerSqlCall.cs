@@ -8,8 +8,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// Class SqlServerSqlCall.
 /// </summary>
-internal sealed partial class SqlServerSqlCall : DbSqlCall<SqlCommand, SqlParameter>
+internal sealed partial class SqlServerSqlCall : SqlCallCommandBuilder<SqlCommand, SqlParameter>
 {
+	SqlDbType? m_DefaultStringType;
+	int? m_DefaultStringLength;
+	readonly SqlServerDataSourceBase m_DataSource;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerSqlCall" /> class.
 	/// </summary>
@@ -21,6 +25,14 @@ internal sealed partial class SqlServerSqlCall : DbSqlCall<SqlCommand, SqlParame
 	{
 		if (string.IsNullOrEmpty(sqlStatement))
 			throw new ArgumentException($"{nameof(sqlStatement)} is null or empty.", nameof(sqlStatement));
+		m_DataSource = dataSource;
+	}
+
+	public SqlServerSqlCall(SqlServerDataSourceBase dataSource, string sqlStatement, object? argumentValue, SqlServerParameterDefaults defaults) : this(dataSource, sqlStatement, argumentValue)
+	{
+		m_DataSource = dataSource;
+		m_DefaultStringType = defaults.StringType;
+		m_DefaultStringLength = defaults.StringLength;
 	}
 
 	/// <summary>
@@ -30,8 +42,47 @@ internal sealed partial class SqlServerSqlCall : DbSqlCall<SqlCommand, SqlParame
 	/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 	public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
 	{
-		return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", SqlStatement, SqlBuilder.GetParameters<SqlParameter>(ArgumentValue));
+		return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", SqlStatement, SqlBuilder.GetParameters<SqlParameter>(ArgumentValue, CreateParameter));
 	}
+
+	SqlParameter CreateParameter(string parameterName, object? value)
+	{
+		var result = new SqlParameter(parameterName, value ?? DBNull.Value);
+		if (value is string s)
+		{
+			if (m_DefaultStringType != null)
+				result.SqlDbType = m_DefaultStringType.Value;
+
+			if (m_DefaultStringLength.HasValue)
+				result.Size = m_DefaultStringLength.Value;
+			else if (result.SqlDbType == SqlDbType.VarChar && m_DataSource.DefaultVarCharLength.HasValue)
+				result.Size = m_DataSource.DefaultVarCharLength.Value;
+			else if (result.SqlDbType == SqlDbType.NVarChar && m_DataSource.DefaultNVarCharLength.HasValue)
+				result.Size = m_DataSource.DefaultNVarCharLength.Value;
+
+			//Fix up sizes
+			if (result.Size != SqlServerParameterDefaults.Max && result.Size < s.Length)
+				result.Size = s.Length;
+
+			//Kick over to max if needed.
+			switch (result.SqlDbType)
+			{
+				case SqlDbType.VarChar:
+					if (result.Size > SqlServerParameterDefaults.MaxVarChar)
+						result.Size = SqlServerParameterDefaults.Max;
+					break;
+				case SqlDbType.NVarChar:
+					if (result.Size > SqlServerParameterDefaults.MaxNVarChar)
+						result.Size = SqlServerParameterDefaults.Max;
+					break;
+			}
+
+
+
+		}
+		return result;
+	}
+
 }
 
 partial class SqlServerSqlCall : ISupportsChangeListener

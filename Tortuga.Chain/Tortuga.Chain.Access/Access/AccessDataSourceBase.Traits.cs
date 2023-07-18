@@ -54,12 +54,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 
 		var parameters = new List<OleDbParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new OleDbParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.OleDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		if (!AuditRules.UseSoftDelete(table))
@@ -109,11 +104,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 	{
 		string where = keyColumn.SqlName + " = @Param0";
 
-		var parameters = new List<OleDbParameter>();
-		var param = new OleDbParameter("@Param0", key);
-		if (keyColumn.DbType.HasValue)
-			param.OleDbType = keyColumn.DbType.Value;
-		parameters.Add(param);
+		var parameters = new List<OleDbParameter>() { Utilities.CreateParameter(keyColumn, "@Param0", key) };
 
 		return new AccessTableOrView<TObject>(this, tableName, where, parameters);
 	}
@@ -129,12 +120,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 
 		var parameters = new List<OleDbParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new OleDbParameter("@Param" + i, keyList[i]);
-			if (keyColumn.DbType.HasValue)
-				param.OleDbType = keyColumn.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(keyColumn, "@Param" + i, keyList[i]));
 
 		return new MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter, TObject>(new AccessTableOrView<TObject>(this, tableName, where, parameters));
 	}
@@ -161,12 +147,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 
 		var parameters = new List<OleDbParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new OleDbParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.OleDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		return new AccessUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}
@@ -194,7 +175,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
-	private partial MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
+	private partial SqlCallCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new AccessSqlCall(this, sqlStatement, argumentValue);
 	}

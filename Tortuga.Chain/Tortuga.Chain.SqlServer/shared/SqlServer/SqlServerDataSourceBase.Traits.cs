@@ -51,10 +51,8 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		var parameters = new List<SqlParameter>();
 		for (var i = 0; i < keyList.Count; i++)
 		{
-			var param = new SqlParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.SqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
+
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 		}
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
@@ -106,13 +104,11 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		var where = keyColumn.SqlName + " = @Param0";
 
 		var parameters = new List<SqlParameter>();
-		var param = new SqlParameter("@Param0", key);
-		if (keyColumn.DbType.HasValue)
-			param.SqlDbType = keyColumn.DbType.Value;
-		parameters.Add(param);
+		parameters.Add(Utilities.CreateParameter(keyColumn, "@Param0", key));
 
 		return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
 	}
+
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
 	{
@@ -125,12 +121,7 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		var parameters = new List<SqlParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new SqlParameter("@Param" + i, keyList[i]);
-			if (keyColumn.DbType.HasValue)
-				param.SqlDbType = keyColumn.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(keyColumn, "@Param" + i, keyList[i]));
 
 		return new MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject>(new SqlServerTableOrView<TObject>(this, tableName, where, parameters));
 	}
@@ -177,12 +168,7 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		var parameters = new List<SqlParameter>();
 		for (var i = 0; i < keyList.Count; i++)
-		{
-			var param = new SqlParameter("@Param" + i, keyList[i]);
-			if (columnMetadata.DbType.HasValue)
-				param.SqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-		}
+			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 
 		return new SqlServerUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}
@@ -220,7 +206,7 @@ where TArgument : class
 		return new AbstractScalarFunction(this, scalarFunctionName, argumentValue);
 	}
 
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
+	private partial SqlCallCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new SqlServerSqlCall(this, sqlStatement, argumentValue);
 	}

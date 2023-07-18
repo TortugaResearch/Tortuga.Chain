@@ -1374,32 +1374,6 @@
   <HelpKINode Title="DbOperationBuilder&lt;TConnection, TTransaction&gt;.DataSource property" Url="html/P-Tortuga.Chain.CommandBuilders.DbOperationBuilder-2.DataSource.htm" />
   <HelpKINode Title="DbOperationBuilder&lt;TConnection, TTransaction&gt;.Prepare method" Url="html/M-Tortuga.Chain.CommandBuilders.DbOperationBuilder-2.Prepare.htm" />
   <HelpKINode Title="DbOperationBuilder&lt;TConnection, TTransaction&gt;.TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DbOperationBuilder-2.TryGetColumn.htm" />
-  <HelpKINode Title="DbSqlCall(Of TCommand, TParameter) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  <HelpKINode Title="DbSqlCall(Of TCommand, TParameter) class" Url="html/T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  <HelpKINode Title="DbSqlCall(Of TCommand, TParameter) class">
-    <HelpKINode Title="about DbSqlCall(Of TCommand, TParameter) class" Url="html/T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.-ctor.htm" />
-    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  </HelpKINode>
-  <HelpKINode Title="DbSqlCall(Of TCommand, TParameter).DbSqlCall constructor" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.-ctor.htm" />
-  <HelpKINode Title="DbSqlCall(Of TCommand, TParameter).TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetColumn.htm" />
-  <HelpKINode Title="DbSqlCall(Of TCommand, TParameter).TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetColumns.htm" />
-  <HelpKINode Title="DbSqlCall(Of TCommand, TParameter).TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetNonNullableColumns.htm" />
-  <HelpKINode Title="DbSqlCall&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  <HelpKINode Title="DbSqlCall&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  <HelpKINode Title="DbSqlCall&lt;TCommand, TParameter&gt; class">
-    <HelpKINode Title="about DbSqlCall&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.-ctor.htm" />
-    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  </HelpKINode>
-  <HelpKINode Title="DbSqlCall&lt;TCommand, TParameter&gt;.DbSqlCall constructor" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.-ctor.htm" />
-  <HelpKINode Title="DbSqlCall&lt;TCommand, TParameter&gt;.TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetColumn.htm" />
-  <HelpKINode Title="DbSqlCall&lt;TCommand, TParameter&gt;.TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetColumns.htm" />
-  <HelpKINode Title="DbSqlCall&lt;TCommand, TParameter&gt;.TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="DbType property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadata-1.DbType.htm" />
   <HelpKINode Title="DbType property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadata.DbType.htm" />
   <HelpKINode Title="DbType property" Url="html/P-Tortuga.Chain.Metadata.ISqlBuilderEntryDetails-1.DbType.htm" />
@@ -1409,10 +1383,25 @@
   <HelpKINode Title="DbType property" Url="html/P-Tortuga.Chain.Metadata.ScalarFunctionMetadata.DbType.htm" />
   <HelpKINode Title="DefaultCommandTimeout property" Url="html/P-Tortuga.Chain.DataSources.DataSource.DefaultCommandTimeout.htm" />
   <HelpKINode Title="DefaultCommandTimeout property" Url="html/P-Tortuga.Chain.DataSources.DataSourceSettings.DefaultCommandTimeout.htm" />
+  <HelpKINode Title="DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServerDataSource.DefaultNVarCharLength.htm" />
   <HelpKINode Title="DefaultSchema property" Url="html/P-Tortuga.Chain.MySql.MySqlMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="DefaultSchema property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="DefaultSchema property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="DefaultSchemaList property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.DefaultSchemaList.htm" />
+  <HelpKINode Title="DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DefaultStringType.htm" />
+  <HelpKINode Title="DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.DefaultStringType.htm" />
+  <HelpKINode Title="DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.DefaultStringType.htm" />
+  <HelpKINode Title="DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DefaultStringType.htm" />
+  <HelpKINode Title="DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServerDataSource.DefaultStringType.htm" />
+  <HelpKINode Title="DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DefaultVarCharLength.htm" />
+  <HelpKINode Title="DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.DefaultVarCharLength.htm" />
+  <HelpKINode Title="DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.DefaultVarCharLength.htm" />
+  <HelpKINode Title="DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DefaultVarCharLength.htm" />
+  <HelpKINode Title="DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServerDataSource.DefaultVarCharLength.htm" />
   <HelpKINode Title="Delete enumeration member" Url="html/T-Tortuga.Chain.AuditRules.OperationTypes.htm" />
   <HelpKINode Title="Delete field" Url="html/F-Tortuga.Chain.AuditRules.OperationTypes.Delete.htm" />
   <HelpKINode Title="Delete method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsDelete.Delete-.htm" />
@@ -2560,6 +2549,8 @@
   <HelpKINode Title="IScalarDbCommandBuilder.ToByte method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToByte.htm" />
   <HelpKINode Title="IScalarDbCommandBuilder.ToByteArray method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToByteArray.htm" />
   <HelpKINode Title="IScalarDbCommandBuilder.ToByteOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToByteOrNull.htm" />
+  <HelpKINode Title="IScalarDbCommandBuilder.ToChar method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToChar.htm" />
+  <HelpKINode Title="IScalarDbCommandBuilder.ToCharOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToCharOrNull.htm" />
   <HelpKINode Title="IScalarDbCommandBuilder.ToDateTime method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToDateTime.htm" />
   <HelpKINode Title="IScalarDbCommandBuilder.ToDateTimeOffset method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToDateTimeOffset.htm" />
   <HelpKINode Title="IScalarDbCommandBuilder.ToDateTimeOffsetOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToDateTimeOffsetOrNull.htm" />
@@ -3085,10 +3076,12 @@
   <HelpKINode Title="MaterializerUtilities.CheckUpdateRowCount method" Url="html/Overload-Tortuga.Chain.Materializers.MaterializerUtilities.CheckUpdateRowCount-.htm" />
   <HelpKINode Title="Max enumeration member" Url="html/T-Tortuga.Chain.Aggregates.AggregateType.htm" />
   <HelpKINode Title="Max field" Url="html/F-Tortuga.Chain.Aggregates.AggregateType.Max.htm" />
+  <HelpKINode Title="Max field" Url="html/F-Tortuga.Chain.SqlServerParameterDefaults.Max.htm" />
   <HelpKINode Title="MaxLength property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadata.MaxLength.htm" />
   <HelpKINode Title="MaxLength property" Url="html/P-Tortuga.Chain.Metadata.ISqlBuilderEntryDetails.MaxLength.htm" />
   <HelpKINode Title="MaxLength property" Url="html/P-Tortuga.Chain.Metadata.ParameterMetadata.MaxLength.htm" />
   <HelpKINode Title="MaxLength property" Url="html/P-Tortuga.Chain.Metadata.ScalarFunctionMetadata.MaxLength.htm" />
+  <HelpKINode Title="MaxNVarChar field" Url="html/F-Tortuga.Chain.SqlServerParameterDefaults.MaxNVarChar.htm" />
   <HelpKINode Title="MaxParameters property" Url="html/P-Tortuga.Chain.Access.AccessMetadataCache.MaxParameters.htm" />
   <HelpKINode Title="MaxParameters property" Url="html/P-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.MaxParameters.htm" />
   <HelpKINode Title="MaxParameters property" Url="html/P-Tortuga.Chain.Metadata.IDatabaseMetadataCache.MaxParameters.htm" />
@@ -3100,6 +3093,7 @@
   <HelpKINode Title="MaxRowsPerValuesClause property" Url="html/P-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.MaxRowsPerValuesClause.htm" />
   <HelpKINode Title="MaxRowsPerValuesClause property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.MaxRowsPerValuesClause.htm" />
   <HelpKINode Title="MaxRowsPerValuesClause property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerMetadataCache.MaxRowsPerValuesClause.htm" />
+  <HelpKINode Title="MaxVarChar field" Url="html/F-Tortuga.Chain.SqlServerParameterDefaults.MaxVarChar.htm" />
   <HelpKINode Title="MetadataException class" Url="html/AllMembers.T-Tortuga.Chain.SqlServer.MetadataException.htm" />
   <HelpKINode Title="MetadataException class" Url="html/T-Tortuga.Chain.SqlServer.MetadataException.htm" />
   <HelpKINode Title="MetadataException class">
@@ -4826,6 +4820,7 @@
   <HelpKINode Title="Spgist enumeration member" Url="html/T-Tortuga.Chain.Metadata.IndexType.htm" />
   <HelpKINode Title="Spgist field" Url="html/F-Tortuga.Chain.Metadata.IndexType.Spgist.htm" />
   <HelpKINode Title="Sql method" Url="html/M-Tortuga.Chain.DataSources.ISupportsSqlQueries.Sql.htm" />
+  <HelpKINode Title="Sql method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" />
   <HelpKINode Title="Sql method" Url="html/Overload-Tortuga.Chain.GenericDbDataSource.Sql.htm" />
   <HelpKINode Title="Sql property" Url="html/P-Tortuga.Chain.MaterializerCompilerEventArgs.Sql.htm" />
   <HelpKINode Title="SqlBuilder class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlBuilder.htm" />
@@ -4973,6 +4968,32 @@
   <HelpKINode Title="SqlBuilderEntry&lt;TDbType&gt;.UseForUpdate property" Url="html/P-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.UseForUpdate.htm" />
   <HelpKINode Title="SqlBuilderEntry&lt;TDbType&gt;.UseParameter property" Url="html/P-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.UseParameter.htm" />
   <HelpKINode Title="SqlBuilderEntry&lt;TDbType&gt;.UseParameter2 property" Url="html/P-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.UseParameter2.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder(Of TCommand, TParameter) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder(Of TCommand, TParameter) class" Url="html/T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder(Of TCommand, TParameter) class">
+    <HelpKINode Title="about SqlCallCommandBuilder(Of TCommand, TParameter) class" Url="html/T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.-ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SqlCallCommandBuilder(Of TCommand, TParameter).SqlCallCommandBuilder constructor" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.-ctor.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder(Of TCommand, TParameter).TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetColumn.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder(Of TCommand, TParameter).TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetColumns.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder(Of TCommand, TParameter).TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetNonNullableColumns.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder&lt;TCommand, TParameter&gt; class">
+    <HelpKINode Title="about SqlCallCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.-ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SqlCallCommandBuilder&lt;TCommand, TParameter&gt;.SqlCallCommandBuilder constructor" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.-ctor.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder&lt;TCommand, TParameter&gt;.TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetColumn.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder&lt;TCommand, TParameter&gt;.TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetColumns.htm" />
+  <HelpKINode Title="SqlCallCommandBuilder&lt;TCommand, TParameter&gt;.TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="SQLiteCommandExecutionToken class" Url="html/AllMembers.T-Tortuga.Chain.SQLite.SQLiteCommandExecutionToken.htm" />
   <HelpKINode Title="SQLiteCommandExecutionToken class" Url="html/T-Tortuga.Chain.SQLite.SQLiteCommandExecutionToken.htm" />
   <HelpKINode Title="SQLiteCommandExecutionToken class">
@@ -5136,6 +5157,9 @@
   <HelpKINode Title="SqlServerDataSource.BeginTransaction method" Url="html/M-Tortuga.Chain.SqlServerDataSource.BeginTransaction.htm" />
   <HelpKINode Title="SqlServerDataSource.BeginTransactionAsync method" Url="html/M-Tortuga.Chain.SqlServerDataSource.BeginTransactionAsync.htm" />
   <HelpKINode Title="SqlServerDataSource.DatabaseMetadata property" Url="html/P-Tortuga.Chain.SqlServerDataSource.DatabaseMetadata.htm" />
+  <HelpKINode Title="SqlServerDataSource.DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServerDataSource.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="SqlServerDataSource.DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServerDataSource.DefaultStringType.htm" />
+  <HelpKINode Title="SqlServerDataSource.DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServerDataSource.DefaultVarCharLength.htm" />
   <HelpKINode Title="SqlServerDataSource.ExecuteStream method" Url="html/M-Tortuga.Chain.SqlServerDataSource.ExecuteStream.htm" />
   <HelpKINode Title="SqlServerDataSource.ExecuteStreamAsync method" Url="html/M-Tortuga.Chain.SqlServerDataSource.ExecuteStreamAsync.htm" />
   <HelpKINode Title="SqlServerDataSource.GetEffectiveSettings method" Url="html/M-Tortuga.Chain.SqlServerDataSource.GetEffectiveSettings.htm" />
@@ -5155,8 +5179,12 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" />
   </HelpKINode>
   <HelpKINode Title="SqlServerDataSourceBase.DatabaseMetadata property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DatabaseMetadata.htm" />
+  <HelpKINode Title="SqlServerDataSourceBase.DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="SqlServerDataSourceBase.DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DefaultStringType.htm" />
+  <HelpKINode Title="SqlServerDataSourceBase.DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DefaultVarCharLength.htm" />
   <HelpKINode Title="SqlServerDataSourceBase.InsertBatch method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" />
   <HelpKINode Title="SqlServerDataSourceBase.InsertBulk method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBulk.htm" />
+  <HelpKINode Title="SqlServerDataSourceBase.Sql method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" />
   <HelpKINode Title="SqlServerDataSourceSettings class" Url="html/AllMembers.T-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.htm" />
   <HelpKINode Title="SqlServerDataSourceSettings class" Url="html/T-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.htm" />
   <HelpKINode Title="SqlServerDataSourceSettings class">
@@ -5165,6 +5193,9 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.htm" />
   </HelpKINode>
   <HelpKINode Title="SqlServerDataSourceSettings.ArithAbort property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.ArithAbort.htm" />
+  <HelpKINode Title="SqlServerDataSourceSettings.DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="SqlServerDataSourceSettings.DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.DefaultStringType.htm" />
+  <HelpKINode Title="SqlServerDataSourceSettings.DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.DefaultVarCharLength.htm" />
   <HelpKINode Title="SqlServerDataSourceSettings.XactAbort property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerDataSourceSettings.XactAbort.htm" />
   <HelpKINode Title="SqlServerEffectiveSettings class" Url="html/AllMembers.T-Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.htm" />
   <HelpKINode Title="SqlServerEffectiveSettings class" Url="html/T-Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.htm" />
@@ -5284,6 +5315,9 @@
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.htm" />
   </HelpKINode>
+  <HelpKINode Title="SqlServerOpenDataSource.DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="SqlServerOpenDataSource.DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.DefaultStringType.htm" />
+  <HelpKINode Title="SqlServerOpenDataSource.DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.DefaultVarCharLength.htm" />
   <HelpKINode Title="SqlServerOpenDataSource.ExecuteStream method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.ExecuteStream.htm" />
   <HelpKINode Title="SqlServerOpenDataSource.ExecuteStreamAsync method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerOpenDataSource.ExecuteStreamAsync.htm" />
   <HelpKINode Title="SqlServerOperationExecutionToken class" Url="html/AllMembers.T-Tortuga.Chain.SqlServer.SqlServerOperationExecutionToken.htm" />
@@ -5294,6 +5328,19 @@
     <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.SqlServer.SqlServerOperationExecutionToken.-ctor.htm" />
   </HelpKINode>
   <HelpKINode Title="SqlServerOperationExecutionToken.SqlServerOperationExecutionToken constructor" Url="html/M-Tortuga.Chain.SqlServer.SqlServerOperationExecutionToken.-ctor.htm" />
+  <HelpKINode Title="SqlServerParameterDefaults structure" Url="html/AllMembers.T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
+  <HelpKINode Title="SqlServerParameterDefaults structure" Url="html/T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
+  <HelpKINode Title="SqlServerParameterDefaults structure">
+    <HelpKINode Title="about SqlServerParameterDefaults structure" Url="html/T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
+    <HelpKINode Title="fields" Url="html/Fields.T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SqlServerParameterDefaults.Max field" Url="html/F-Tortuga.Chain.SqlServerParameterDefaults.Max.htm" />
+  <HelpKINode Title="SqlServerParameterDefaults.MaxNVarChar field" Url="html/F-Tortuga.Chain.SqlServerParameterDefaults.MaxNVarChar.htm" />
+  <HelpKINode Title="SqlServerParameterDefaults.MaxVarChar field" Url="html/F-Tortuga.Chain.SqlServerParameterDefaults.MaxVarChar.htm" />
+  <HelpKINode Title="SqlServerParameterDefaults.StringLength property" Url="html/P-Tortuga.Chain.SqlServerParameterDefaults.StringLength.htm" />
+  <HelpKINode Title="SqlServerParameterDefaults.StringType property" Url="html/P-Tortuga.Chain.SqlServerParameterDefaults.StringType.htm" />
   <HelpKINode Title="SqlServerTableOrViewMetadata(Of TDbType) class" Url="html/AllMembers.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" />
   <HelpKINode Title="SqlServerTableOrViewMetadata(Of TDbType) class" Url="html/T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" />
   <HelpKINode Title="SqlServerTableOrViewMetadata(Of TDbType) class">
@@ -5322,6 +5369,9 @@
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.htm" />
   </HelpKINode>
+  <HelpKINode Title="SqlServerTransactionalDataSource.DefaultNVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DefaultNVarCharLength.htm" />
+  <HelpKINode Title="SqlServerTransactionalDataSource.DefaultStringType property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DefaultStringType.htm" />
+  <HelpKINode Title="SqlServerTransactionalDataSource.DefaultVarCharLength property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DefaultVarCharLength.htm" />
   <HelpKINode Title="SqlServerTransactionalDataSource.ExecuteStream method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.ExecuteStream.htm" />
   <HelpKINode Title="SqlServerTransactionalDataSource.ExecuteStreamAsync method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.ExecuteStreamAsync.htm" />
   <HelpKINode Title="SqlServerTransactionalDataSource.TransactionName property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.TransactionName.htm" />
@@ -5389,6 +5439,8 @@
   <HelpKINode Title="StrictMode property" Url="html/P-Tortuga.Chain.DataSources.DataSource.StrictMode.htm" />
   <HelpKINode Title="StrictMode property" Url="html/P-Tortuga.Chain.DataSources.DataSourceSettings.StrictMode.htm" />
   <HelpKINode Title="StrictMode property" Url="html/P-Tortuga.Chain.DataSources.IDataSource.StrictMode.htm" />
+  <HelpKINode Title="StringLength property" Url="html/P-Tortuga.Chain.SqlServerParameterDefaults.StringLength.htm" />
+  <HelpKINode Title="StringType property" Url="html/P-Tortuga.Chain.SqlServerParameterDefaults.StringType.htm" />
   <HelpKINode Title="Sum enumeration member" Url="html/T-Tortuga.Chain.Aggregates.AggregateType.htm" />
   <HelpKINode Title="Sum field" Url="html/F-Tortuga.Chain.Aggregates.AggregateType.Sum.htm" />
   <HelpKINode Title="SumDistinct enumeration member" Url="html/T-Tortuga.Chain.Aggregates.AggregateType.htm" />
@@ -5648,8 +5700,10 @@
   <HelpKINode Title="ToByteOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToByteOrNull.htm" />
   <HelpKINode Title="ToByteOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteOrNull.htm" />
   <HelpKINode Title="ToByteSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteSet.htm" />
+  <HelpKINode Title="ToChar method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToChar.htm" />
   <HelpKINode Title="ToChar method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToChar.htm" />
   <HelpKINode Title="ToCharList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharList.htm" />
+  <HelpKINode Title="ToCharOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToCharOrNull.htm" />
   <HelpKINode Title="ToCharOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToCharOrNull.htm" />
   <HelpKINode Title="ToCharOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharOrNullList.htm" />
   <HelpKINode Title="ToCharSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharSet.htm" />
@@ -5954,10 +6008,6 @@
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.DbOperationBuilder(Of TConnection, TTransaction) class" Url="html/T-Tortuga.Chain.CommandBuilders.DbOperationBuilder-2.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.DbOperationBuilder&lt;TConnection, TTransaction&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DbOperationBuilder-2.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.DbOperationBuilder&lt;TConnection, TTransaction&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.DbOperationBuilder-2.htm" />
-  <HelpKINode Title="Tortuga.Chain.CommandBuilders.DbSqlCall(Of TCommand, TParameter) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  <HelpKINode Title="Tortuga.Chain.CommandBuilders.DbSqlCall(Of TCommand, TParameter) class" Url="html/T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  <HelpKINode Title="Tortuga.Chain.CommandBuilders.DbSqlCall&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
-  <HelpKINode Title="Tortuga.Chain.CommandBuilders.DbSqlCall&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.DbSqlCall-2.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder(Of TCommand, TParameter) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder(Of TCommand, TParameter) class" Url="html/T-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.htm" />
@@ -6045,6 +6095,10 @@
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.SqlBuilderEntry(Of TDbType) structure" Url="html/T-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.SqlBuilderEntry&lt;TDbType&gt; structure" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.SqlBuilderEntry&lt;TDbType&gt; structure" Url="html/T-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.htm" />
+  <HelpKINode Title="Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder(Of TCommand, TParameter) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  <HelpKINode Title="Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder(Of TCommand, TParameter) class" Url="html/T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  <HelpKINode Title="Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
+  <HelpKINode Title="Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.TableDbCommandBuilder(Of TCommand, TParameter, TLimit) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.TableDbCommandBuilder(Of TCommand, TParameter, TLimit) class" Url="html/T-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.htm" />
   <HelpKINode Title="Tortuga.Chain.CommandBuilders.TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.htm" />
@@ -6581,6 +6635,8 @@
   <HelpKINode Title="Tortuga.Chain.SqlServerExtensions class" Url="html/AllMembers.T-Tortuga.Chain.SqlServerExtensions.htm" />
   <HelpKINode Title="Tortuga.Chain.SqlServerExtensions class" Url="html/T-Tortuga.Chain.SqlServerExtensions.htm" />
   <HelpKINode Title="Tortuga.Chain.SqlServerLimitOption enumeration" Url="html/T-Tortuga.Chain.SqlServerLimitOption.htm" />
+  <HelpKINode Title="Tortuga.Chain.SqlServerParameterDefaults structure" Url="html/AllMembers.T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
+  <HelpKINode Title="Tortuga.Chain.SqlServerParameterDefaults structure" Url="html/T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
   <HelpKINode Title="Tortuga.Chain.Table class" Url="html/AllMembers.T-Tortuga.Chain.Table.htm" />
   <HelpKINode Title="Tortuga.Chain.Table class" Url="html/T-Tortuga.Chain.Table.htm" />
   <HelpKINode Title="Tortuga.Chain.TableSet class" Url="html/AllMembers.T-Tortuga.Chain.TableSet.htm" />
@@ -6644,7 +6700,6 @@
   <HelpKINode Title="TryConvertType method" Url="html/M-Tortuga.Chain.Metadata.MaterializerTypeConverter.TryConvertType.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DbCommandBuilder.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DbOperationBuilder-2.TryGetColumn.htm" />
-  <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.IDbCommandBuilder.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-3.TryGetColumn.htm" />
@@ -6652,6 +6707,7 @@
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder-2.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.ScalarFunctionCommandBuilder-2.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder-3.TryGetColumn.htm" />
+  <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.UpdateSetDbCommandBuilder-2.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.Metadata.ColumnMetadataCollection-1.TryGetColumn.htm" />
@@ -6663,13 +6719,13 @@
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlTableFunction.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumn method" Url="html/M-Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.TryGetColumn.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbCommandBuilder.TryGetColumns.htm" />
-  <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-3.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder-3.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder-2.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.ScalarFunctionCommandBuilder-2.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder-3.TryGetColumns.htm" />
+  <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.UpdateSetDbCommandBuilder-2.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.TryGetColumns.htm" />
@@ -6677,13 +6733,13 @@
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlTableFunction.TryGetColumns.htm" />
   <HelpKINode Title="TryGetColumns method" Url="html/M-Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.TryGetColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbCommandBuilder.TryGetNonNullableColumns.htm" />
-  <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DbSqlCall-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-3.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder-3.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.ScalarFunctionCommandBuilder-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder-3.TryGetNonNullableColumns.htm" />
+  <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlCallCommandBuilder-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.UpdateSetDbCommandBuilder-2.TryGetNonNullableColumns.htm" />
   <HelpKINode Title="TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.TryGetNonNullableColumns.htm" />

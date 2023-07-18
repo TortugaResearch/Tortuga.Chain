@@ -6,11 +6,11 @@
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for SQL Server. This uses System.Data.SqlClient. For Microsoft.Data.SqlClient use the Tortuga.Chain.SqlServer.MDS package.</Description>
 		<PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>11.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.3.0</Version>
+		<Version>4.4.1</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -56,7 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="4.3.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
