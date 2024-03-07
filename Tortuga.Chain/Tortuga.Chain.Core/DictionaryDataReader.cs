@@ -2,7 +2,6 @@
 using System.Collections.Immutable;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Metadata;
 
@@ -11,41 +10,40 @@ namespace Tortuga.Chain;
 /// <summary>
 /// Creates a DbDataReader wrapper over a list of objects.
 /// </summary>
-/// <typeparam name="TObject"></typeparam>
 /// <seealso cref="DbDataReader" />
 [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
 [SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")]
-public class ObjectDataReader<TObject> : DbDataReader
+public class DictionaryDataReader : DbDataReader
 {
-	readonly ImmutableArray<PropertyMetadata> m_PropertyList;
+	readonly ImmutableArray<string> m_PropertyList;
 	readonly ImmutableDictionary<string, int> m_PropertyLookup;
 	readonly int? m_RecordCount;
 	readonly DataTable m_Schema;
-	IEnumerator<TObject>? m_Source;
+	IEnumerator<Dictionary<string, object?>>? m_Source;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ObjectDataReader{TObject}" /> class.
-	/// </summary>
-	/// <param name="tableType">Type of the table.</param>
-	/// <param name="source">The source.</param>
-	/// <param name="operationType">Type of the operation being performed.</param>
-	public ObjectDataReader(UserDefinedTableTypeMetadata tableType, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
-	{
-		if (tableType == null)
-			throw new ArgumentNullException(nameof(tableType), $"{nameof(tableType)} is null.");
-		if (source == null)
-			throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
+	///// <summary>
+	///// Initializes a new instance of the <see cref="DictionaryDataReader" /> class.
+	///// </summary>
+	///// <param name="tableType">Type of the table.</param>
+	///// <param name="source">The source.</param>
+	///// <param name="operationType">Type of the operation being performed.</param>
+	//public DictionaryDataReader(UserDefinedTableTypeMetadata tableType, IEnumerable<Dictionary<string, object?>> source, OperationTypes operationType = OperationTypes.None)
+	//{
+	//	if (tableType == null)
+	//		throw new ArgumentNullException(nameof(tableType), $"{nameof(tableType)} is null.");
+	//	if (source == null)
+	//		throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
 
-		//Don't use IEnumerable<T>.Count(), as we don't want to preemptively materialize a lazy collection
-		if (source is ICollection collection)
-			m_RecordCount = collection.Count;
+	//	//Don't use IEnumerable<T>.Count(), as we don't want to preemptively materialize a lazy collection
+	//	if (source is ICollection collection)
+	//		m_RecordCount = collection.Count;
 
-		m_Source = source.GetEnumerator();
-		var metadata = BuildStructure(tableType.Name, tableType.Columns, true, operationType);
-		m_Schema = metadata.Schema;
-		m_PropertyList = metadata.Properties;
-		m_PropertyLookup = metadata.PropertyLookup;
-	}
+	//	m_Source = source.GetEnumerator();
+	//	var metadata = BuildStructure(tableType.Name, tableType.Columns, true, operationType);
+	//	m_Schema = metadata.Schema;
+	//	m_PropertyList = metadata.Properties;
+	//	m_PropertyLookup = metadata.PropertyLookup;
+	//}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ObjectDataReader{TObject}" /> class.
@@ -53,7 +51,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	/// <param name="tableOrView">The table or view.</param>
 	/// <param name="source">The source.</param>
 	/// <param name="operationType">Type of the operation being performed.</param>
-	public ObjectDataReader(TableOrViewMetadata tableOrView, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
+	public DictionaryDataReader(TableOrViewMetadata tableOrView, IEnumerable<Dictionary<string, object?>> source, OperationTypes operationType = OperationTypes.None)
 	{
 		if (tableOrView == null)
 			throw new ArgumentNullException(nameof(tableOrView), $"{nameof(tableOrView)} is null.");
@@ -65,13 +63,10 @@ public class ObjectDataReader<TObject> : DbDataReader
 			m_RecordCount = collection.Count;
 
 		m_Source = source.GetEnumerator();
-		var metadata = BuildStructure(tableOrView.Name, tableOrView.Columns, false, operationType);
+		var metadata = BuildStructure(tableOrView.Name, tableOrView.Columns, false, operationType, source.First());
 		m_Schema = metadata.Schema;
 		m_PropertyList = metadata.Properties;
 		m_PropertyLookup = metadata.PropertyLookup;
-
-		if (m_PropertyList.Length == 0)
-			throw new MappingException($"Unable to map object of type {typeof(TObject).Name} to a the table {tableOrView.Name}.");
 	}
 
 	/// <summary>
@@ -116,9 +111,9 @@ public class ObjectDataReader<TObject> : DbDataReader
 #pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
 		{
 			if (m_Source == null)
-				throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+				throw new ObjectDisposedException(nameof(DictionaryDataReader));
 
-			return m_PropertyList[m_PropertyLookup[name]].InvokeGet(m_Source.Current!);
+			return m_Source.Current![m_PropertyList[m_PropertyLookup[name]]];
 		}
 	}
 
@@ -134,9 +129,9 @@ public class ObjectDataReader<TObject> : DbDataReader
 #pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
 		{
 			if (m_Source == null)
-				throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+				throw new ObjectDisposedException(nameof(DictionaryDataReader));
 
-			return m_PropertyList[ordinal].InvokeGet(m_Source.Current!);
+			return m_Source.Current![m_PropertyList[ordinal]];
 		}
 	}
 
@@ -238,7 +233,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	public override IEnumerator GetEnumerator()
 	{
 		if (m_Source == null)
-			throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+			throw new ObjectDisposedException(nameof(DictionaryDataReader));
 
 		return m_Source;
 	}
@@ -248,7 +243,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	/// </summary>
 	/// <param name="ordinal">The zero-based column ordinal.</param>
 	/// <returns>The data type of the specified column.</returns>
-	public override Type GetFieldType(int ordinal) => m_PropertyList[ordinal].PropertyType;
+	public override Type GetFieldType(int ordinal) => typeof(object);
 
 	/// <summary>
 	/// Gets the value of the specified column as a single-precision floating point number.
@@ -290,7 +285,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	/// </summary>
 	/// <param name="ordinal">The zero-based column ordinal.</param>
 	/// <returns>The name of the specified column.</returns>
-	public override string GetName(int ordinal) => m_PropertyList[ordinal].Name;
+	public override string GetName(int ordinal) => m_PropertyList[ordinal];
 
 	/// <summary>
 	/// Gets the column ordinal given the name of the column.
@@ -367,7 +362,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	public override bool Read()
 	{
 		if (m_Source == null)
-			throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+			throw new ObjectDisposedException(nameof(DictionaryDataReader));
 
 		return m_Source.MoveNext();
 	}
@@ -390,11 +385,11 @@ public class ObjectDataReader<TObject> : DbDataReader
 	[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
 	[SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
 	[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-	static ObjectDataReaderMetadata BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
+	static DictionaryDataReaderMetadata BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType, Dictionary<string, object?> dictionary)
 	{
-		var propertyList = MetadataCache.GetMetadata(typeof(TObject)).Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
-		bool checkIgnoreOnInsert = operationType == OperationTypes.Insert;
-		bool checkIgnoreOnUpdate = operationType == OperationTypes.Update;
+		var propertyList = dictionary.Keys;
+		var checkIgnoreOnInsert = operationType == OperationTypes.Insert;
+		var checkIgnoreOnUpdate = operationType == OperationTypes.Update;
 
 		var dtSchema = new DataTable();
 		dtSchema.Columns.Add("ColumnName", typeof(string));
@@ -424,20 +419,14 @@ public class ObjectDataReader<TObject> : DbDataReader
 		dtSchema.Columns.Add("BaseColumnNamespace", typeof(string));
 
 		var ordinal = 0;
-		var realPropertyList = new List<PropertyMetadata>(columns.Count);
+		var realPropertyList = new List<string>(columns.Count);
 		foreach (var column in columns)
 		{
-			PropertyMetadata? property = null;
+			string? property = null;
 			foreach (var item in propertyList)
 			{
-				if (column.ClrName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase) || column.SqlName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+				if (column.ClrName.Equals(item, StringComparison.OrdinalIgnoreCase) || column.SqlName.Equals(item, StringComparison.OrdinalIgnoreCase))
 				{
-					if (checkIgnoreOnInsert && item.IgnoreOnInsert)
-						continue; //look for another match
-
-					if (checkIgnoreOnUpdate && item.IgnoreOnUpdate)
-						continue; //look for another match
-
 					property = item;
 					break;
 				}
@@ -446,7 +435,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 			if (property == null)
 			{
 				if (allColumnsRequired)
-					throw new MappingException($"Could not find a property on {typeof(TObject).Name} that can be mapped to column {column.SqlName} on {targetName}");
+					throw new MappingException($"Could not find a key in the dictionary that can be mapped to column {column.SqlName} on {targetName}");
 				else
 					continue; //tables don't need every column
 			}
@@ -459,14 +448,14 @@ public class ObjectDataReader<TObject> : DbDataReader
 			row["ColumnSize"] = -1;
 
 			//this is probably wrong, but we don't have a good way to map from DbType to CLR types.
-			if (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType)
-			{
-				row["DataType"] = property.PropertyType.GenericTypeArguments[0];
-			}
-			else
-			{
-				row["DataType"] = property.PropertyType;
-			}
+			//if (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType)
+			//{
+			//	row["DataType"] = property.PropertyType.GenericTypeArguments[0];
+			//}
+			//else
+			//{
+			//	row["DataType"] = property.PropertyType;
+			//}
 			row["IsLong"] = false;
 			row["AllowDBNull"] = true;
 			row["IsReadOnly"] = false;
@@ -484,19 +473,19 @@ public class ObjectDataReader<TObject> : DbDataReader
 			dtSchema.Rows.Add(row);
 		}
 
-		return new ObjectDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
+		return new DictionaryDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property, px => px.Index, StringComparer.OrdinalIgnoreCase));
 	}
 
-	class ObjectDataReaderMetadata
+	class DictionaryDataReaderMetadata
 	{
-		public ObjectDataReaderMetadata(DataTable schema, ImmutableArray<PropertyMetadata> properties, ImmutableDictionary<string, int> propertyLookup)
+		public DictionaryDataReaderMetadata(DataTable schema, ImmutableArray<string> properties, ImmutableDictionary<string, int> propertyLookup)
 		{
 			Schema = schema;
 			Properties = properties;
 			PropertyLookup = propertyLookup;
 		}
 
-		public ImmutableArray<PropertyMetadata> Properties { get; }
+		public ImmutableArray<string> Properties { get; }
 		public ImmutableDictionary<string, int> PropertyLookup { get; }
 		public DataTable Schema { get; }
 	}

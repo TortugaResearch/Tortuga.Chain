@@ -15,7 +15,6 @@ namespace Traits
 	where TObjectName : struct
 	where TDbType : struct
 	{
-
 		[Container(RegisterInterface = true)]
 		internal IInsertBulkHelper<TInsertBulkCommand, TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
@@ -56,6 +55,20 @@ namespace Traits
 		{
 			var table = DataSource.DatabaseMetadata.GetTableOrView(tableName);
 			return DataSource.OnInsertBulk(tableName, new ObjectDataReader<TObject>(table, objects, OperationTypes.Insert));
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="dictionaries">The set of dictionaries, each representing a row..</param>
+		/// <returns>TInsertBulkCommand.</returns>
+		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+		[Expose]
+		public TInsertBulkCommand InsertBulk(TObjectName tableName, IEnumerable<Dictionary<string, object?>> dictionaries)
+		{
+			var table = DataSource.DatabaseMetadata.GetTableOrView(tableName);
+			return DataSource.OnInsertBulk(tableName, new DictionaryDataReader(table, dictionaries, OperationTypes.Insert));
 		}
 
 		/// <summary>
@@ -133,6 +146,3 @@ namespace Traits
 		}
 	}
 }
-
-
-
