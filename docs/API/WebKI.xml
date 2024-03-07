@@ -590,6 +590,7 @@
   <HelpKINode Title="ClearAsync method" Url="html/M-Tortuga.Chain.Core.ICacheAdapter.ClearAsync.htm" />
   <HelpKINode Title="ClearAsync method" Url="html/M-Tortuga.Chain.Core.ObjectCacheAdapter.ClearAsync.htm" />
   <HelpKINode Title="Close method" Url="html/M-Tortuga.Chain.DataSources.IOpenDataSource.Close.htm" />
+  <HelpKINode Title="Close method" Url="html/M-Tortuga.Chain.DictionaryDataReader.Close.htm" />
   <HelpKINode Title="Close method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.Close.htm" />
   <HelpKINode Title="ClrName property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadata.ClrName.htm" />
   <HelpKINode Title="ClrName property" Url="html/P-Tortuga.Chain.Metadata.ISqlBuilderEntryDetails.ClrName.htm" />
@@ -1439,6 +1440,7 @@
   <HelpKINode Title="DeleteSetDbCommandBuilder&lt;TCommand, TParameter&gt;.TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.TryGetColumn.htm" />
   <HelpKINode Title="DeleteSetDbCommandBuilder&lt;TCommand, TParameter&gt;.TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.TryGetColumns.htm" />
   <HelpKINode Title="DeleteSetDbCommandBuilder&lt;TCommand, TParameter&gt;.TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.DeleteSetDbCommandBuilder-2.TryGetNonNullableColumns.htm" />
+  <HelpKINode Title="Depth property" Url="html/P-Tortuga.Chain.DictionaryDataReader.Depth.htm" />
   <HelpKINode Title="Depth property" Url="html/P-Tortuga.Chain.ObjectDataReader-1.Depth.htm" />
   <HelpKINode Title="DereferenceCursors property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlCommandExecutionToken.DereferenceCursors.htm" />
   <HelpKINode Title="Descending enumeration member" Url="html/T-Tortuga.Chain.SortDirection.htm" />
@@ -1454,6 +1456,49 @@
   <HelpKINode Title="Details property" Url="html/P-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.Details.htm" />
   <HelpKINode Title="Details property" Url="html/P-Tortuga.Chain.Metadata.IndexColumnMetadata-1.Details.htm" />
   <HelpKINode Title="Details property" Url="html/P-Tortuga.Chain.Metadata.IndexColumnMetadata.Details.htm" />
+  <HelpKINode Title="DictionaryDataReader class" Url="html/AllMembers.T-Tortuga.Chain.DictionaryDataReader.htm" />
+  <HelpKINode Title="DictionaryDataReader class" Url="html/T-Tortuga.Chain.DictionaryDataReader.htm" />
+  <HelpKINode Title="DictionaryDataReader class">
+    <HelpKINode Title="about DictionaryDataReader class" Url="html/T-Tortuga.Chain.DictionaryDataReader.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.DictionaryDataReader.htm" />
+    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.DictionaryDataReader.-ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.DictionaryDataReader.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.DictionaryDataReader.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DictionaryDataReader.Close method" Url="html/M-Tortuga.Chain.DictionaryDataReader.Close.htm" />
+  <HelpKINode Title="DictionaryDataReader.Depth property" Url="html/P-Tortuga.Chain.DictionaryDataReader.Depth.htm" />
+  <HelpKINode Title="DictionaryDataReader.DictionaryDataReader constructor" Url="html/M-Tortuga.Chain.DictionaryDataReader.-ctor.htm" />
+  <HelpKINode Title="DictionaryDataReader.FieldCount property" Url="html/P-Tortuga.Chain.DictionaryDataReader.FieldCount.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetBoolean method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBoolean.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetByte method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetByte.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetBytes method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBytes.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetChar method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetChar.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetChars method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetChars.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetDataTypeName method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDataTypeName.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetDateTime method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDateTime.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetDecimal method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDecimal.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetDouble method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDouble.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetEnumerator method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetEnumerator.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetFieldType method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetFieldType.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetFloat method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetFloat.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetGuid method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetGuid.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetInt16 method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetInt16.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetInt32 method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetInt32.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetInt64 method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetInt64.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetName method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetName.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetOrdinal method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetOrdinal.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetSchemaTable method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetSchemaTable.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetString method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetString.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetValue method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetValue.htm" />
+  <HelpKINode Title="DictionaryDataReader.GetValues method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetValues.htm" />
+  <HelpKINode Title="DictionaryDataReader.HasRows property" Url="html/P-Tortuga.Chain.DictionaryDataReader.HasRows.htm" />
+  <HelpKINode Title="DictionaryDataReader.IsClosed property" Url="html/P-Tortuga.Chain.DictionaryDataReader.IsClosed.htm" />
+  <HelpKINode Title="DictionaryDataReader.IsDBNull method" Url="html/M-Tortuga.Chain.DictionaryDataReader.IsDBNull.htm" />
+  <HelpKINode Title="DictionaryDataReader.Item property" Url="html/P-Tortuga.Chain.DictionaryDataReader.Item-System.Int32-.htm" />
+  <HelpKINode Title="DictionaryDataReader.Item property" Url="html/P-Tortuga.Chain.DictionaryDataReader.Item-System.String-.htm" />
+  <HelpKINode Title="DictionaryDataReader.NextResult method" Url="html/M-Tortuga.Chain.DictionaryDataReader.NextResult.htm" />
+  <HelpKINode Title="DictionaryDataReader.Read method" Url="html/M-Tortuga.Chain.DictionaryDataReader.Read.htm" />
+  <HelpKINode Title="DictionaryDataReader.RecordsAffected property" Url="html/P-Tortuga.Chain.DictionaryDataReader.RecordsAffected.htm" />
   <HelpKINode Title="DictionaryOptions enumeration" Url="html/T-Tortuga.Chain.DictionaryOptions.htm" />
   <HelpKINode Title="DictionaryOptions.DiscardDuplicates field" Url="html/F-Tortuga.Chain.DictionaryOptions.DiscardDuplicates.htm" />
   <HelpKINode Title="DictionaryOptions.InferConstructor field" Url="html/F-Tortuga.Chain.DictionaryOptions.InferConstructor.htm" />
@@ -1480,6 +1525,7 @@
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.PostgreSql.PostgreSqlObjectName.Empty.htm" />
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.SQLite.SQLiteObjectName.Empty.htm" />
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.SqlServer.SqlServerObjectName.Empty.htm" />
+  <HelpKINode Title="EnableStoredProcedureCompatMode property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableStoredProcedureCompatMode.htm" />
   <HelpKINode Title="EndTime property" Url="html/P-Tortuga.Chain.ExecutionEventArgs.EndTime.htm" />
   <HelpKINode Title="EnforceForeignKeys property" Url="html/P-Tortuga.Chain.SQLite.SQLiteDataSourceSettings.EnforceForeignKeys.htm" />
   <HelpKINode Title="EnforceForeignKeys property" Url="html/P-Tortuga.Chain.SQLiteDataSource.EnforceForeignKeys.htm" />
@@ -1659,6 +1705,7 @@
   </HelpKINode>
   <HelpKINode Title="ExecutionTokenPreparingEventArgs.CommandBuilder property" Url="html/P-Tortuga.Chain.Core.ExecutionTokenPreparingEventArgs.CommandBuilder.htm" />
   <HelpKINode Title="ExecutionTokenPreparingEventArgs.ExecutionTokenPreparingEventArgs constructor" Url="html/M-Tortuga.Chain.Core.ExecutionTokenPreparingEventArgs.-ctor.htm" />
+  <HelpKINode Title="FieldCount property" Url="html/P-Tortuga.Chain.DictionaryDataReader.FieldCount.htm" />
   <HelpKINode Title="FieldCount property" Url="html/P-Tortuga.Chain.ObjectDataReader-1.FieldCount.htm" />
   <HelpKINode Title="FilterOptions enumeration" Url="html/T-Tortuga.Chain.FilterOptions.htm" />
   <HelpKINode Title="FilterOptions.IgnoreNullProperties field" Url="html/F-Tortuga.Chain.FilterOptions.IgnoreNullProperties.htm" />
@@ -1805,26 +1852,36 @@
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBoolean.htm" />
   <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetBoolean.htm" />
   <HelpKINode Title="GetByColumn method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn-.htm" />
   <HelpKINode Title="GetByColumnList method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList-.htm" />
   <HelpKINode Title="GetByKey method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey-.htm" />
   <HelpKINode Title="GetByKeyList method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList-.htm" />
+  <HelpKINode Title="GetByte method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetByte.htm" />
   <HelpKINode Title="GetByte method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetByte.htm" />
+  <HelpKINode Title="GetBytes method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBytes.htm" />
   <HelpKINode Title="GetBytes method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetBytes.htm" />
+  <HelpKINode Title="GetChar method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetChar.htm" />
   <HelpKINode Title="GetChar method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetChar.htm" />
+  <HelpKINode Title="GetChars method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetChars.htm" />
   <HelpKINode Title="GetChars method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetChars.htm" />
+  <HelpKINode Title="GetDataTypeName method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDataTypeName.htm" />
   <HelpKINode Title="GetDataTypeName method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetDataTypeName.htm" />
+  <HelpKINode Title="GetDateTime method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDateTime.htm" />
   <HelpKINode Title="GetDateTime method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetDateTime.htm" />
+  <HelpKINode Title="GetDecimal method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDecimal.htm" />
   <HelpKINode Title="GetDecimal method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetDecimal.htm" />
   <HelpKINode Title="GetDefaultSortOrder method" Url="html/M-Tortuga.Chain.Metadata.TableFunctionMetadata-2.GetDefaultSortOrder.htm" />
   <HelpKINode Title="GetDefaultSortOrder method" Url="html/M-Tortuga.Chain.Metadata.TableOrViewMetadata-2.GetDefaultSortOrder.htm" />
+  <HelpKINode Title="GetDouble method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetDouble.htm" />
   <HelpKINode Title="GetDouble method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetDouble.htm" />
   <HelpKINode Title="GetEffectiveSettings method" Url="html/M-Tortuga.Chain.OleDbSqlServerDataSource.GetEffectiveSettings.htm" />
   <HelpKINode Title="GetEffectiveSettings method" Url="html/M-Tortuga.Chain.SqlServerDataSource.GetEffectiveSettings.htm" />
   <HelpKINode Title="GetEffectiveSettingsAsync method" Url="html/M-Tortuga.Chain.OleDbSqlServerDataSource.GetEffectiveSettingsAsync.htm" />
   <HelpKINode Title="GetEffectiveSettingsAsync method" Url="html/M-Tortuga.Chain.SqlServerDataSource.GetEffectiveSettingsAsync.htm" />
   <HelpKINode Title="GetEnumerator method" Url="html/M-Tortuga.Chain.AuditRules.AuditRuleCollection.GetEnumerator.htm" />
+  <HelpKINode Title="GetEnumerator method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetEnumerator.htm" />
   <HelpKINode Title="GetEnumerator method" Url="html/M-Tortuga.Chain.Metadata.ColumnMetadataCollection.GetEnumerator.htm" />
   <HelpKINode Title="GetEnumerator method" Url="html/M-Tortuga.Chain.Metadata.ForeignKeyConstraintCollection.GetEnumerator.htm" />
   <HelpKINode Title="GetEnumerator method" Url="html/M-Tortuga.Chain.Metadata.IndexColumnMetadataCollection.GetEnumerator.htm" />
@@ -1838,11 +1895,14 @@
   <HelpKINode Title="GetExtensionData(Of TTKey) method" Url="html/M-Tortuga.Chain.DataSources.IDataSource.GetExtensionData--1.htm" />
   <HelpKINode Title="GetExtensionData&lt;TTKey&gt; method" Url="html/M-Tortuga.Chain.DataSources.DataSource.GetExtensionData--1.htm" />
   <HelpKINode Title="GetExtensionData&lt;TTKey&gt; method" Url="html/M-Tortuga.Chain.DataSources.IDataSource.GetExtensionData--1.htm" />
+  <HelpKINode Title="GetFieldType method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetFieldType.htm" />
   <HelpKINode Title="GetFieldType method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetFieldType.htm" />
+  <HelpKINode Title="GetFloat method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetFloat.htm" />
   <HelpKINode Title="GetFloat method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetFloat.htm" />
   <HelpKINode Title="GetForeignKeys method" Url="html/M-Tortuga.Chain.Metadata.TableOrViewMetadata-2.GetForeignKeys.htm" />
   <HelpKINode Title="GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.GetForeignKeysForTable.htm" />
   <HelpKINode Title="GetFormalParameters method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetFormalParameters.htm" />
+  <HelpKINode Title="GetGuid method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetGuid.htm" />
   <HelpKINode Title="GetGuid method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetGuid.htm" />
   <HelpKINode Title="GetHashCode method" Url="html/M-Tortuga.Chain.Access.AccessObjectName.GetHashCode.htm" />
   <HelpKINode Title="GetHashCode method" Url="html/M-Tortuga.Chain.Metadata.ColumnNamePair.GetHashCode.htm" />
@@ -1859,12 +1919,17 @@
   <HelpKINode Title="GetIndexesForTable method" Url="html/M-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="GetIndexesForTable method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="GetInsertColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetInsertColumns.htm" />
+  <HelpKINode Title="GetInt16 method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetInt16.htm" />
   <HelpKINode Title="GetInt16 method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetInt16.htm" />
+  <HelpKINode Title="GetInt32 method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetInt32.htm" />
   <HelpKINode Title="GetInt32 method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetInt32.htm" />
+  <HelpKINode Title="GetInt64 method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetInt64.htm" />
   <HelpKINode Title="GetInt64 method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetInt64.htm" />
   <HelpKINode Title="GetKeyColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetKeyColumns.htm" />
   <HelpKINode Title="GetKeyColumns2 method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetKeyColumns2.htm" />
+  <HelpKINode Title="GetName method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetName.htm" />
   <HelpKINode Title="GetName method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetName.htm" />
+  <HelpKINode Title="GetOrdinal method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetOrdinal.htm" />
   <HelpKINode Title="GetOrdinal method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetOrdinal.htm" />
   <HelpKINode Title="GetParameterizedColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetParameterizedColumns.htm" />
   <HelpKINode Title="GetParameters method" Url="html/Overload-Tortuga.Chain.CommandBuilders.SqlBuilder.GetParameters-.htm" />
@@ -1882,6 +1947,7 @@
   <HelpKINode Title="GetScalarFunctions method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetScalarFunctions.htm" />
   <HelpKINode Title="GetScalarFunctions method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunctions.htm" />
   <HelpKINode Title="GetScalarFunctions method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetScalarFunctions.htm" />
+  <HelpKINode Title="GetSchemaTable method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetSchemaTable.htm" />
   <HelpKINode Title="GetSchemaTable method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetSchemaTable.htm" />
   <HelpKINode Title="GetSelectColumnDetails method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetSelectColumnDetails.htm" />
   <HelpKINode Title="GetSelectColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetSelectColumns.htm" />
@@ -1897,6 +1963,7 @@
   <HelpKINode Title="GetStoredProcedures method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetStoredProcedures.htm" />
   <HelpKINode Title="GetStoredProcedures method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetStoredProcedures.htm" />
   <HelpKINode Title="GetStoredProcedures method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetStoredProcedures.htm" />
+  <HelpKINode Title="GetString method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetString.htm" />
   <HelpKINode Title="GetString method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetString.htm" />
   <HelpKINode Title="GetTableFunction method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.GetTableFunction.htm" />
   <HelpKINode Title="GetTableFunction method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetTableFunction.htm" />
@@ -1936,7 +2003,9 @@
   <HelpKINode Title="GetUserDefinedTableTypes method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetUserDefinedTableTypes.htm" />
   <HelpKINode Title="GetUserDefinedTableTypes method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetUserDefinedTableTypes.htm" />
   <HelpKINode Title="GetUserDefinedTableTypes method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetUserDefinedTableTypes.htm" />
+  <HelpKINode Title="GetValue method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetValue.htm" />
   <HelpKINode Title="GetValue method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetValue.htm" />
+  <HelpKINode Title="GetValues method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetValues.htm" />
   <HelpKINode Title="GetValues method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetValues.htm" />
   <HelpKINode Title="Gin enumeration member" Url="html/T-Tortuga.Chain.Metadata.IndexType.htm" />
   <HelpKINode Title="Gin field" Url="html/F-Tortuga.Chain.Metadata.IndexType.Gin.htm" />
@@ -1974,6 +2043,7 @@
   <HelpKINode Title="HasOutputParameters property" Url="html/P-Tortuga.Chain.Core.CommandExecutionToken-2.HasOutputParameters.htm" />
   <HelpKINode Title="HasPrimaryKey property" Url="html/P-Tortuga.Chain.Metadata.TableOrViewMetadata.HasPrimaryKey.htm" />
   <HelpKINode Title="HasReadFields property" Url="html/P-Tortuga.Chain.CommandBuilders.SqlBuilder-1.HasReadFields.htm" />
+  <HelpKINode Title="HasRows property" Url="html/P-Tortuga.Chain.DictionaryDataReader.HasRows.htm" />
   <HelpKINode Title="HasRows property" Url="html/P-Tortuga.Chain.ObjectDataReader-1.HasRows.htm" />
   <HelpKINode Title="HasTriggers property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.HasTriggers.htm" />
   <HelpKINode Title="Heap enumeration member" Url="html/T-Tortuga.Chain.Metadata.IndexType.htm" />
@@ -2573,8 +2643,10 @@
   <HelpKINode Title="IScalarDbCommandBuilder.ToTimeSpan method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToTimeSpan.htm" />
   <HelpKINode Title="IScalarDbCommandBuilder.ToTimeSpanOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToTimeSpanOrNull.htm" />
   <HelpKINode Title="IScalarDbCommandBuilder.ToXml method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToXml.htm" />
+  <HelpKINode Title="IsClosed property" Url="html/P-Tortuga.Chain.DictionaryDataReader.IsClosed.htm" />
   <HelpKINode Title="IsClosed property" Url="html/P-Tortuga.Chain.ObjectDataReader-1.IsClosed.htm" />
   <HelpKINode Title="IsComputed property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadata.IsComputed.htm" />
+  <HelpKINode Title="IsDBNull method" Url="html/M-Tortuga.Chain.DictionaryDataReader.IsDBNull.htm" />
   <HelpKINode Title="IsDBNull method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.IsDBNull.htm" />
   <HelpKINode Title="IsDescending property" Url="html/P-Tortuga.Chain.Metadata.IndexColumnMetadata.IsDescending.htm" />
   <HelpKINode Title="IsEmpty property" Url="html/P-Tortuga.Chain.Aggregates.AggregateColumnCollection.IsEmpty.htm" />
@@ -2872,6 +2944,8 @@
   <HelpKINode Title="ITableDbCommandBuilder&lt;TObject&gt;.WithLimits method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder-1.WithLimits.htm" />
   <HelpKINode Title="ITableDbCommandBuilder&lt;TObject&gt;.WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder-1.WithSorting.htm" />
   <HelpKINode Title="Item property" Url="html/P-Tortuga.Chain.AuditRules.AuditRuleCollection.Item-System.Int32-.htm" />
+  <HelpKINode Title="Item property" Url="html/P-Tortuga.Chain.DictionaryDataReader.Item-System.Int32-.htm" />
+  <HelpKINode Title="Item property" Url="html/P-Tortuga.Chain.DictionaryDataReader.Item-System.String-.htm" />
   <HelpKINode Title="Item property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadataCollection-1.Item-System.String-.htm" />
   <HelpKINode Title="Item property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadataCollection.Item-System.Int32-.htm" />
   <HelpKINode Title="Item property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadataCollection.Item-System.String-.htm" />
@@ -3509,6 +3583,7 @@
   <HelpKINode Title="NameGenerationOptions.NullableReferenceTypes field" Url="html/F-Tortuga.Chain.Metadata.NameGenerationOptions.NullableReferenceTypes.htm" />
   <HelpKINode Title="NameGenerationOptions.VisualBasic field" Url="html/F-Tortuga.Chain.Metadata.NameGenerationOptions.VisualBasic.htm" />
   <HelpKINode Title="NeverNull method" Url="html/Overload-Tortuga.Chain.CommonAppenders.NeverNull-.htm" />
+  <HelpKINode Title="NextResult method" Url="html/M-Tortuga.Chain.DictionaryDataReader.NextResult.htm" />
   <HelpKINode Title="NextResult method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.NextResult.htm" />
   <HelpKINode Title="NoColumns field" Url="html/F-Tortuga.Chain.Materializers.Materializer.NoColumns.htm" />
   <HelpKINode Title="NoCount property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerEffectiveSettings.NoCount.htm" />
@@ -4116,6 +4191,7 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.PostgreSqlDataSource.htm" />
   </HelpKINode>
   <HelpKINode Title="PostgreSqlDataSource.DatabaseMetadata property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.DatabaseMetadata.htm" />
+  <HelpKINode Title="PostgreSqlDataSource.EnableStoredProcedureCompatMode property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableStoredProcedureCompatMode.htm" />
   <HelpKINode Title="PostgreSqlDataSource.ExecuteStream method" Url="html/M-Tortuga.Chain.PostgreSqlDataSource.ExecuteStream.htm" />
   <HelpKINode Title="PostgreSqlDataSource.ExecuteStreamAsync method" Url="html/M-Tortuga.Chain.PostgreSqlDataSource.ExecuteStreamAsync.htm" />
   <HelpKINode Title="PostgreSqlDataSource.PostgreSqlDataSource constructor" Url="html/Overload-Tortuga.Chain.PostgreSqlDataSource.-ctor.htm" />
@@ -4390,9 +4466,11 @@
   <HelpKINode Title="RandomSampleRows field" Url="html/F-Tortuga.Chain.SQLiteLimitOption.RandomSampleRows.htm" />
   <HelpKINode Title="Read enumeration member" Url="html/T-Tortuga.Chain.SQLite.LockType.htm" />
   <HelpKINode Title="Read field" Url="html/F-Tortuga.Chain.SQLite.LockType.Read.htm" />
+  <HelpKINode Title="Read method" Url="html/M-Tortuga.Chain.DictionaryDataReader.Read.htm" />
   <HelpKINode Title="Read method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.Read.htm" />
   <HelpKINode Title="ReadOrCache(Of TResult) method" Url="html/M-Tortuga.Chain.CommonAppenders.ReadOrCache--1.htm" />
   <HelpKINode Title="ReadOrCache&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.CommonAppenders.ReadOrCache--1.htm" />
+  <HelpKINode Title="RecordsAffected property" Url="html/P-Tortuga.Chain.DictionaryDataReader.RecordsAffected.htm" />
   <HelpKINode Title="RecordsAffected property" Url="html/P-Tortuga.Chain.ObjectDataReader-1.RecordsAffected.htm" />
   <HelpKINode Title="RegisterType method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.RegisterType.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.Reset.htm" />
@@ -6242,6 +6320,8 @@
   <HelpKINode Title="Tortuga.Chain.DataSources.ITransactionalDataSource interface" Url="html/AllMembers.T-Tortuga.Chain.DataSources.ITransactionalDataSource.htm" />
   <HelpKINode Title="Tortuga.Chain.DataSources.ITransactionalDataSource interface" Url="html/T-Tortuga.Chain.DataSources.ITransactionalDataSource.htm" />
   <HelpKINode Title="Tortuga.Chain.DeleteOptions enumeration" Url="html/T-Tortuga.Chain.DeleteOptions.htm" />
+  <HelpKINode Title="Tortuga.Chain.DictionaryDataReader class" Url="html/AllMembers.T-Tortuga.Chain.DictionaryDataReader.htm" />
+  <HelpKINode Title="Tortuga.Chain.DictionaryDataReader class" Url="html/T-Tortuga.Chain.DictionaryDataReader.htm" />
   <HelpKINode Title="Tortuga.Chain.DictionaryOptions enumeration" Url="html/T-Tortuga.Chain.DictionaryOptions.htm" />
   <HelpKINode Title="Tortuga.Chain.ExecutionEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.ExecutionEventArgs.htm" />
   <HelpKINode Title="Tortuga.Chain.ExecutionEventArgs class" Url="html/T-Tortuga.Chain.ExecutionEventArgs.htm" />
