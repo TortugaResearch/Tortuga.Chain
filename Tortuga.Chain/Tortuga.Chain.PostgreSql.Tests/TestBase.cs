@@ -95,6 +95,8 @@ public abstract partial class TestBase
 		if (s_PrimaryDataSource != null)
 			return; //run once check
 
+		PostgreSqlDataSource.EnableStoredProcedureCompatMode = true;
+
 		Setup.CreateDatabase();
 
 		var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
