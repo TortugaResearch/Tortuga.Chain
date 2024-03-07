@@ -14,7 +14,9 @@ using  TypedLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
 #elif ACCESS
 using  TypedLimitOption = Tortuga.Chain.AccessLimitOption;
 #elif MYSQL
+
 using TypedLimitOption = Tortuga.Chain.MySqlLimitOption;
+
 #endif
 
 namespace Tests;
@@ -43,6 +45,8 @@ public abstract class DataAttribute : Attribute, ITestDataSource
 
 	public DataAttribute(DataSourceGroup dataSourceGroup)
 	{
+		TestBase.SetupTestBase();
+
 		m_DataSourceGroup = dataSourceGroup;
 		DataSources = m_DataSourceGroup switch
 		{
