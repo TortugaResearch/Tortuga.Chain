@@ -11,7 +11,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.4.0</Version>
+		<Version>4.5.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -61,7 +61,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="4.4.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -75,15 +75,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
 	</ItemGroup>
 
 	<!-- Code Generator -->
 	<ItemGroup>
-		<PackageReference Include="Tortuga.Shipwright" Version="0.9.0" >
+		<PackageReference Include="Tortuga.Shipwright" Version="0.11.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Tortuga.Shipwright.Shared" Version="0.9.0" />
+		<PackageReference Include="Tortuga.Shipwright.Shared" Version="0.11.0" />
 	</ItemGroup>
 
 	<PropertyGroup>
