@@ -15,7 +15,9 @@ namespace Tortuga.Chain;
 [SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")]
 public class DictionaryDataReader : DbDataReader
 {
-	readonly ImmutableArray<string> m_PropertyList;
+	record class ColumnKeyMap(string SqlName, string Key);
+
+	readonly ImmutableArray<ColumnKeyMap> m_PropertyList;
 	readonly ImmutableDictionary<string, int> m_PropertyLookup;
 	readonly int? m_RecordCount;
 	readonly DataTable m_Schema;
@@ -113,7 +115,7 @@ public class DictionaryDataReader : DbDataReader
 			if (m_Source == null)
 				throw new ObjectDisposedException(nameof(DictionaryDataReader));
 
-			return m_Source.Current![m_PropertyList[m_PropertyLookup[name]]];
+			return m_Source.Current![m_PropertyList[m_PropertyLookup[name]].Key];
 		}
 	}
 
@@ -131,7 +133,7 @@ public class DictionaryDataReader : DbDataReader
 			if (m_Source == null)
 				throw new ObjectDisposedException(nameof(DictionaryDataReader));
 
-			return m_Source.Current![m_PropertyList[ordinal]];
+			return m_Source.Current![m_PropertyList[ordinal].Key];
 		}
 	}
 
@@ -285,7 +287,7 @@ public class DictionaryDataReader : DbDataReader
 	/// </summary>
 	/// <param name="ordinal">The zero-based column ordinal.</param>
 	/// <returns>The name of the specified column.</returns>
-	public override string GetName(int ordinal) => m_PropertyList[ordinal];
+	public override string GetName(int ordinal) => m_PropertyList[ordinal].SqlName;
 
 	/// <summary>
 	/// Gets the column ordinal given the name of the column.
@@ -419,7 +421,7 @@ public class DictionaryDataReader : DbDataReader
 		dtSchema.Columns.Add("BaseColumnNamespace", typeof(string));
 
 		var ordinal = 0;
-		var realPropertyList = new List<string>(columns.Count);
+		var realPropertyList = new List<ColumnKeyMap>(columns.Count);
 		foreach (var column in columns)
 		{
 			string? property = null;
@@ -440,7 +442,7 @@ public class DictionaryDataReader : DbDataReader
 					continue; //tables don't need every column
 			}
 
-			realPropertyList.Add(property);
+			realPropertyList.Add(new(column.SqlName, property));
 
 			var row = dtSchema.NewRow();
 			row["ColumnName"] = column.SqlName;
@@ -473,19 +475,22 @@ public class DictionaryDataReader : DbDataReader
 			dtSchema.Rows.Add(row);
 		}
 
-		return new DictionaryDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property, px => px.Index, StringComparer.OrdinalIgnoreCase));
+		return new DictionaryDataReaderMetadata(
+			dtSchema,
+			realPropertyList.ToImmutableArray(),
+			realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.SqlName, px => px.Index, StringComparer.OrdinalIgnoreCase));
 	}
 
 	class DictionaryDataReaderMetadata
 	{
-		public DictionaryDataReaderMetadata(DataTable schema, ImmutableArray<string> properties, ImmutableDictionary<string, int> propertyLookup)
+		public DictionaryDataReaderMetadata(DataTable schema, ImmutableArray<ColumnKeyMap> properties, ImmutableDictionary<string, int> propertyLookup)
 		{
 			Schema = schema;
 			Properties = properties;
 			PropertyLookup = propertyLookup;
 		}
 
-		public ImmutableArray<string> Properties { get; }
+		public ImmutableArray<ColumnKeyMap> Properties { get; }
 		public ImmutableDictionary<string, int> PropertyLookup { get; }
 		public DataTable Schema { get; }
 	}

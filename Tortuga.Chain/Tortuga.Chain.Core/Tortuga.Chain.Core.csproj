@@ -10,7 +10,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.5.0</Version>
+		<Version>4.5.1</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 

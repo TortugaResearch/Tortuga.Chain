@@ -68,7 +68,7 @@ public class InsertBulkTests : TestBase
 				{ "FirstName", i.ToString("0000") },
 				{ "LastName", "Z" + (int.MaxValue - i) },
 				{ "Title",key1000 },
-				{ "Gender",' '},
+				{ "GendeR",' '}, //intentionally using the wrong case
 				{ "EmployeeId" , Guid.NewGuid().ToString()}});
 
 		var dataSource = DataSource(dataSourceName, mode);
