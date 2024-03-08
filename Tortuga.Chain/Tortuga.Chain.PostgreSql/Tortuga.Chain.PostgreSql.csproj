@@ -10,7 +10,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.4.0</Version>
+		<Version>4.5.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -56,7 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="4.4.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,15 +64,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql" Version="6.0.3" />
+		<PackageReference Include="Npgsql" Version="8.0.2" />
 	</ItemGroup>
 
 	<!-- Code Generator -->
 	<ItemGroup>
-		<PackageReference Include="Tortuga.Shipwright" Version="0.9.0" >
+		<PackageReference Include="Tortuga.Shipwright" Version="0.11.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Tortuga.Shipwright.Shared" Version="0.9.0" />
+		<PackageReference Include="Tortuga.Shipwright.Shared" Version="0.11.0" />
 	</ItemGroup>
 
 	<PropertyGroup>

@@ -11,7 +11,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.4.0</Version>
+		<Version>4.5.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -31,7 +31,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Data.OleDb" Version="6.0.0" />
+		<PackageReference Include="System.Data.OleDb" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
@@ -46,7 +46,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="4.4.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

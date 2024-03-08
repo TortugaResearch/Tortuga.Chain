@@ -964,18 +964,6 @@ WHERE c.relname ILIKE @Name AND
 			case NpgsqlDbType.Citext:
 			case NpgsqlDbType.InternalChar:
 				return null;
-
-#pragma warning disable CS0618 // Type or member is obsolete
-			case NpgsqlDbType.TimestampTZ:
-				return isNullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset);
-
-			case NpgsqlDbType.TimeTZ:
-				return isNullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset);
-
-			case NpgsqlDbType.Abstime:
-				return null;
-
-#pragma warning restore CS0618 // Type or member is obsolete
 		}
 		return null;
 	}

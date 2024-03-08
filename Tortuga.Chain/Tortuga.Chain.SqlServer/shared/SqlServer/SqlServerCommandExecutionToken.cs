@@ -57,7 +57,8 @@ public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCo
 		}
 
 #if SQL_SERVER_MDS
-		if (!HasOutputParameters)
+		//Stored procedures may have optional parameters that break when EnableOptimizedParameterBinding is turned on.
+		if (!HasOutputParameters && command.CommandType != CommandType.StoredProcedure)
 			command.EnableOptimizedParameterBinding = true;
 #endif
 	}

@@ -69,6 +69,9 @@ public class ObjectDataReader<TObject> : DbDataReader
 		m_Schema = metadata.Schema;
 		m_PropertyList = metadata.Properties;
 		m_PropertyLookup = metadata.PropertyLookup;
+
+		if (m_PropertyList.Length == 0)
+			throw new MappingException($"Unable to map object of type {typeof(TObject).Name} to a the table {tableOrView.Name}.");
 	}
 
 	/// <summary>

@@ -17,12 +17,15 @@ namespace Tortuga.Chain.PostgreSql
 		/// <param name="settings">Optional settings object.</param>
 		protected PostgreSqlDataSourceBase(DataSourceSettings? settings) : base(settings)
 		{
+			DatasourceCreated = true;
 		}
 
 		/// <summary>
 		/// Gets the database metadata.
 		/// </summary>
 		public abstract new PostgreSqlMetadataCache DatabaseMetadata { get; }
+
+		internal static bool DatasourceCreated { get; private set; }
 
 		/// <summary>
 		/// Dereferences cursors returned by a stored procedure.

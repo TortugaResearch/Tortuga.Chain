@@ -93,6 +93,21 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	}
 
 	/// <summary>
+	/// Gets or sets a value indicating whether to use Npgsql.EnableStoredProcedureCompatMode.
+	/// </summary>
+	/// <remarks>Turn this on if you are getting this error: "Npgsql.PostgresException: 42809: ___ is not a procedure".</remarks>
+	public static bool EnableStoredProcedureCompatMode
+	{
+		get => AppContext.TryGetSwitch("Npgsql.EnableStoredProcedureCompatMode", out var value) ? value : false;
+		set
+		{
+			if (DatasourceCreated)
+				throw new InvalidOperationException("EnableStoredProcedureCompatMode must be set before creating any PostgreSqlDataSource or NpgsqlConnection objects.");
+			AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", value);
+		}
+	}
+
+	/// <summary>
 	/// Gets the database metadata.
 	/// </summary>
 	/// <value>The database metadata.</value>
@@ -272,6 +287,10 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 		catch (Exception ex)
 		{
 			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+
+			if (ex is PostgresException npgsqlEx && npgsqlEx.SqlState == PostgresErrorCodes.WrongObjectType && executionToken.CommandType == CommandType.StoredProcedure)
+				throw new InvalidOperationException("Enable EnableStoredProcedureCompatMode or convert your stored functions into stored procedures.", npgsqlEx);
+
 			throw;
 		}
 	}
@@ -369,6 +388,10 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 			else
 			{
 				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+
+				if (ex is PostgresException npgsqlEx && npgsqlEx.SqlState == PostgresErrorCodes.WrongObjectType && executionToken.CommandType == CommandType.StoredProcedure)
+					throw new InvalidOperationException("Enable EnableStoredProcedureCompatMode or convert your stored functions into stored procedures.", npgsqlEx);
+
 				throw;
 			}
 		}

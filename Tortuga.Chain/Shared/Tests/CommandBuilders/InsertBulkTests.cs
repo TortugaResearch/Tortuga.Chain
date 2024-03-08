@@ -57,6 +57,36 @@ public class InsertBulkTests : TestBase
 #endif
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void InsertBulk_Dictionary(string dataSourceName, DataSourceType mode)
+	{
+		var key1000 = Guid.NewGuid().ToString();
+		var employeeList = new List<Dictionary<string, object>>();
+
+		const int RowCount = 1000;
+		for (var i = 0; i < RowCount; i++)
+			employeeList.Add(new Dictionary<string, object>() {
+				{ "FirstName", i.ToString("0000") },
+				{ "LastName", "Z" + (int.MaxValue - i) },
+				{ "Title",key1000 },
+				{ "GendeR",' '}, //intentionally using the wrong case
+				{ "EmployeeId" , Guid.NewGuid().ToString()}});
+
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var count = dataSource.InsertBulk(EmployeeTableName, employeeList).Execute();
+			Assert.AreEqual(RowCount, count);
+
+			var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
+			Assert.AreEqual(RowCount, count2);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_List(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
