@@ -18,6 +18,7 @@ public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlT
 	EventHandler<AbortableOperationEventArgs>? m_EventHandler;
 	int? m_NotifyAfter;
 	SqlBulkCopyOptions m_Options;
+	TimeSpan? m_Timeout;
 
 	internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable) : base(dataSource)
 	{
@@ -112,6 +113,15 @@ public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlT
 	}
 
 	/// <summary>
+	/// Sets the bulk copy timeout to infinite.
+	/// </summary>
+	public SqlServerInsertBulk WithNoTimeout()
+	{
+		m_Timeout = TimeSpan.FromSeconds(0);
+		return this;
+	}
+
+	/// <summary>
 	/// Modifies the batch size.
 	/// </summary>
 	/// <param name="options">Bulk insert options.</param>
@@ -130,6 +140,16 @@ public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlT
 	public SqlServerInsertBulk WithStreaming()
 	{
 		m_EnableStreaming = true;
+		return this;
+	}
+
+	/// <summary>
+	/// Sets the bulk copy timeout.
+	/// </summary>
+	/// <param name="timeout">The timeout.</param>
+	public SqlServerInsertBulk WithTimeout(TimeSpan timeout)
+	{
+		m_Timeout = timeout;
 		return this;
 	}
 
@@ -174,6 +194,8 @@ public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlT
 		if (m_BatchSize.HasValue)
 			bcp.BatchSize = m_BatchSize.Value;
 		bcp.EnableStreaming = m_EnableStreaming;
+		if (m_Timeout.HasValue)
+			bcp.BulkCopyTimeout = (int)m_Timeout.Value.TotalSeconds;
 
 		if (m_EventHandler != null)
 			bcp.SqlRowsCopied += (s, e) =>
