@@ -9,7 +9,6 @@ using Tortuga.Shipwright;
 
 namespace Traits;
 
-
 [Trait]
 class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResult> : ISupportsInsertBatch
 	where TCommand : DbCommand
@@ -18,7 +17,6 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	where TDbType : struct
 	where TResult : DbCommandBuilder<TCommand, TParameter>
 {
-
 	[Container(RegisterInterface = true)]
 	internal IInsertBatchHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
@@ -66,7 +64,6 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 		return InsertMultipleBatch<TObject>(objects, options);
 	}
 
-
 	/// <summary>
 	/// Performs a series of batch inserts.
 	/// </summary>
@@ -80,8 +77,10 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	public ILink<int> InsertMultipleBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
 			where TObject : class
 	{
-		if (objects == null)
-			throw new ArgumentNullException(nameof(objects), $"{nameof(objects)} is null.");
+		var sourceList = objects.AsReadOnlyList();
+
+		if (sourceList == null || sourceList.Count == 0)
+			throw new ArgumentException($"{nameof(objects)} is null or empty.", nameof(objects));
 
 		var batchSize = MaxObjectsPerBatch(tableName, objects.First(), options);
 
@@ -103,6 +102,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	{
 		return InsertMultipleBatch(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
 	}
+
 	int MaxObjectsPerBatch<TObject>(TObjectName tableName, TObject sampleObject, InsertOptions options)
 		where TObject : class
 	{
@@ -127,12 +127,12 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 
 		return maxRows;
 	}
+
 	TResult OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 where TObject : class
 	{
 		return (TResult)DataSource.OnInsertBatch(tableName, objects, options);
 	}
-
 
 	/// <summary>
 	/// MultiBatcher is used by InsertMultipleBatch to perform a series of batch inserts.
@@ -211,8 +211,6 @@ where TObject : class
 
 			return result;
 		}
-
-
 
 		void OnExecutionTokenPrepared(object? sender, ExecutionTokenPreparedEventArgs e)
 		{

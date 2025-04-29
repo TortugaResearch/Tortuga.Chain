@@ -35,6 +35,30 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void InsertMultipleBatch_Empty(string dataSourceName, DataSourceType mode)
+	{
+		var key = Guid.NewGuid().ToString();
+		var employeeList = new List<Employee>();
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			try
+			{
+				var count = dataSource.InsertMultipleBatch(EmployeeTableName, employeeList).SetStrictMode(true).Execute();
+				Assert.Fail($"{nameof(ArgumentException)} was expected");
+			}
+			catch (ArgumentException ex) when (ex.ParamName == "objects")
+			{
+				//PASS
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 #endif
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || MYSQL
@@ -99,6 +123,30 @@ public class InsertBatchTests : TestBase
 			foreach (var item in rows)
 			{
 				Assert.IsTrue(keys.Contains(item.EmployeeKey.Value));
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void InsertBatch_ReturnKeys_Empty(string dataSourceName, DataSourceType mode)
+	{
+		var key = Guid.NewGuid().ToString();
+		var employeeList = new List<Employee>();
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			try
+			{
+				dataSource.InsertBatch(EmployeeTableName, employeeList).ToInt32List().SetStrictMode(true).Execute();
+				Assert.Fail($"{nameof(ArgumentException)} was expected");
+			}
+			catch (ArgumentException ex) when (ex.ParamName == "objects")
+			{
+				//PASS
 			}
 		}
 		finally

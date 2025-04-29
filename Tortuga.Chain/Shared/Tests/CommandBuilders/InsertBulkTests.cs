@@ -112,6 +112,29 @@ public class InsertBulkTests : TestBase
 	}
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void InsertBulk_List_Empty(string dataSourceName, DataSourceType mode)
+	{
+		var key1000 = Guid.NewGuid().ToString();
+		var employeeList = new List<Employee>();
+
+		const int RowCount = 0;
+
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var count = dataSource.InsertBulk(EmployeeTableName, employeeList).Execute();
+			Assert.AreEqual(RowCount, count);
+
+			var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
+			Assert.AreEqual(RowCount, count2);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_List_ImpliedTableName(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -205,6 +228,27 @@ public class InsertBulkTests : TestBase
 
 			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
 			Assert.AreEqual(1000, count2);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public async Task InsertBulkAsync_List_Empty(string dataSourceName, DataSourceType mode)
+	{
+		var key1000 = Guid.NewGuid().ToString();
+		var employeeList = new List<Employee>();
+
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).ExecuteAsync();
+			Assert.AreEqual(0, count);
+
+			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+			Assert.AreEqual(0, count2);
 		}
 		finally
 		{
