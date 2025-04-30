@@ -6,7 +6,7 @@
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for MS Access.</Description>
 		<PackageTags>ORM Fluent DB Reflection Access</PackageTags>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 

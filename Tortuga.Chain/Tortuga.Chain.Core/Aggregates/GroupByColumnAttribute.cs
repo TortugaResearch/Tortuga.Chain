@@ -6,7 +6,7 @@
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class GroupByColumnAttribute : BaseAggregateAttribute
+public sealed class GroupByColumnAttribute : BaseAggregateAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GroupByColumnAttribute"/> class.

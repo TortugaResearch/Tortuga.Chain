@@ -10,8 +10,8 @@ namespace Tortuga.Chain.CommandBuilders;
 /// <typeparam name="TCommand">The type of the command.</typeparam>
 /// <typeparam name="TParameter">The type of the parameter.</typeparam>
 /// <typeparam name="TObject">The type of the returned object.</typeparam>
-[SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
-public struct ObjectMultipleRow<TCommand, TParameter, TObject>
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
+public readonly struct ObjectMultipleRow<TCommand, TParameter, TObject>
 		where TCommand : DbCommand
 		where TParameter : DbParameter
 		where TObject : class
@@ -32,7 +32,7 @@ public struct ObjectMultipleRow<TCommand, TParameter, TObject>
 	/// </summary>
 	/// <param name="collectionOptions">The collection options.</param>
 	/// <returns>ILink&lt;List&lt;TObject&gt;&gt;.</returns>
-	public ILink<List<TObject>> ToCollection(CollectionOptions collectionOptions = CollectionOptions.None)
+	public readonly ILink<List<TObject>> ToCollection(CollectionOptions collectionOptions = CollectionOptions.None)
 	{
 		return new CollectionMaterializer<TCommand, TParameter, TObject, List<TObject>>(m_CommandBuilder, collectionOptions);
 	}
@@ -43,8 +43,7 @@ public struct ObjectMultipleRow<TCommand, TParameter, TObject>
 	/// <typeparam name="TCollection">The type of the collection.</typeparam>
 	/// <param name="collectionOptions">The collection options.</param>
 	/// <returns>ILink&lt;TCollection&gt;.</returns>
-	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-	public ILink<TCollection> ToCollection<TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
+	public readonly ILink<TCollection> ToCollection<TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
 		where TCollection : ICollection<TObject>, new()
 	{
 		return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(m_CommandBuilder, collectionOptions);
@@ -55,7 +54,7 @@ public struct ObjectMultipleRow<TCommand, TParameter, TObject>
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
 	/// <returns></returns>
-	public ILink<TObject> ToObject(RowOptions rowOptions = RowOptions.None)
+	public readonly ILink<TObject> ToObject(RowOptions rowOptions = RowOptions.None)
 	{
 		return new ObjectMaterializer<TCommand, TParameter, TObject>(m_CommandBuilder, rowOptions);
 	}
@@ -65,7 +64,7 @@ public struct ObjectMultipleRow<TCommand, TParameter, TObject>
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
 	/// <returns></returns>
-	public ILink<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.None)
+	public readonly ILink<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.None)
 	{
 		return new ObjectOrNullMaterializer<TCommand, TParameter, TObject>(m_CommandBuilder, rowOptions);
 	}

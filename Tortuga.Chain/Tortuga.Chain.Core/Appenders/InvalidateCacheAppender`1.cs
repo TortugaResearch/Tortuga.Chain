@@ -44,6 +44,6 @@ internal sealed class InvalidateCacheAppender<TResult> : Appender<TResult>
 	{
 		await DataSource.Cache.InvalidateAsync(m_CacheKey).ConfigureAwait(false);
 
-		return await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
+		return await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 	}
 }

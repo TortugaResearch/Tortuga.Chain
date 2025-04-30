@@ -35,8 +35,7 @@ internal sealed class DataTableMaterializer<TCommand, TParameter> : Materializer
 	/// Execute the operation synchronously.
 	/// </summary>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-	[SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override DataTable Execute(object? state = null)
 	{
 		var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};

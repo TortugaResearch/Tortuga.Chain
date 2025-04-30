@@ -51,7 +51,7 @@ internal sealed class CacheAllItemsAppender<TCollection, TItem> : Appender<TColl
 			cacheKeys.Add(cacheKey);
 		}
 
-		m_ActualCacheKeys = cacheKeys.ToImmutableArray();
+		m_ActualCacheKeys = [.. cacheKeys];
 		return result;
 	}
 
@@ -72,7 +72,7 @@ internal sealed class CacheAllItemsAppender<TCollection, TItem> : Appender<TColl
 			await DataSource.Cache.WriteAsync(cacheKey, item, m_Policy).ConfigureAwait(false);
 			cacheKeys.Add(cacheKey);
 		}
-		m_ActualCacheKeys = cacheKeys.ToImmutableArray();
+		m_ActualCacheKeys = [.. cacheKeys];
 		return result;
 	}
 

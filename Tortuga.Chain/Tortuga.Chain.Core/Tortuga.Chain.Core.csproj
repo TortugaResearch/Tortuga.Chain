@@ -6,10 +6,13 @@
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for .NET.</Description>
 		<PackageTags>ORM Fluent DB Reflection</PackageTags>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
-
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<AnalysisLevel>latest</AnalysisLevel>
+		
 		<Version>5.0.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -123,7 +123,6 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 		var bl = new MySqlBulkLoader(connection);
 		var mappedColumns = SetupBulkCopy(bl);
 
-		var lastNotification = 0;
 		var totalCount = 0;
 		var rowCount = 0;
 		var output = new StringBuilder();
@@ -149,7 +148,6 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 
 					if ((totalCount % m_NotifyAfter) > notificationCount)
 					{
-						lastNotification = notificationCount;
 						var e = new AbortableOperationEventArgs(totalCount);
 						m_EventHandler?.Invoke(this, e);
 						if (e.Abort)

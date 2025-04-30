@@ -112,7 +112,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 		var sqlBuilder = table.CreateSqlBuilder(false);
 		sqlBuilder.ApplyDesiredColumns(Materializer.NoColumns);
 		sqlBuilder.ApplyArgumentValue(DataSource, sampleObject, options);
-		sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).Count(); //Call .Count() to trigger needed side-effects
+		_ = sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).Count(); //Call .Count() to trigger needed side-effects
 
 		var parametersPerRow = DataSource.GetParameters(sqlBuilder).Count;
 

@@ -93,7 +93,7 @@ where TCollection : ICollection<TResult>, new()
 					rowCount++;
 					foreach (var ordinal in matchingColumns)
 					{
-						if (!reader.IsDBNull(ordinal))
+						if (!await reader.IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
 							result.Add(ReadValue(reader, ordinal));
 						else if (!discardNulls)
 						{
@@ -129,7 +129,7 @@ where TCollection : ICollection<TResult>, new()
 				columns[i] = (i, reader.GetName(i));
 
 			//We only care about columns that match the desired column name.
-			matchingColumns = columns.Where(c => ColumnName.Equals(c.columnName, StringComparison.InvariantCultureIgnoreCase)).Select(c => c.ordinal).ToList();
+			matchingColumns = columns.Where(c => ColumnName.Equals(c.columnName, StringComparison.OrdinalIgnoreCase)).Select(c => c.ordinal).ToList();
 
 			if (matchingColumns.Count > 1)
 			{
@@ -139,7 +139,7 @@ where TCollection : ICollection<TResult>, new()
 
 				//If we aren't flattening, then only take the first column with a matching name.
 				if (!m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns))
-					matchingColumns = matchingColumns.Take(1).ToList();
+					matchingColumns = [.. matchingColumns.Take(1)];
 			}
 			else if (matchingColumns.Count == 0)
 			{

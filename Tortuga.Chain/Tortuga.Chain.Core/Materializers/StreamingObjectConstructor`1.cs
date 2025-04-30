@@ -10,16 +10,13 @@ using static Tortuga.Chain.Materializers.MaterializerUtilities;
 
 namespace Tortuga.Chain.Materializers;
 
-internal sealed class StreamingObjectConstructor<T> : IDisposable
-#if NET6_0_OR_GREATER
-	, IAsyncDisposable
-#endif
+internal sealed class StreamingObjectConstructor<T> : IDisposable, IAsyncDisposable
 	where T : class
 {
 	static readonly ImmutableArray<MappedProperty<T>> s_AllMappedProperties;
 	static readonly ImmutableArray<MappedProperty<T>> s_DecomposedProperties;
 
-	static readonly Type[] s_DefaultConstructor = Array.Empty<Type>();
+	static readonly Type[] s_DefaultConstructor = [];
 
 	readonly ConstructorMetadata m_Constructor;
 
@@ -39,7 +36,7 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		var mappedProperties = new List<MappedProperty<T>>();
 		var decomposedProperties = new List<MappedProperty<T>>();
 
-		foreach (var property in MetadataCache.GetMetadata(typeof(T)).Properties)
+		foreach (var property in MetadataCache.GetMetadata<T>().Properties)
 		{
 			if (property.MappedColumnName != null)
 			{
@@ -58,8 +55,8 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 			}
 		}
 
-		s_AllMappedProperties = mappedProperties.ToImmutableArray();
-		s_DecomposedProperties = decomposedProperties.ToImmutableArray();
+		s_AllMappedProperties = [.. mappedProperties];
+		s_DecomposedProperties = [.. decomposedProperties];
 	}
 
 	public StreamingObjectConstructor(DbDataReader source, ConstructorMetadata? constructor, IReadOnlyList<ColumnMetadata> nonNullableColumns, MaterializerTypeConverter converter)
@@ -76,11 +73,9 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		}
 
 		if (constructor == null)
-			constructor = MetadataCache.GetMetadata(typeof(T)).Constructors.Find(s_DefaultConstructor);
+			constructor = MetadataCache.GetMetadata<T>().Constructors.Find(s_DefaultConstructor);
 		if (constructor == null)
 			throw new MappingException($"Cannot find a default constructor for {typeof(T).Name}");
-
-		var desiredType = typeof(T);
 
 		m_Constructor = constructor;
 
@@ -140,7 +135,7 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 
 		if (constructorSignature.Count == 0)
 		{
-			m_MappedProperties = new List<OrdinalMappedProperty<T>>();
+			m_MappedProperties = [];
 
 			foreach (var mapper in s_AllMappedProperties)
 			{
@@ -160,9 +155,7 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 	{
 		get
 		{
-			if (m_Source == null)
-				throw new ObjectDisposedException(nameof(StreamingObjectConstructor<T>));
-
+			ObjectDisposedException.ThrowIf(m_Source == null, this);
 			return m_Source;
 		}
 	}
@@ -176,7 +169,6 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		m_Source = null;
 	}
 
-#if NET6_0_OR_GREATER
 	public async ValueTask DisposeAsync()
 	{
 		if (m_Source == null)
@@ -185,7 +177,6 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		await m_Source.DisposeAsync().ConfigureAwait(false); ;
 		m_Source = null;
 	}
-#endif
 
 	public bool Read([NotNullWhen(true)] out T? value)
 	{

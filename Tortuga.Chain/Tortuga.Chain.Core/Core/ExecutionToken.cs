@@ -70,7 +70,6 @@ public abstract class ExecutionToken
 	/// </summary>
 	/// <param name="command">The command.</param>
 	/// <param name="rowsAffected">The rows affected.</param>
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
 	public void RaiseCommandExecuted(DbCommand command, int? rowsAffected)
 	{
 		CommandExecuted?.Invoke(this, new CommandExecutedEventArgs(command, rowsAffected));

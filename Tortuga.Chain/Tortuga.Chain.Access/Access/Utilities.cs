@@ -26,16 +26,6 @@ internal static class Utilities
 		};
 	}
 
-	public static List<AbstractParameter> GetParameters(this SqlBuilder<AbstractDbType> sqlBuilder, IDataSource dataSource)
-	{
-		return sqlBuilder.GetParameters(ParameterBuilderCallback);
-	}
-
-	public static List<OleDbParameter> GetParametersKeysLast(this SqlBuilder<OleDbType> sqlBuilder)
-	{
-		return sqlBuilder.GetParametersKeysLast(ParameterBuilderCallback);
-	}
-
 	public static OleDbParameter CreateParameter(ISqlBuilderEntryDetails<OleDbType> details, string parameterName, object? value)
 	{
 		var result = new OleDbParameter();
@@ -43,10 +33,8 @@ internal static class Utilities
 
 		result.Value = value switch
 		{
-#if NET6_0_OR_GREATER
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
 			TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
-#endif
 			TimeSpan timeSpan => default(DateTime) + timeSpan,
 			null => DBNull.Value,
 			_ => value
@@ -56,6 +44,16 @@ internal static class Utilities
 			result.OleDbType = details.DbType.Value;
 
 		return result;
+	}
+
+	public static List<AbstractParameter> GetParameters(this SqlBuilder<AbstractDbType> sqlBuilder, IDataSource dataSource)
+	{
+		return sqlBuilder.GetParameters(ParameterBuilderCallback);
+	}
+
+	public static List<OleDbParameter> GetParametersKeysLast(this SqlBuilder<OleDbType> sqlBuilder)
+	{
+		return sqlBuilder.GetParametersKeysLast(ParameterBuilderCallback);
 	}
 
 	public static OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)

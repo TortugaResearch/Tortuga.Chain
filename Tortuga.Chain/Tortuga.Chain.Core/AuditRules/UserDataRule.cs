@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor.Metadata;
+﻿using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.AuditRules;
 
@@ -42,9 +41,6 @@ public class UserDataRule : ColumnRule
 	/// <param name="currentValue">The current value. Used when the rule is conditionally applied.</param>
 	/// <returns></returns>
 	/// <exception cref="InvalidOperationException"></exception>
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "userValue")]
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DataSource")]
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithUser")]
 	public override object? GenerateValue(object? argumentValue, object? userValue, object? currentValue)
 	{
 		if (userValue == null)

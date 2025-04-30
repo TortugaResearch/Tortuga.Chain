@@ -18,11 +18,6 @@ where TCommand : DbCommand
 where TParameter : DbParameter
 {
 	/// <summary>
-	/// Gets the TObject metadata.
-	/// </summary>
-	protected static ClassMetadata ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
-
-	/// <summary>
 	/// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand,
 	/// TParameter, TResult, TObject}"/> class.
 	/// </summary>
@@ -30,6 +25,11 @@ where TParameter : DbParameter
 	protected ConstructibleMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder)
 	{
 	}
+
+	/// <summary>
+	/// Gets the TObject metadata.
+	/// </summary>
+	protected static ClassMetadata ObjectMetadata { get; } = MetadataCache.GetMetadata<TObject>();
 
 	/// <summary>
 	/// Gets or sets the data reader constructor.

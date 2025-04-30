@@ -4,7 +4,7 @@
 		<TargetFrameworks>net8.0</TargetFrameworks>
 		<RootNamespace>Tests</RootNamespace>
 		<IsPackable>false</IsPackable>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 

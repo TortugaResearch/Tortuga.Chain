@@ -10,8 +10,8 @@ namespace Tortuga.Chain.Metadata;
 /// </summary>
 public class MaterializerTypeConverter
 {
-	bool m_HasCustomerConverters;
 	private readonly ConcurrentDictionary<(Type input, Type output), Func<object, object>> m_ConverterDictionary = new();
+	bool m_HasCustomerConverters;
 
 	/// <summary>
 	/// Initializes an instance of the <see cref="MaterializerTypeConverter"/> class with the default set of converters.
@@ -49,6 +49,9 @@ public class MaterializerTypeConverter
 	/// <returns><c>true</c> if the conversion was successful, <c>false</c> otherwise.</returns>
 	public bool TryConvertType(Type targetType, ref object? value, out Exception? conversionException)
 	{
+		if (targetType == null)
+			throw new ArgumentNullException(nameof(targetType), $"{nameof(targetType)} is null.");
+
 		conversionException = null;
 
 		if (value == null)
@@ -84,7 +87,7 @@ public class MaterializerTypeConverter
 			{
 				if (targetType == typeof(char))
 				{
-					value = stringValue.Length >= 1 ? stringValue[0] : default(char);
+					value = stringValue.Length >= 1 ? stringValue[0] : default;
 					return true;
 				}
 				else if (targetType == typeof(XElement))
@@ -152,13 +155,11 @@ public class MaterializerTypeConverter
 					value = TimeSpan.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
-#if NET6_0_OR_GREATER
 				else if (targetType == typeof(TimeOnly))
 				{
 					value = TimeOnly.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
-#endif
 
 				return false;
 			}
@@ -168,7 +169,6 @@ public class MaterializerTypeConverter
 
 			if (value is DateTime dt)
 			{
-#if NET6_0_OR_GREATER
 				if (targetType == typeof(DateOnly))
 				{
 					value = DateOnly.FromDateTime(dt);
@@ -179,7 +179,6 @@ public class MaterializerTypeConverter
 					value = TimeOnly.FromDateTime(dt);
 					return true;
 				}
-#endif
 				if (targetType == typeof(TimeSpan))
 				{
 					value = dt.TimeOfDay;
@@ -189,13 +188,11 @@ public class MaterializerTypeConverter
 
 			if (value is TimeSpan ts)
 			{
-#if NET6_0_OR_GREATER
 				if (targetType == typeof(TimeOnly))
 				{
 					value = TimeOnly.FromTimeSpan(ts);
 					return true;
 				}
-#endif
 			}
 
 			//this will handle numeric conversions

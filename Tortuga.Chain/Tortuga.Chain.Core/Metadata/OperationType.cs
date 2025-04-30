@@ -1,9 +1,12 @@
-﻿namespace Tortuga.Chain.Metadata;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Tortuga.Chain.Metadata;
 
 /// <summary>
 /// Indicates the type of operation being performed.
 /// </summary>
 /// <remarks>Keep numbers in sync with AuditRules.OperationTypes.</remarks>
+[SuppressMessage("Design", "CA1027:Mark enums with FlagsAttribute", Justification = "<Pending>")]
 public enum OperationType
 {
 	/// <summary>

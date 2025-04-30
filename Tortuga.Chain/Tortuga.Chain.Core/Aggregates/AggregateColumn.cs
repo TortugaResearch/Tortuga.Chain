@@ -18,7 +18,7 @@ public class AggregateColumn
 	/// <exception cref="System.ArgumentException">asColumnName is null or empty.</exception>
 	public AggregateColumn(AggregateType aggregateType, string sourceColumnName, string outputColumnName)
 	{
-		if (!Enum.IsDefined(typeof(AggregateType), aggregateType))
+		if (!Enum.IsDefined(aggregateType))
 			throw new ArgumentOutOfRangeException(nameof(aggregateType), aggregateType, $"{nameof(aggregateType)} is not defined.");
 
 		if (aggregateType == AggregateType.Custom)
@@ -83,7 +83,7 @@ public class AggregateColumn
 	internal string ToSelectSql(IDatabaseMetadataCache metadataCache)
 	{
 		if (AggregateType != AggregateType.Custom && SourceColumnName == null)
-			throw new Exception();
+			throw new InvalidOperationException("Non-custom aggregates must have a source column.");
 
 		var asClause = !string.IsNullOrEmpty(OutputColumnName) ? $" AS {metadataCache.QuoteColumnName(OutputColumnName!)}" : null;
 

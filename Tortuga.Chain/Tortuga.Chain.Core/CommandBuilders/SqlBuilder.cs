@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor.Metadata;
 
@@ -18,7 +17,6 @@ public static class SqlBuilder
 	/// <param name="errorFormat">The error format. Slot 0 is the matching property.</param>
 	/// <returns>System.String.</returns>
 	/// <remarks>If either object is null, this check is skipped.</remarks>
-	[SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "object")]
 	public static void CheckForOverlaps(object? firstObject, object? secondObject, string errorFormat)
 	{
 		if (firstObject == null)
@@ -39,7 +37,6 @@ public static class SqlBuilder
 	/// </summary>
 	/// <typeparam name="TParameter">The type of the parameter.</typeparam>
 	/// <param name="argumentValue">The argument value. This could be a DbParameter, collection of DbParameters, dictionary, or object.</param>	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
 	public static List<TParameter> GetParameters<TParameter>(object? argumentValue)
 	where TParameter : DbParameter, new()
 	{
@@ -53,7 +50,6 @@ public static class SqlBuilder
 	/// <param name="argumentValue">The argument value. This could be a DbParameter, collection of DbParameters, dictionary, or object.</param>
 	/// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
 	public static List<TParameter> GetParameters<TParameter>(object? argumentValue, Func<string, object?, TParameter> parameterBuilder)
 		where TParameter : DbParameter
 	{
@@ -70,14 +66,16 @@ public static class SqlBuilder
 		else if (argumentValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
 			foreach (var item in readOnlyDictionary)
 			{
-				var name = (item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? item.Key : "@" + item.Key;
+				var name = item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase) ? item.Key : "@" + item.Key;
 				var param = parameterBuilder(name, item.Value);
 				result.Add(param);
 			}
 		else if (argumentValue != null)
 			foreach (var property in MetadataCache.GetMetadata(argumentValue.GetType()).Properties.Where(x => x.MappedColumnName != null))
 			{
-				var name = (property.MappedColumnName!.StartsWith("@", StringComparison.OrdinalIgnoreCase)) ? property.MappedColumnName : "@" + property.MappedColumnName;
+				var name = (property.MappedColumnName!.StartsWith("@", StringComparison.OrdinalIgnoreCase))
+					? property.MappedColumnName
+					: $"@{property.MappedColumnName}";
 				var value = property.InvokeGet(argumentValue);
 				var param = parameterBuilder(name, value);
 				result.Add(param);

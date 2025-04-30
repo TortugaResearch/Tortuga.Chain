@@ -30,12 +30,12 @@ public class FromTests_ToDynamic : TestBase
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToDynamicCollection_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
+		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
 		try
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDynamicCollection().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDynamicCollection().ExecuteAsync().ConfigureAwait(false);
 			Assert.IsTrue(result.Count <= 10);
 			if (result.Count > 0)
 			{
@@ -170,6 +170,7 @@ public class FromTests_ToDynamic : TestBase
 	}
 
 #else
+
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicCollection_IncludeColumns(string dataSourceName, DataSourceType mode)
 	{
@@ -205,7 +206,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicObject_ExcludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -287,6 +288,7 @@ public class FromTests_ToDynamic : TestBase
 			Release(dataSource);
 		}
 	}
+
 #endif
 
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
@@ -318,7 +320,7 @@ public class FromTests_ToDynamic : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDynamicObjectOrNull().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDynamicObjectOrNull().ExecuteAsync().ConfigureAwait(false);
 			if (result != null)
 			{
 				var row = (IDictionary<string, object>)result;

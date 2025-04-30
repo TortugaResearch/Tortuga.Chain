@@ -197,10 +197,10 @@ public class InsertBulkTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).WithBatchSize(250).ExecuteAsync();
+			var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).WithBatchSize(250).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(1000, count);
 
-			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(1000, count2);
 		}
 		finally
@@ -223,10 +223,10 @@ public class InsertBulkTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).ExecuteAsync();
+			var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(1000, count);
 
-			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(1000, count2);
 		}
 		finally
@@ -244,10 +244,10 @@ public class InsertBulkTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).ExecuteAsync();
+			var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(0, count);
 
-			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(0, count2);
 		}
 		finally
@@ -264,7 +264,7 @@ public class InsertBulkTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var count = await dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).ExecuteAsync();
+			var count = await dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).ExecuteAsync().ConfigureAwait(false);
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 			Assert.AreEqual(-1, count); //streaming prevents returning a row count;
@@ -272,7 +272,7 @@ public class InsertBulkTests : TestBase
 			Assert.AreEqual(1000, count);
 #endif
 
-			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+			var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(1000, count2);
 		}
 		finally

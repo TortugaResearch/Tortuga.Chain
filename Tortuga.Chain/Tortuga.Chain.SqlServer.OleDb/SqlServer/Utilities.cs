@@ -6,21 +6,6 @@ namespace Tortuga.Chain.SqlServer;
 
 internal static class Utilities
 {
-
-	/// <summary>
-	/// Gets the parameters from a SQL Builder.
-	/// </summary>
-	/// <param name="sqlBuilder">The SQL builder.</param>
-	/// <returns></returns>
-	public static List<OleDbParameter> GetParameters(this SqlBuilder<OleDbType> sqlBuilder)
-	{
-		return sqlBuilder.GetParameters(ParameterBuilderCallback);
-	}
-
-	public static OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
-	{
-		return CreateParameter(entry.Details, entry.Details.SqlVariableName, entry.ParameterValue);
-	}
 	public static OleDbParameter CreateParameter(ISqlBuilderEntryDetails<OleDbType> details, string parameterName, object? value)
 	{
 		var result = new OleDbParameter();
@@ -28,10 +13,8 @@ internal static class Utilities
 
 		result.Value = value switch
 		{
-#if NET6_0_OR_GREATER
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
 			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
-#endif
 			null => DBNull.Value,
 			_ => value
 		};
@@ -60,7 +43,20 @@ internal static class Utilities
 		return result;
 	}
 
+	/// <summary>
+	/// Gets the parameters from a SQL Builder.
+	/// </summary>
+	/// <param name="sqlBuilder">The SQL builder.</param>
+	/// <returns></returns>
+	public static List<OleDbParameter> GetParameters(this SqlBuilder<OleDbType> sqlBuilder)
+	{
+		return sqlBuilder.GetParameters(ParameterBuilderCallback);
+	}
 
+	public static OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
+	{
+		return CreateParameter(entry.Details, entry.Details.SqlVariableName, entry.ParameterValue);
+	}
 
 	public static bool RequiresSorting(this SqlServerLimitOption limitOption)
 	{

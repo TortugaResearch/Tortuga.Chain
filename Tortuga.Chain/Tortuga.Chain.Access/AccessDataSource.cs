@@ -223,12 +223,8 @@ public partial class AccessDataSource : AccessDataSourceBase
 		}
 		catch (Exception ex)
 		{
-#if NET6_0_OR_GREATER
-		if (con != null)
-		    await con.DisposeAsync().ConfigureAwait(false);
-#else
-			con?.Dispose();
-#endif
+			if (con != null)
+				await con.DisposeAsync().ConfigureAwait(false);
 
 			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
 			{

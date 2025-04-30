@@ -247,12 +247,8 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 		}
 		catch (Exception ex)
 		{
-#if NET6_0_OR_GREATER
 			if (con != null)
 				await con.DisposeAsync().ConfigureAwait(false);
-#else
-			con?.Dispose();
-#endif
 			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
 			{
 				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);

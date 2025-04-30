@@ -102,7 +102,7 @@ namespace Tortuga.Chain.Materializers
 		{
 			//If we didn't get a constructor, look for a default constructor to use.
 			if (constructor == null)
-				constructor = MetadataCache.GetMetadata(typeof(T)).Constructors.Find(s_EmptyTypeList);
+				constructor = MetadataCache.GetMetadata<T>().Constructors.Find(s_EmptyTypeList);
 			if (constructor == null)
 				throw new MappingException($"Cannot find a default constructor for {typeof(T).Name}");
 

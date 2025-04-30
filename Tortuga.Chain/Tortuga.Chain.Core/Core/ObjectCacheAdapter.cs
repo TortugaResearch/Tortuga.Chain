@@ -124,7 +124,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 			return true;
 		}
 
-		if (!(cacheItem.Value is T))
+		if (cacheItem.Value is not T)
 			throw new InvalidOperationException($"Cache is corrupted. Cache Key \"{cacheKey}\" is a {cacheItem.Value.GetType().Name} not a {typeof(T).Name}");
 
 		result = (T)cacheItem.Value;
@@ -143,7 +143,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 	/// <returns>Task&lt;Tuple&lt;System.Boolean, System.Object&gt;&gt;.</returns>
 	public Task<CacheReadResult<T>> TryReadAsync<T>(string cacheKey)
 	{
-		bool result2 = TryRead(cacheKey, out T result);
+		var result2 = TryRead(cacheKey, out T result);
 		return Task.FromResult(new CacheReadResult<T>(result2, result));
 	}
 
@@ -160,8 +160,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 			throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
 		//Nulls can't be stored in a cache, so we simulate it using NullObject.Default.
-		if (value == null)
-			value = NullObject.Default;
+		value ??= NullObject.Default;
 
 		var mappedPolicy = new CacheItemPolicy();
 		if (policy != null)
@@ -196,7 +195,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 	/// </summary>
 	class NullObject
 	{
-		public static readonly NullObject Default = new NullObject();
+		public static readonly NullObject Default = new();
 
 		NullObject()
 		{

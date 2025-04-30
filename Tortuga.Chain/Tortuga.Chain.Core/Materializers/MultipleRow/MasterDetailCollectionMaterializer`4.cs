@@ -193,7 +193,7 @@ sealed partial class MasterDetailCollectionMaterializer<TCommand, TParameter, TM
 
 			if (!groups.TryGetValue(key, out var group))
 			{
-				group = new();
+				group = [];
 				groups.Add(key, group);
 			}
 			group.Add(row);

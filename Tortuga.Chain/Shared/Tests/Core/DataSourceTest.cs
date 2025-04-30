@@ -25,7 +25,7 @@ public class DataSourceTest : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			await dataSource.TestConnectionAsync();
+			await dataSource.TestConnectionAsync().ConfigureAwait(false);
 		}
 		finally
 		{
@@ -49,7 +49,21 @@ public class DataSourceTest : TestBase
 		}
 	}
 
-#if NET6_0_OR_GREATER
+	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	public async Task Transaction_DisposeAsync(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName);
+		try
+		{
+			dataSource.TestConnection();
+			var trans = await ((IRootDataSource)dataSource).BeginTransactionAsync().ConfigureAwait(false);
+			await trans.DisposeAsync().ConfigureAwait(false);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
 
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
 	public async Task Transaction_DisposeAsync_Using(string dataSourceName)
@@ -58,28 +72,11 @@ public class DataSourceTest : TestBase
 		try
 		{
 			dataSource.TestConnection();
-			await using var trans = await ((IRootDataSource)dataSource).BeginTransactionAsync();
+			await using var trans = await ((IRootDataSource)dataSource).BeginTransactionAsync().ConfigureAwait(false);
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
-	public async Task Transaction_DisposeAsync(string dataSourceName)
-	{
-		var dataSource = DataSource(dataSourceName);
-		try
-		{
-			dataSource.TestConnection();
-			var trans = await ((IRootDataSource)dataSource).BeginTransactionAsync();
-			await trans.DisposeAsync().ConfigureAwait(false);
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-#endif
 }

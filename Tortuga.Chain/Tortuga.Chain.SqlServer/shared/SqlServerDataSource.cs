@@ -12,7 +12,7 @@ namespace Tortuga.Chain;
 /// <seealso cref="SqlServerDataSourceBase" />
 public partial class SqlServerDataSource : SqlServerDataSourceBase
 {
-	readonly object m_SyncRoot = new object();
+	readonly object m_SyncRoot = new();
 	SqlServerMetadataCache m_DatabaseMetadata;
 	bool m_IsSqlDependencyActive;
 
@@ -146,19 +146,10 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 	}
 
 	/// <summary>
-	/// Gets a value indicating whether SQL dependency support is active for this dispatcher.
+	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
 	/// </summary>
-	/// <value><c>true</c> if this SQL dependency is active; otherwise, <c>false</c>.</value>
-	public bool IsSqlDependencyActive
-	{
-		get { return m_IsSqlDependencyActive; }
-	}
-
-	/// <summary>
-	/// Rolls back a transaction if a Transact-SQL statement raises a run-time error.
-	/// </summary>
-	[SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
-	public bool? XactAbort { get; }
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public override int? DefaultNVarCharLength { get; }
 
 	/// <summary>
 	/// Gets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
@@ -173,10 +164,19 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 	public override int? DefaultVarCharLength { get; }
 
 	/// <summary>
-	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// Gets a value indicating whether SQL dependency support is active for this dispatcher.
 	/// </summary>
-	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
-	public override int? DefaultNVarCharLength { get; }
+	/// <value><c>true</c> if this SQL dependency is active; otherwise, <c>false</c>.</value>
+	public bool IsSqlDependencyActive
+	{
+		get { return m_IsSqlDependencyActive; }
+	}
+
+	/// <summary>
+	/// Rolls back a transaction if a Transact-SQL statement raises a run-time error.
+	/// </summary>
+	[SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
+	public bool? XactAbort { get; }
 
 	/// <summary>
 	/// Creates a new transaction
@@ -290,12 +290,8 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 		}
 		catch (Exception ex)
 		{
-#if NET6_0_OR_GREATER
 			if (con != null)
 				await con.DisposeAsync().ConfigureAwait(false);
-#else
-			con?.Dispose();
-#endif
 
 			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
 			{

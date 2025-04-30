@@ -6,7 +6,7 @@
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for SQL Server. This uses System.Data.OleDb. For System.Data.SqlClient use the Tortuga.Chain.SqlServer package.</Description>
 		<PackageTags>ORM Fluent DB Reflection SQL Server OleDB</PackageTags>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 

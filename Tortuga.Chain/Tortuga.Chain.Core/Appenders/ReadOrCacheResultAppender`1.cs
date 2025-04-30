@@ -54,15 +54,12 @@ internal sealed class ReadOrCacheResultAppender<TResult> : Appender<TResult>, IC
 		if (temp.KeyFound)
 			return temp.Value;
 
-		TResult result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
+		var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 
-		DataSource.Cache.Write(m_CacheKey, result, m_Policy);
+		await DataSource.Cache.WriteAsync(m_CacheKey, result, m_Policy).ConfigureAwait(false);
 
 		return result;
 	}
 
-	void ICacheLink<TResult>.Invalidate()
-	{
-		DataSource.Cache.Invalidate(m_CacheKey);
-	}
+	void ICacheLink<TResult>.Invalidate() => DataSource.Cache.Invalidate(m_CacheKey);
 }

@@ -11,143 +11,143 @@ public class ScalarFailOnNullTests : MaterializerTestBase
 	[TestMethod]
 	public async Task BigIntNull_Int64_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<long>("BigIntNull", typeof(Int64Materializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<long>("BigIntNull", typeof(Int64Materializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task BitNull_Boolean_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<bool>("BitNull", typeof(BooleanMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<bool>("BitNull", typeof(BooleanMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task CharNull_Char_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<char>("CharNull", typeof(CharMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<char>("CharNull", typeof(CharMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task CharNull_String_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<string>("CharNull", typeof(StringMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<string>("CharNull", typeof(StringMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task CharOneNull_Char_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<char>("CharOneNull", typeof(CharMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<char>("CharOneNull", typeof(CharMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task CharOneNull_String_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<string>("CharOneNull", typeof(StringMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<string>("CharOneNull", typeof(StringMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task DateNull_DateTime_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<DateTime>("DateNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<DateTime>("DateNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task Datetime2Null_DateTime_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<DateTime>("Datetime2Null", typeof(DateTimeMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<DateTime>("Datetime2Null", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task DatetimeNull_DateTime_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<DateTime>("DatetimeNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<DateTime>("DatetimeNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task DatetimeoffsetNull_DateTimeOffset_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<DateTimeOffset>("DatetimeoffsetNull", typeof(DateTimeOffsetMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<DateTimeOffset>("DatetimeoffsetNull", typeof(DateTimeOffsetMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task DecimalNull_Decimal_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<decimal>("DecimalNull", typeof(DecimalMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<decimal>("DecimalNull", typeof(DecimalMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task FloatNull_Double_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<double>("FloatNull", typeof(DoubleMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<double>("FloatNull", typeof(DoubleMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task IntNull_Int32_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<int>("IntNull", typeof(Int32Materializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<int>("IntNull", typeof(Int32Materializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task MoneyNull_Decimal_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<decimal>("MoneyNull", typeof(DecimalMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<decimal>("MoneyNull", typeof(DecimalMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task NumericNull_Decimal_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<decimal>("NumericNull", typeof(DecimalMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<decimal>("NumericNull", typeof(DecimalMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task RealNull_Single_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<float>("RealNull", typeof(SingleMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<float>("RealNull", typeof(SingleMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task SmalldatetimeNull_DateTime_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<DateTime>("SmalldatetimeNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<DateTime>("SmalldatetimeNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task SmallIntNull_Int16_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<short>("SmallIntNull", typeof(Int16Materializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<short>("SmallIntNull", typeof(Int16Materializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task SmallMoneyNull_Decimal_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<decimal>("SmallMoneyNull", typeof(DecimalMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<decimal>("SmallMoneyNull", typeof(DecimalMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task TimeNull_TimeSpan_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<TimeSpan>("TimeNull", typeof(TimeSpanMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<TimeSpan>("TimeNull", typeof(TimeSpanMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task TinyIntNull_Byte_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<byte>("TinyIntNull", typeof(ByteMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<byte>("TinyIntNull", typeof(ByteMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
 	public async Task UniqueidentifierNull_Guid_ScalarFailOnNullTest()
 	{
-		await ScalarFailOnNullTest<Guid>("UniqueidentifierNull", typeof(GuidMaterializer<DbCommand, DbParameter>));
+		await ScalarFailOnNullTestAsync<Guid>("UniqueidentifierNull", typeof(GuidMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
-	async Task ScalarFailOnNullTest<TResult>(string columnName, Type materializerType)
+	async Task ScalarFailOnNullTestAsync<TResult>(string columnName, Type materializerType)
 	{
 		var cb1 = DataSource.Sql($"SELECT {columnName} FROM dbo.AllTypes WHERE Id In (3)");
 
 		var materializer1 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
 		try
 		{
-			var result1 = materializer1.Execute();
+			materializer1.Execute();
 			Assert.Fail("Exception expected");
 		}
 		catch (MissingDataException)
@@ -156,7 +156,7 @@ public class ScalarFailOnNullTests : MaterializerTestBase
 		}
 		try
 		{
-			var result1a = await materializer1.ExecuteAsync();
+			await materializer1.ExecuteAsync().ConfigureAwait(false);
 			Assert.Fail("Exception expected");
 		}
 		catch (MissingDataException)

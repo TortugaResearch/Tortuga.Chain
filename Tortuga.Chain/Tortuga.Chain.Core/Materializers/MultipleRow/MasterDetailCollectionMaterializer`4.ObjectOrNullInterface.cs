@@ -37,61 +37,61 @@ partial class MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, 
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1>()
 	{
-		SetDetailConstructor(new[] { typeof(T1) });
+		SetDetailConstructor([typeof(T1)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2) });
+		SetDetailConstructor([typeof(T1), typeof(T2)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3, T4>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3, T4, T5>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3, T4, T5, T6>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3, T4, T5, T6, T7>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3, T4, T5, T6, T7, T8>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithDetailConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
 	{
-		SetDetailConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) });
+		SetDetailConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10)]);
 		return this;
 	}
 
@@ -103,61 +103,61 @@ partial class MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, 
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1>()
 	{
-		SetMasterConstructor(new[] { typeof(T1) });
+		SetMasterConstructor([typeof(T1)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2) });
+		SetMasterConstructor([typeof(T1), typeof(T2)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3, T4>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3, T4, T5>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3, T4, T5, T6>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3, T4, T5, T6, T7>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3, T4, T5, T6, T7, T8>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9)]);
 		return this;
 	}
 
 	IMasterDetailMaterializer<TMaster?> IMasterDetailMaterializer<TMaster?>.WithMasterConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
 	{
-		SetMasterConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) });
+		SetMasterConstructor([typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10)]);
 		return this;
 	}
 

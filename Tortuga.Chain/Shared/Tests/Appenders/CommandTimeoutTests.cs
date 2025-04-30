@@ -39,7 +39,7 @@ public class CommandTimeoutTests : TestBase
 		var dataSource = DataSource(dataSourceName);
 		try
 		{
-			await dataSource.Sql(TimeoutSql).AsNonQuery().SetTimeout(TimeSpan.FromSeconds(2)).ExecuteAsync();
+			await dataSource.Sql(TimeoutSql).AsNonQuery().SetTimeout(TimeSpan.FromSeconds(2)).ExecuteAsync().ConfigureAwait(false);
 			Assert.Fail("Timeout exception expected");
 		}
 		catch (SqlException) {/* expected */}

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.AuditRules;
@@ -14,8 +13,7 @@ public class AuditRuleCollection : IReadOnlyList<AuditRule>
 	/// <summary>
 	/// Returns an empty RulesCollection.
 	/// </summary>
-	[SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
-	public static readonly AuditRuleCollection Empty = new AuditRuleCollection();
+	public static readonly AuditRuleCollection Empty = new();
 
 	readonly ImmutableArray<AuditRule> m_List;
 	readonly ImmutableArray<ValidationRule> m_Validation;
@@ -26,10 +24,10 @@ public class AuditRuleCollection : IReadOnlyList<AuditRule>
 	/// <param name="rules">The list of rules used to build this collection.</param>
 	public AuditRuleCollection(IEnumerable<AuditRule> rules)
 	{
-		m_List = ImmutableArray.CreateRange(rules);
-		m_Validation = ImmutableArray.CreateRange(m_List.OfType<ValidationRule>());
+		m_List = [.. rules];
+		m_Validation = [.. m_List.OfType<ValidationRule>()];
 
-		SoftDeleteForSelect = this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToImmutableArray();
+		SoftDeleteForSelect = [.. this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>()];
 	}
 
 	/// <summary>
@@ -50,9 +48,9 @@ public class AuditRuleCollection : IReadOnlyList<AuditRule>
 			throw new ArgumentNullException(nameof(additionalRules), $"{nameof(additionalRules)} is null.");
 
 		m_List = baseRules.m_List.AddRange(additionalRules);
-		m_Validation = ImmutableArray.CreateRange(m_List.OfType<ValidationRule>());
+		m_Validation = [.. m_List.OfType<ValidationRule>()];
 
-		SoftDeleteForSelect = this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToImmutableArray();
+		SoftDeleteForSelect = [.. this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>()];
 	}
 
 	/// <summary>
@@ -60,10 +58,9 @@ public class AuditRuleCollection : IReadOnlyList<AuditRule>
 	/// </summary>
 	AuditRuleCollection()
 	{
-		m_List = ImmutableArray.Create<AuditRule>();
-		m_Validation = ImmutableArray.Create<ValidationRule>();
-
-		SoftDeleteForSelect = ImmutableArray.Create<SoftDeleteRule>();
+		m_List = [];
+		m_Validation = [];
+		SoftDeleteForSelect = [];
 	}
 
 	/// <summary>
@@ -111,7 +108,7 @@ public class AuditRuleCollection : IReadOnlyList<AuditRule>
 
 	internal void CheckValidation(object argumentValue)
 	{
-		for (int i = 0; i < m_Validation.Length; i++)
+		for (var i = 0; i < m_Validation.Length; i++)
 			m_Validation[i].CheckValue(argumentValue);
 	}
 

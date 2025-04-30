@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Aggregates;
@@ -17,7 +16,6 @@ namespace Tortuga.Chain.CommandBuilders;
 /// <typeparam name="TLimit">The type of the limit option.</typeparam>
 /// <seealso cref="CommandBuilders.MultipleRowDbCommandBuilder{TCommand, TParameter}" />
 /// <seealso cref="ITableDbCommandBuilder" />
-[SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
 public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : MultipleRowDbCommandBuilder<TCommand, TParameter>, ITableDbCommandBuilder
 	where TCommand : DbCommand
 	where TParameter : DbParameter
@@ -35,7 +33,7 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// Gets the aggregate columns.
 	/// </summary>
 	/// <value>The aggregate columns.</value>
-	protected AggregateColumnCollection AggregateColumns { get; } = new();
+	protected AggregateColumnCollection AggregateColumns { get; } = [];
 
 	/// <summary>
 	/// Gets the columns from the metadata.

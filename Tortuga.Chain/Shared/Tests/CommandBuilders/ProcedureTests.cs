@@ -9,7 +9,9 @@ using Tortuga.Chain;
 using System.Data.SqlClient;
 
 #elif SQL_SERVER_MDS
+
 using Microsoft.Data.SqlClient;
+
 #endif
 
 namespace Tests.CommandBuilders;
@@ -47,7 +49,6 @@ public class ProcedureTests : TestBase
 	static readonly object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
 #endif
 
-
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
@@ -68,8 +69,6 @@ public class ProcedureTests : TestBase
 
 			Assert.AreEqual(ansi.Length, getAnsi.Length, "varChar was truncated");
 			Assert.AreEqual(uni.Length, getUni.Length, "NVarChar was truncated.");
-
-
 		}
 		finally
 		{
@@ -78,7 +77,6 @@ public class ProcedureTests : TestBase
 	}
 
 #endif
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Object(string dataSourceName, DataSourceType mode)
@@ -107,10 +105,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToTableSet("cust", "order").ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToTableSet("cust", "order").ExecuteAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(2, result.Count);
 			Assert.AreEqual(countA, result["cust"].Rows.Count);
@@ -149,10 +147,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToTableSet("cust", "order").ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToTableSet("cust", "order").ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(2, result.Count);
 			Assert.AreEqual(countA, result["cust"].Rows.Count);
 			Assert.AreEqual(countB, result["order"].Rows.Count);
@@ -195,10 +193,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToTableSet("cust", "order").ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToTableSet("cust", "order").ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(2, result.Count);
 			Assert.AreEqual(countA, result["cust"].Rows.Count);
 			Assert.AreEqual(countB, result["order"].Rows.Count);
@@ -217,10 +215,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(countA, result.Item1.Count);
 			Assert.AreEqual(countB, result.Item2.Count);
 		}
@@ -236,10 +234,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, c => c.Orders, options).ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, c => c.Orders, options).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(countA, result.Count);
 			Assert.AreEqual(countB, result.Sum(c => c.Orders.Count));
 		}
@@ -255,10 +253,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(countA, result.Count);
 			Assert.AreEqual(countB, result.Sum(c => c.Orders.Count));
 		}
@@ -274,10 +272,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, c => c.Orders, options).ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, c => c.Orders, options).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(countA, result.Count);
 			Assert.AreEqual(countB, result.Sum(c => c.Orders.Count));
 		}
@@ -293,10 +291,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(countA, result.Count);
 			Assert.AreEqual(countB, result.Sum(c => c.Orders.Count));
 		}
@@ -312,10 +310,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Order.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Order.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(countA, result.Count);
 			Assert.AreEqual(countB, result.Sum(c => c.Orders.Count));
 		}
@@ -331,10 +329,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(countA, result.Count);
 			Assert.AreEqual(countB, result.Sum(c => c.Orders.Count));
 		}
@@ -370,10 +368,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToDataSet("cust", "order").ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToDataSet("cust", "order").ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(2, result.Tables.Count);
 			Assert.AreEqual(countA, result.Tables["cust"].Rows.Count);
 			Assert.AreEqual(countB, result.Tables["order"].Rows.Count);
@@ -410,10 +408,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToDataSet("cust", "order").ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToDataSet("cust", "order").ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(2, result.Tables.Count);
 			Assert.AreEqual(countA, result.Tables["cust"].Rows.Count);
 			Assert.AreEqual(countB, result.Tables["order"].Rows.Count);
@@ -456,10 +454,10 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
-			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
+			var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
+			var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync().ConfigureAwait(false);
 
-			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToDataSet("cust", "order").ExecuteAsync();
+			var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToDataSet("cust", "order").ExecuteAsync().ConfigureAwait(false);
 			Assert.AreEqual(2, result.Tables.Count);
 			Assert.AreEqual(countA, result.Tables["cust"].Rows.Count);
 			Assert.AreEqual(countB, result.Tables["order"].Rows.Count);
@@ -480,7 +478,7 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			await dataSource.Procedure("sys.sp_sequence_get_range", new { @sequence_name = "dbo.TestSequence", @range_size = 10 }).ExecuteAsync();
+			await dataSource.Procedure("sys.sp_sequence_get_range", new { @sequence_name = "dbo.TestSequence", @range_size = 10 }).ExecuteAsync().ConfigureAwait(false);
 		}
 		finally
 		{
@@ -537,7 +535,7 @@ public class ProcedureTests : TestBase
 		try
 		{
 			var param = new SequenceGetRangeResult() { sequence_name = "dbo.TestSequence", range_size = 10 };
-			await dataSource.Procedure("sys.sp_sequence_get_range", param).AsNonQuery().CaptureOutputs().ExecuteAsync();
+			await dataSource.Procedure("sys.sp_sequence_get_range", param).AsNonQuery().CaptureOutputs().ExecuteAsync().ConfigureAwait(false);
 
 			Assert.IsTrue(param.range_first_value > 0);
 		}
@@ -554,7 +552,7 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs<SequenceGetRangeResult>().ExecuteAsync();
+			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs<SequenceGetRangeResult>().ExecuteAsync().ConfigureAwait(false);
 
 			Assert.IsTrue(result.range_first_value > 0);
 		}
@@ -570,7 +568,7 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new SequenceGetRangeInputMapped { SequenceName = "dbo.TestSequence", RangeSize = 10 }).AsOutputs<SequenceGetRangeResultMapped>().ExecuteAsync();
+			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new SequenceGetRangeInputMapped { SequenceName = "dbo.TestSequence", RangeSize = 10 }).AsOutputs<SequenceGetRangeResultMapped>().ExecuteAsync().ConfigureAwait(false);
 
 			Assert.IsTrue(result.RangeFirstValue > 0);
 		}
@@ -586,7 +584,7 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs<SequenceGetRangeResultMapped>().ExecuteAsync();
+			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs<SequenceGetRangeResultMapped>().ExecuteAsync().ConfigureAwait(false);
 
 			Assert.IsTrue(result.RangeFirstValue > 0);
 		}
@@ -602,7 +600,7 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs().ExecuteAsync();
+			var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs().ExecuteAsync().ConfigureAwait(false);
 
 			Assert.IsTrue(result.ContainsKey("range_first_value"));
 			Assert.IsTrue((long)result["range_first_value"] > 0);
@@ -622,7 +620,7 @@ public class ProcedureTests : TestBase
 		{
 			var param = new SequenceGetRangeResult() { sequence_name = "dbo.TestSequence", range_size = 10 };
 			var outputs = new SequenceGetRangeResult();
-			await dataSource.Procedure("sys.sp_sequence_get_range", param).AsNonQuery().CaptureOutputs(outputs).ExecuteAsync();
+			await dataSource.Procedure("sys.sp_sequence_get_range", param).AsNonQuery().CaptureOutputs(outputs).ExecuteAsync().ConfigureAwait(false);
 
 			Assert.AreNotSame(param, outputs);
 			Assert.IsTrue(outputs.range_first_value > 0);
@@ -659,7 +657,7 @@ public class ProcedureTests : TestBase
 							   @range_cycle_count = @range_cycle_count OUTPUT,
 							   @sequence_increment = @sequence_increment OUTPUT,
 							   @sequence_min_value = @sequence_min_value OUTPUT,
-							   @sequence_max_value = @sequence_max_value OUTPUT;", parameters).ExecuteAsync();
+							   @sequence_max_value = @sequence_max_value OUTPUT;", parameters).ExecuteAsync().ConfigureAwait(false);
 
 			var rangeFirstValue = parameters.Single(p => p.ParameterName == "@range_first_value").Value;
 			Assert.IsTrue((long)rangeFirstValue > 0);
@@ -688,7 +686,7 @@ public class ProcedureTests : TestBase
 				new SqlParameter("@sequence_max_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
 			};
 
-			await dataSource.Procedure("sys.sp_sequence_get_range", parameters).ExecuteAsync();
+			await dataSource.Procedure("sys.sp_sequence_get_range", parameters).ExecuteAsync().ConfigureAwait(false);
 
 			var rangeFirstValue = parameters.Single(p => p.ParameterName == "@range_first_value").Value;
 			Assert.IsTrue((long)rangeFirstValue > 0);
@@ -705,7 +703,7 @@ public class ProcedureTests : TestBase
 		var dataSource = DataSource3(dataSourceName, mode);
 		try
 		{
-			await dataSource.Procedure("sp_MScleanupmergepublisher").ExecuteAsync();
+			await dataSource.Procedure("sp_MScleanupmergepublisher").ExecuteAsync().ConfigureAwait(false);
 		}
 		finally
 		{

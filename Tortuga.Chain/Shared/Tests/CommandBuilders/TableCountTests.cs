@@ -45,7 +45,7 @@ public class TableCountTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var count = await dataSource.GetTableApproximateCount(tableName).ExecuteAsync();
+			var count = await dataSource.GetTableApproximateCount(tableName).ExecuteAsync().ConfigureAwait(false);
 			Assert.IsTrue(count >= 0);
 		}
 		finally

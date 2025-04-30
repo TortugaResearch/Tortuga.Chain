@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.CommandBuilders;
 
@@ -63,7 +62,6 @@ public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBu
 	/// <param name="keyColumn">The key column.</param>
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull;
 

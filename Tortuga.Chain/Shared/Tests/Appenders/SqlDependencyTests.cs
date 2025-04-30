@@ -77,22 +77,22 @@ public class SqlDependencyTests : TestBase
 			dataSource.StartSqlDependency();
 
 			//Insert a matching row
-			var customerCount1 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
-			await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Tod Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync();
+			var customerCount1 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync().ConfigureAwait(false);
+			await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Tod Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync().ConfigureAwait(false);
 
-			await Task.Delay(500); //give the event time to fire
+			await Task.Delay(500).ConfigureAwait(false); //give the event time to fire
 			Assert.AreEqual(1, eventCount);
 
 			//Insert another matching row
-			var customerCount2 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
-			await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync();
-			await Task.Delay(500); //give the event time to fire
+			var customerCount2 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync().ConfigureAwait(false);
+			await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync().ConfigureAwait(false);
+			await Task.Delay(500).ConfigureAwait(false); //give the event time to fire
 			Assert.AreEqual(2, eventCount);
 
 			//Insert a non-matching row
-			var customerCount3 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
-			await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).ExecuteAsync();
-			await Task.Delay(500); //give the event time to fire
+			var customerCount3 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync().ConfigureAwait(false);
+			await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).ExecuteAsync().ConfigureAwait(false);
+			await Task.Delay(500).ConfigureAwait(false); //give the event time to fire
 			Assert.AreEqual(2, eventCount);
 		}
 		finally

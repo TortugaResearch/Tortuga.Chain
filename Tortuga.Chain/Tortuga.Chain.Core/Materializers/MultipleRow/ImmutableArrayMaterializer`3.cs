@@ -46,7 +46,7 @@ internal sealed class ImmutableArrayMaterializer<TCommand, TParameter, TObject> 
 		{
 			using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
-				result = reader.ToObjects().ToImmutableArray();
+				result = [.. reader.ToObjects()];
 				return result.Length;
 			}
 		}, state);
@@ -67,7 +67,7 @@ internal sealed class ImmutableArrayMaterializer<TCommand, TParameter, TObject> 
 		{
 			using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
-				result = (await reader.ToListAsync().ConfigureAwait(false)).ToImmutableArray();
+				result = [.. await reader.ToListAsync().ConfigureAwait(false)];
 				return result.Length;
 			}
 		}, cancellationToken, state).ConfigureAwait(false);

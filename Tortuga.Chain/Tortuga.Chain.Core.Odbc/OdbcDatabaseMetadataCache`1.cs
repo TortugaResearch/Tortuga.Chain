@@ -1,5 +1,4 @@
 ﻿using System.Data.Odbc;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -22,7 +21,6 @@ public abstract class OdbcDatabaseMetadataCache<TObjectName> : DatabaseMetadataC
 	/// <remarks>
 	/// This does not take into consideration registered types.
 	/// </remarks>
-	[SuppressMessage("Microsoft.Maintainability", "CA1502")]
 	protected override Type? ToClrType(OdbcType dbType, bool isNullable, int? maxLength)
 	{
 		switch (dbType)

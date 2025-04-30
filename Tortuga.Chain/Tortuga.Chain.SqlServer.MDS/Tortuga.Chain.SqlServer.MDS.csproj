@@ -6,7 +6,7 @@
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for SQL Server. This is a replacement for Tortuga.Chain.SqlServer. It uses Microsoft.Data.SqlClient instead of the legacy System.Data.SqlClient.</Description>
 		<PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
@@ -65,6 +65,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Update="..\Shared\DataSource\IHasExtensionCache.cs" Link="IHasExtensionCache.cs" />
 		<Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />
 	</ItemGroup>
 

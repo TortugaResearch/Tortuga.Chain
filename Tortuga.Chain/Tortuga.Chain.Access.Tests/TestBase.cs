@@ -74,10 +74,10 @@ public abstract partial class TestBase
 			case DataSourceType.Normal: return AttachTracers(ds);
 			case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new AccessDataSourceSettings() { StrictMode = true });
 			case DataSourceType.SequentialAccess: return AttachTracers(ds).WithSettings(new AccessDataSourceSettings() { SequentialAccessMode = true });
-			case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync());
+			case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync().ConfigureAwait(false));
 			case DataSourceType.Open:
 				var root = (IRootDataSource)ds;
-				return AttachTracers((AccessDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
+				return AttachTracers((AccessDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync().ConfigureAwait(false), null));
 		}
 		throw new ArgumentException($"Unknown mode {mode}");
 	}

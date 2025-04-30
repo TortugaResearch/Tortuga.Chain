@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
@@ -12,14 +13,12 @@ namespace Tortuga.Chain;
 /// <typeparam name="TObject">The type of the t object.</typeparam>
 /// <seealso cref="IEnumerator{TObject}" />
 /// <seealso cref="IDisposable" />
-public sealed class ObjectStream<TObject> : IEnumerable<TObject>, IDisposable
-#if NET6_0_OR_GREATER
-	, IAsyncDisposable, IAsyncEnumerable<TObject>
-#endif
+[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "<Pending>")]
+public sealed class ObjectStream<TObject> : IEnumerable<TObject>, IDisposable, IAsyncDisposable, IAsyncEnumerable<TObject>
 	where TObject : class
 {
-	readonly StreamingObjectConstructor<TObject> m_ObjectStream;
 	readonly StreamingCommandCompletionToken m_CompletionToken;
+	readonly StreamingObjectConstructor<TObject> m_ObjectStream;
 	bool m_AlreadyRead;
 
 	internal ObjectStream(StreamingObjectConstructor<TObject> objectStream, StreamingCommandCompletionToken completionToken)
@@ -37,26 +36,6 @@ public sealed class ObjectStream<TObject> : IEnumerable<TObject>, IDisposable
 		m_CompletionToken.Dispose();
 	}
 
-	/// <summary>
-	/// Returns an enumerator that iterates through the collection.
-	/// </summary>
-	/// <returns>An enumerator that can be used to iterate through the collection.</returns>
-	public IEnumerator<TObject> GetEnumerator()
-	{
-		if (m_AlreadyRead)
-			throw new InvalidOperationException("This class cannot be enumerated multiple times.");
-		m_AlreadyRead = true;
-
-		while (m_ObjectStream.Read(out var item))
-			yield return item;
-	}
-
-	IEnumerator IEnumerable.GetEnumerator()
-	{
-		return GetEnumerator();
-	}
-
-#if NET6_0_OR_GREATER
 	/// <summary>
 	/// Disposes the asynchronous.
 	/// </summary>
@@ -77,8 +56,26 @@ public sealed class ObjectStream<TObject> : IEnumerable<TObject>, IDisposable
 			throw new InvalidOperationException("This class cannot be enumerated multiple times.");
 		m_AlreadyRead = true;
 
-		while (await m_ObjectStream.ReadAsync().ConfigureAwait(false))
+		while (await m_ObjectStream.ReadAsync(cancellationToken).ConfigureAwait(false))
 			yield return m_ObjectStream.Current!;
 	}
-#endif
+
+	/// <summary>
+	/// Returns an enumerator that iterates through the collection.
+	/// </summary>
+	/// <returns>An enumerator that can be used to iterate through the collection.</returns>
+	public IEnumerator<TObject> GetEnumerator()
+	{
+		if (m_AlreadyRead)
+			throw new InvalidOperationException("This class cannot be enumerated multiple times.");
+		m_AlreadyRead = true;
+
+		while (m_ObjectStream.Read(out var item))
+			yield return item;
+	}
+
+	IEnumerator IEnumerable.GetEnumerator()
+	{
+		return GetEnumerator();
+	}
 }

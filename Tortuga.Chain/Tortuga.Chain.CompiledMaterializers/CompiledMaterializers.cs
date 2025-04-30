@@ -327,8 +327,6 @@ public static class CompiledMaterializers
 					tempVariable = $"var temp{column.Index} = {column.Getter}({column.Index});";
 					getterWithConversion = $"temp{column.Index}.Length >= 1 ? temp{column.Index}[0] : null";
 				}
-
-#if NET6_0_OR_GREATER
 				else if ((property.PropertyType == typeof(DateOnly) || property.PropertyType == typeof(DateOnly?)) && column.ColumnType == typeof(DateTime))
 					getterWithConversion = $"DateOnly.FromDateTime({column.Getter}({column.Index}))";
 				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(DateTime))
@@ -341,7 +339,6 @@ public static class CompiledMaterializers
 					getterWithConversion = $"TimeOnly.Parse({column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
 				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(object))
 					getterWithConversion = $"TimeOnly.Parse((string){column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
-#endif
 				else
 					//simple casting
 					getterWithConversion = $"({propertyTypeName}){column.Getter}({column.Index})";

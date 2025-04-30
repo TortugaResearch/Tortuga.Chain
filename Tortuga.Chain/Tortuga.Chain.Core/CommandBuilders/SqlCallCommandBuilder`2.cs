@@ -5,6 +5,8 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
+#pragma warning disable IDE0301 // Simplify collection initialization
+
 /// <summary>
 /// Class SqlCallCommandBuilder.
 /// Implements the <see cref="MultipleTableDbCommandBuilder{TCommand, TParameter}" />
@@ -23,7 +25,7 @@ public abstract class SqlCallCommandBuilder<TCommand, TParameter> : MultipleTabl
 	/// <param name="sqlStatement">The SQL statement.</param>
 	/// <param name="argumentValue">The argument value.</param>
 	/// <exception cref="ArgumentException">sqlStatement is null or empty.;sqlStatement</exception>
-	public SqlCallCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, string sqlStatement, object? argumentValue) : base(dataSource)
+	protected SqlCallCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, string sqlStatement, object? argumentValue) : base(dataSource)
 	{
 		SqlStatement = sqlStatement;
 		ArgumentValue = argumentValue;

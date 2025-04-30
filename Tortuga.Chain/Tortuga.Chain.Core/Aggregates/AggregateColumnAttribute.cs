@@ -6,7 +6,7 @@
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class AggregateColumnAttribute : BaseAggregateAttribute
+public sealed class AggregateColumnAttribute : BaseAggregateAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AggregateColumnAttribute"/> class.

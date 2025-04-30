@@ -6,11 +6,6 @@ namespace Tortuga.Chain.SQLite
 {
 	internal static class Utilities
 	{
-		public static List<AbstractParameter> GetParameters(this SqlBuilder<AbstractDbType> sqlBuilder)
-		{
-			return sqlBuilder.GetParameters(ParameterBuilderCallback);
-		}
-
 		public static SQLiteParameter CreateParameter(ISqlBuilderEntryDetails<DbType> details, string parameterName, object? value)
 		{
 			var result = new SQLiteParameter();
@@ -18,10 +13,8 @@ namespace Tortuga.Chain.SQLite
 
 			result.Value = value switch
 			{
-#if NET6_0_OR_GREATER
 				DateOnly dateOnly => dateOnly.ToDateTime(default),
 				TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
-#endif
 				TimeSpan timeSpan => default(DateTime) + timeSpan,
 				null => DBNull.Value,
 				_ => value
@@ -33,6 +26,11 @@ namespace Tortuga.Chain.SQLite
 			result.Direction = details.Direction;
 
 			return result;
+		}
+
+		public static List<AbstractParameter> GetParameters(this SqlBuilder<AbstractDbType> sqlBuilder)
+		{
+			return sqlBuilder.GetParameters(ParameterBuilderCallback);
 		}
 
 		/// <summary>

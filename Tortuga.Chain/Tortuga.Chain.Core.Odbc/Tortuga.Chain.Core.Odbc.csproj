@@ -7,7 +7,7 @@
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for .NET and ODBC Databases.</Description>
 		<PackageTags>ORM Fluent DB Reflection</PackageTags>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 

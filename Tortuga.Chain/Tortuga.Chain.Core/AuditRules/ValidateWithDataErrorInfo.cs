@@ -44,6 +44,6 @@ public class ValidateWithDataErrorInfo : ValidationRule
 		var errors = validation.Error;
 
 		if (string.IsNullOrEmpty(errors))
-			throw new ValidationException($"Validation errors: " + errors);
+			throw new ValidationException($"Validation errors: {errors}");
 	}
 }

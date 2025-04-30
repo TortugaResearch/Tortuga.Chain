@@ -6,7 +6,7 @@ namespace Tortuga.Chain.CommandBuilders;
 /// <summary>Struct SqlBuilderEntry</summary>
 /// <typeparam name="TDbType">The type of the database type.</typeparam>
 /// <remarks>This is a struct because we want fast allocations and copies. Try to keep it at 16 bytes or less.</remarks>
-[SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
 public struct SqlBuilderEntry<TDbType>
 	where TDbType : struct
 {
@@ -53,7 +53,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </value>
 	public bool IsFormalParameter
 	{
-		get { return (m_Flags & Flags.IsFormalParameter) > 0; }
+		readonly get { return (m_Flags & Flags.IsFormalParameter) > 0; }
 		internal set
 		{
 			if (value)
@@ -74,7 +74,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </remarks>
 	public bool IsKey
 	{
-		get { return (m_Flags & Flags.IsKey) > 0; }
+		readonly get { return (m_Flags & Flags.IsKey) > 0; }
 		internal set
 		{
 			if (value)
@@ -87,7 +87,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// <summary>
 	/// Gets a value indicating whether this instance is an output parameter.
 	/// </summary>
-	public bool IsOutputParameter =>
+	public readonly bool IsOutputParameter =>
 		Details.Direction == ParameterDirection.InputOutput || Details.Direction == ParameterDirection.Output;
 
 	/// <summary>
@@ -109,7 +109,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </summary>
 	public bool RestrictedInsert
 	{
-		get { return (m_Flags & Flags.RestrictedInsert) > 0; }
+		readonly get { return (m_Flags & Flags.RestrictedInsert) > 0; }
 		internal set
 		{
 			if (value)
@@ -124,7 +124,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </summary>
 	public bool RestrictedRead
 	{
-		get { return (m_Flags & Flags.RestrictedRead) > 0; }
+		readonly get { return (m_Flags & Flags.RestrictedRead) > 0; }
 		internal set
 		{
 			if (value)
@@ -139,7 +139,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </summary>
 	public bool RestrictedUpdate
 	{
-		get { return (m_Flags & Flags.RestrictedUpdate) > 0; }
+		readonly get { return (m_Flags & Flags.RestrictedUpdate) > 0; }
 		internal set
 		{
 			if (value)
@@ -155,7 +155,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// <remarks>This is used when the actual column name doesn't match the CLR-compatible version of the column name. This could happen when the real column name has spaces.</remarks>
 	public bool UseClrNameAsAlias
 	{
-		get { return (m_Flags & Flags.UseClrNameAsAlias) > 0; }
+		readonly get { return (m_Flags & Flags.UseClrNameAsAlias) > 0; }
 		internal set
 		{
 			if (value)
@@ -173,7 +173,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </value>
 	public bool UseForInsert
 	{
-		get { return (m_Flags & Flags.UseForInsert) > 0; }
+		readonly get { return (m_Flags & Flags.UseForInsert) > 0; }
 		internal set
 		{
 			if (value)
@@ -191,7 +191,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </value>
 	public bool UseForRead
 	{
-		get { return (m_Flags & Flags.UseForRead) > 0; }
+		readonly get { return (m_Flags & Flags.UseForRead) > 0; }
 		internal set
 		{
 			if (value)
@@ -209,7 +209,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </value>
 	public bool UseForUpdate
 	{
-		get { return (m_Flags & Flags.UseForUpdate) > 0; }
+		readonly get { return (m_Flags & Flags.UseForUpdate) > 0; }
 		internal set
 		{
 			if (value)
@@ -227,7 +227,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// </value>
 	public bool UseParameter
 	{
-		get { return (m_Flags & Flags.UseParameter) > 0; }
+		readonly get { return (m_Flags & Flags.UseParameter) > 0; }
 		internal set
 		{
 			if (value)
@@ -244,7 +244,7 @@ public struct SqlBuilderEntry<TDbType>
 	/// <remarks>This is needed when referencing anonymous parameters.</remarks>
 	public bool UseParameter2
 	{
-		get { return (m_Flags & Flags.UseParameter2) > 0; }
+		readonly get { return (m_Flags & Flags.UseParameter2) > 0; }
 		internal set
 		{
 			if (value)

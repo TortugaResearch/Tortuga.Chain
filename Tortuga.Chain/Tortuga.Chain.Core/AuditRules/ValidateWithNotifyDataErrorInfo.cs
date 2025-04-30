@@ -26,7 +26,7 @@ public class ValidateWithNotifyDataErrorInfo : ValidationRule
 	/// <param name="argumentValue">The argument value.</param>
 	public override void CheckValue(object argumentValue)
 	{
-		if (!(argumentValue is INotifyDataErrorInfo validation))
+		if (argumentValue is not INotifyDataErrorInfo validation)
 			return;
 
 		CheckValueCore(validation);
@@ -43,7 +43,8 @@ public class ValidateWithNotifyDataErrorInfo : ValidationRule
 			throw new ArgumentNullException(nameof(validation), $"{nameof(validation)} is null.");
 
 		if (validation.HasErrors)
-			throw new ValidationException($"Validation errors: "
+			throw new ValidationException("Validation errors: "
+				+ Environment.NewLine
 				+ string.Join(Environment.NewLine + "    ", validation.GetErrors(null).OfType<object>().Select(e => e.ToString())));
 	}
 }

@@ -6,6 +6,8 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
+#pragma warning disable IDE0301 // Simplify collection initialization
+
 /// <summary>
 /// This is the base class for command builders that represent stored procedures.
 /// </summary>

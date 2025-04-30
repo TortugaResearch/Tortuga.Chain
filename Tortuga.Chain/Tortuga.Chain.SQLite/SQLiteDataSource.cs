@@ -12,7 +12,7 @@ namespace Tortuga.Chain;
 /// </summary>
 public partial class SQLiteDataSource : SQLiteDataSourceBase
 {
-	readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
+	readonly AsyncReaderWriterLock m_SyncLock = new(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 	SQLiteMetadataCache m_DatabaseMetadata;
 
 	/// <summary>
@@ -220,12 +220,8 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 		{
 			lockToken?.Dispose();
 
-#if NET6_0_OR_GREATER
 			if (con != null)
 				await con.DisposeAsync().ConfigureAwait(false);
-#else
-			con?.Dispose();
-#endif
 
 			if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException
 			{
