@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for SQL Server. This is a replacement for Tortuga.Chain.SqlServer. It uses Microsoft.Data.SqlClient instead of the legacy System.Data.SqlClient.</Description>
@@ -10,7 +10,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.5.1</Version>
+		<Version>5.0.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -28,16 +28,7 @@
 		<RootNamespace>Tortuga.Chain</RootNamespace>
 		<DocumentationFile>Tortuga.Chain.SqlServer.MDS.xml</DocumentationFile>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
@@ -62,7 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">

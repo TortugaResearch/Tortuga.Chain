@@ -11,15 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.Core.OleDb", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.Core.Odbc", "Tortuga.Chain.Core.Odbc\Tortuga.Chain.Core.Odbc.csproj", "{C589F7B8-8E15-4B57-B09B-A2ECC4D2717C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer", "Tortuga.Chain.SqlServer\Tortuga.Chain.SqlServer.csproj", "{91F2FECE-35DC-48A9-9C38-885BE1B10074}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer.MDS", "Tortuga.Chain.SqlServer.MDS\Tortuga.Chain.SqlServer.MDS.csproj", "{D0ADCBDB-FE87-4BBA-B79F-359DDFD38AE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer.OleDb", "Tortuga.Chain.SqlServer.OleDb\Tortuga.Chain.SqlServer.OleDb.csproj", "{E83D502B-58A8-4831-8A69-B614AE181686}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SqlServerTestDatabase", "SqlServerTestDatabase\SqlServerTestDatabase.sqlproj", "{4AFDE645-5868-4C91-BCE3-D09F69958AE8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer.Tests", "Tortuga.Chain.SqlServer.Tests\Tortuga.Chain.SqlServer.Tests.csproj", "{CA7930A7-0685-47B5-AEAA-8697292BC06D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer.MDS.Tests", "Tortuga.Chain.SqlServer.MDS.Tests\Tortuga.Chain.SqlServer.MDS.Tests.csproj", "{35875FC4-C3CC-45C3-A05F-9FF029ACC201}"
 EndProject
@@ -77,10 +73,6 @@ Global
 		{C589F7B8-8E15-4B57-B09B-A2ECC4D2717C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C589F7B8-8E15-4B57-B09B-A2ECC4D2717C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C589F7B8-8E15-4B57-B09B-A2ECC4D2717C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91F2FECE-35DC-48A9-9C38-885BE1B10074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91F2FECE-35DC-48A9-9C38-885BE1B10074}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91F2FECE-35DC-48A9-9C38-885BE1B10074}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91F2FECE-35DC-48A9-9C38-885BE1B10074}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0ADCBDB-FE87-4BBA-B79F-359DDFD38AE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0ADCBDB-FE87-4BBA-B79F-359DDFD38AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0ADCBDB-FE87-4BBA-B79F-359DDFD38AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,10 +87,6 @@ Global
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{CA7930A7-0685-47B5-AEAA-8697292BC06D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA7930A7-0685-47B5-AEAA-8697292BC06D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA7930A7-0685-47B5-AEAA-8697292BC06D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA7930A7-0685-47B5-AEAA-8697292BC06D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35875FC4-C3CC-45C3-A05F-9FF029ACC201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{35875FC4-C3CC-45C3-A05F-9FF029ACC201}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35875FC4-C3CC-45C3-A05F-9FF029ACC201}.Release|Any CPU.ActiveCfg = Release|Any CPU

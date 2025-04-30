@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for PostgreSQL.</Description>
@@ -11,7 +11,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.5.0</Version>
+		<Version>5.0.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -41,18 +41,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>SQLITE;CLASS_1;CLASS_2</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>SQLITE;CLASS_1;CLASS_2</DefineConstants>
-	</PropertyGroup>
-
-
-
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<DefineConstants>SQLITE;CLASS_1;CLASS_2</DefineConstants>
 	</PropertyGroup>
 
@@ -75,7 +64,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
 	</ItemGroup>
 
 	<!-- Code Generator -->

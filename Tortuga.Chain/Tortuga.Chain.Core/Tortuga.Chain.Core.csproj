@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for .NET.</Description>
@@ -10,7 +10,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.5.1</Version>
+		<Version>5.0.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -39,7 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
+		<PackageReference Include="System.Runtime.Caching" Version="9.0.4" />
 		<PackageReference Include="Tortuga.Anchor" Version="4.1.0" />
 	</ItemGroup>
 

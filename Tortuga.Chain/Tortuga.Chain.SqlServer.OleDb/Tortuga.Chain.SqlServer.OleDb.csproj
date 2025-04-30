@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for SQL Server. This uses System.Data.OleDb. For System.Data.SqlClient use the Tortuga.Chain.SqlServer package.</Description>
@@ -10,7 +10,7 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.5.0</Version>
+		<Version>5.0.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -29,17 +29,8 @@
 		<DocumentationFile>Tortuga.Chain.SqlServer.OleDb.xml</DocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>SQL_SERVER_OLEDB</DefineConstants>
-	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>SQL_SERVER_OLEDB</DefineConstants>
-	</PropertyGroup>
-
-
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<DefineConstants>SQL_SERVER_OLEDB</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
