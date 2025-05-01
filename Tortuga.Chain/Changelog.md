@@ -19,7 +19,7 @@ Changing from Tortuga.Chain.SqlServer to Tortuga.Chain.SqlServer.MDS should not 
 
 `AsCount` now returns an Int32. If you want a long, then you need to use `AsCount64`. 
 
-This was done because SQL Server can take a huge performance hit when you request a 64-bit count (`COUNT_BIG()`) instead of a 32-bit count (`COUNT`).
+This will allow for better support for databases that only only 32-bit row counts.
 
 ## Version 4.5.1
 
