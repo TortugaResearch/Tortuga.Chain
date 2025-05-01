@@ -1,7 +1,6 @@
 ﻿using Nito.AsyncEx;
 using System.Collections.Concurrent;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.SQLite;
 
@@ -129,6 +128,7 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 	/// <param name="implementation">The implementation.</param>
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementation<SQLiteCommand> implementation, object? state)
 	{
 		if (executionToken == null)
@@ -182,6 +182,7 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object? state)
 	{
 		if (executionToken == null)

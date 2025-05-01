@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 
@@ -239,8 +238,8 @@ namespace Tortuga.Chain.SQLite
 				return null;
 
 			var cleanTypeName = typeName.ToUpperInvariant();
-			if (cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase) >= 0)
-				cleanTypeName = cleanTypeName.Substring(0, cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase));
+			if (cleanTypeName.Contains('(', StringComparison.OrdinalIgnoreCase))
+				cleanTypeName = cleanTypeName[..cleanTypeName.IndexOf('(', StringComparison.OrdinalIgnoreCase)];
 
 			switch (cleanTypeName)
 			{

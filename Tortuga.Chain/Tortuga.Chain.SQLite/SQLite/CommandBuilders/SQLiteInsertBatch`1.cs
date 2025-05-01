@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 	/// <summary>
 	/// Class SQLiteInsertBatchTable is when using a values clause with an array of rows.
 	/// </summary>
-	internal class SQLiteInsertBatch<TObject> : DbCommandBuilder<SQLiteCommand, SQLiteParameter>
+	internal sealed class SQLiteInsertBatch<TObject> : DbCommandBuilder<SQLiteCommand, SQLiteParameter>
 		where TObject : class
 	{
 		readonly InsertOptions m_Options;

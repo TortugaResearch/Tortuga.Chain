@@ -34,9 +34,9 @@ partial class SQLiteDataSource
 		var connection = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
 		SQLiteTransaction transaction;
 		if (isolationLevel == null)
-			transaction = connection.BeginTransaction();
+			transaction = (AbstractTransaction)await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 		else
-			transaction = connection.BeginTransaction(isolationLevel.Value);
+			transaction = (AbstractTransaction)await connection.BeginTransactionAsync(isolationLevel.Value, cancellationToken).ConfigureAwait(false);
 
 		return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
 	}

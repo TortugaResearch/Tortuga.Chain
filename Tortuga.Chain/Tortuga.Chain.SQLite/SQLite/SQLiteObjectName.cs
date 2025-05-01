@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using Tortuga.Anchor;
+﻿using Tortuga.Anchor;
 
 namespace Tortuga.Chain.SQLite
 {
@@ -110,7 +108,7 @@ namespace Tortuga.Chain.SQLite
 		/// <remarks>This is a case-insensitive comparison.</remarks>
 		public override int GetHashCode()
 		{
-			return Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
+			return Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
 		}
 
 		/// <summary>
