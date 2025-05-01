@@ -9,7 +9,7 @@ using Tortuga.Shipwright;
 namespace Traits
 {
 	[Trait]
-	class OpenDataSourceTrait<TRootDataSource, TOpenDataSource, TConnection, TTransaction, TCommand, TDatabaseMetadata> : IOpenDataSource
+	sealed class OpenDataSourceTrait<TRootDataSource, TOpenDataSource, TConnection, TTransaction, TCommand, TDatabaseMetadata> : IOpenDataSource
 		where TRootDataSource : class, IRootDataSource, IDataSource, IHasExtensionCache
 		where TOpenDataSource : class, IDataSource
 		where TConnection : DbConnection

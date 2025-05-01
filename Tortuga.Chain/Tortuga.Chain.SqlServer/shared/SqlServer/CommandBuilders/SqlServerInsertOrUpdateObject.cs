@@ -68,7 +68,7 @@ internal sealed class SqlServerInsertOrUpdateObject<TArgument> : SqlServerObject
 		sql.Append(string.Join(", ", insertColumns.Select(x => "source." + x.QuotedSqlName)));
 		sql.Append(" )");
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		if (identityInsert)

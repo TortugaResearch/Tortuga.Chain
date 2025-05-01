@@ -204,7 +204,7 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
                 break;
         }
 
-        sql.Append(";");
+        sql.Append(';');
 
         return new MySqlCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
     }

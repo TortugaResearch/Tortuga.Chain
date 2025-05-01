@@ -1,5 +1,4 @@
 ﻿using System.Data.OleDb;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Shipwright;
 
@@ -9,6 +8,10 @@ namespace Tortuga.Chain.Access;
 /// Class AccessTransactionalDataSource
 /// </summary>
 [UseTrait(typeof(Traits.TransactionalDataSourceTrait<AccessDataSource, OleDbConnection, OleDbTransaction, OleDbCommand, AccessMetadataCache>))]
+[SuppressMessage("Performance", "CA1033")]
+[SuppressMessage("Design", "CA1063")]
+[SuppressMessage("Design", "CA1816")]
+[SuppressMessage("Design", "CA2213")]
 public partial class AccessTransactionalDataSource : AccessDataSourceBase
 {
 	/// <summary>
@@ -87,6 +90,7 @@ public partial class AccessTransactionalDataSource : AccessDataSourceBase
 	/// <param name="implementation">The implementation.</param>
 	/// <param name="state">The state.</param>
 	/// <returns>StreamingCommandCompletionToken.</returns>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementation<OleDbCommand> implementation, object? state)
 	{
 		if (executionToken == null)

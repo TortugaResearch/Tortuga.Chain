@@ -43,7 +43,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Runtime.Caching" Version="9.0.4" />
-		<PackageReference Include="Tortuga.Anchor" Version="4.1.0" />
+		<PackageReference Include="Tortuga.Anchor" Version="5.0.0" />
 	</ItemGroup>
 
 	<!-- Code Generator -->

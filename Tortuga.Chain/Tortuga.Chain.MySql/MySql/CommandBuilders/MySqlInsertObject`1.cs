@@ -57,7 +57,7 @@ internal sealed class MySqlInsertObject<TArgument> : MySqlObjectCommand<TArgumen
 				sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 				sql.Append(" FROM " + Table.Name.ToQuotedString());
 				sql.Append(" WHERE " + identityColumn.QuotedSqlName + " = LAST_INSERT_ID()");
-				sql.Append(";");
+				sql.Append(';');
 			}
 			else
 			{
@@ -68,7 +68,7 @@ internal sealed class MySqlInsertObject<TArgument> : MySqlObjectCommand<TArgumen
 				sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 				sql.Append(" FROM " + Table.Name.ToQuotedString());
 				sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
-				sql.Append(";");
+				sql.Append(';');
 			}
 		}
 

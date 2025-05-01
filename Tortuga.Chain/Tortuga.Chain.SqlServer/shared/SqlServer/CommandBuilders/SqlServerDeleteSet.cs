@@ -93,7 +93,7 @@ internal sealed class SqlServerDeleteSet : DeleteSetDbCommandBuilder<SqlCommand,
 		{
 			parameters = sqlBuilder.GetParameters();
 		}
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		if (Parameters != null)

@@ -254,7 +254,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 				break;
 		}
 
-		sql.Append(";");
+		sql.Append(';');
 
 		return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
 	}

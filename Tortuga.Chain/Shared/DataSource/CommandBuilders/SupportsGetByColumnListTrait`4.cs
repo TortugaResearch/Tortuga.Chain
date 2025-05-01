@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -10,7 +9,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsGetByColumnList, ISupportsGetByColumn
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsGetByColumnList, ISupportsGetByColumn
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct

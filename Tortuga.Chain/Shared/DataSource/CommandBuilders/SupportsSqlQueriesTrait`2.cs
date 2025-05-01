@@ -6,10 +6,14 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsSqlQueriesTrait<TCommand, TParameter> : ISupportsSqlQueries
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsSqlQueriesTrait<TCommand, TParameter> : ISupportsSqlQueries
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 {
+	[Partial("sqlStatement,argumentValue")]
+	public Func<string, object?, SqlCallCommandBuilder<TCommand, TParameter>> OnSql { get; set; } = null!;
+
 	IMultipleTableDbCommandBuilder ISupportsSqlQueries.Sql(string sqlStatement, object argumentValue)
 	{
 		return OnSql(sqlStatement, argumentValue);
@@ -37,8 +41,4 @@ class SupportsSqlQueriesTrait<TCommand, TParameter> : ISupportsSqlQueries
 	{
 		return OnSql(sqlStatement, argumentValue);
 	}
-
-	[Partial("sqlStatement,argumentValue")]
-	public Func<string, object?, SqlCallCommandBuilder<TCommand, TParameter>> OnSql { get; set; } = null!;
 }
-

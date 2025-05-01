@@ -222,7 +222,7 @@ internal sealed partial class OleDbSqlServerTableOrView<TObject> : TableDbComman
                 break;
         }
 
-        sql.Append(";");
+        sql.Append(';');
 
         return new OleDbCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
     }

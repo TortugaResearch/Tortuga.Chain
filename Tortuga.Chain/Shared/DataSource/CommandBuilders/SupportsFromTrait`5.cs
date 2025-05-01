@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -9,7 +8,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsFromTrait<TCommand, TParameter, TObjectName, TDbType, TLimitOption> : ISupportsFrom
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsFromTrait<TCommand, TParameter, TObjectName, TDbType, TLimitOption> : ISupportsFrom
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct
@@ -58,7 +58,6 @@ class SupportsFromTrait<TCommand, TParameter, TObjectName, TDbType, TLimitOption
 	{
 		return From<TObject>(filterValue);
 	}
-
 
 	/// <summary>
 	/// Creates an operation to directly query a table or view
@@ -165,9 +164,4 @@ class SupportsFromTrait<TCommand, TParameter, TObjectName, TDbType, TLimitOption
 	{
 		return DataSource.OnFromTableOrView<TObject>(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, filterValue, filterOptions);
 	}
-
-
 }
-
-
-

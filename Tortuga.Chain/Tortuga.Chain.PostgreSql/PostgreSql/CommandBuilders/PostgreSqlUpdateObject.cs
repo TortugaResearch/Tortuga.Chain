@@ -58,7 +58,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			{
 				sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
 			}
-			sql.Append(";");
+			sql.Append(';');
 
 			return new PostgreSqlCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
 		}

@@ -109,6 +109,7 @@ public partial class AccessDataSource : AccessDataSourceBase
 	/// <exception cref="System.ArgumentNullException">implementation</exception>
 	/// <exception cref="System.ArgumentNullException">executionToken - only AccessCommandExecutionToken is supported.</exception>
 	/// <exception cref="System.InvalidOperationException">currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.</exception>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementation<OleDbCommand> implementation, object? state)
 	{
 		if (executionToken == null)

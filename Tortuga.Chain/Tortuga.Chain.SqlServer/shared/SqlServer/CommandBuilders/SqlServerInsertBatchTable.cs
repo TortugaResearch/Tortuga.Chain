@@ -53,7 +53,7 @@ internal class SqlServerInsertBatchTable : MultipleRowDbCommandBuilder<SqlComman
 		sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {m_Table.Name.ToQuotedString()} (", null, ")", identityInsert);
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
 		sqlBuilder.BuildSelectTvpForInsertClause(sql, " SELECT ", null, " FROM @ValuesParameter ", identityInsert);
-		sql.Append(";");
+		sql.Append(';');
 
 		if (identityInsert)
 			sql.AppendLine($"SET IDENTITY_INSERT {m_Table.Name.ToQuotedString()} OFF;");

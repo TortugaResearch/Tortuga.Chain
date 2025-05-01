@@ -7,7 +7,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsDeleteByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsDeleteByKeyList, ISupportsDeleteByKey
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsDeleteByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsDeleteByKeyList, ISupportsDeleteByKey
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct

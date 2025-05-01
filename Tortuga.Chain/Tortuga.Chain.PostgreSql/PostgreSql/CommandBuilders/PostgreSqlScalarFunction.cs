@@ -55,7 +55,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 			var sql = new StringBuilder();
 			sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");
-			sql.Append(";");
+			sql.Append(';');
 
 			List<NpgsqlParameter> parameters;
 			parameters = sqlBuilder.GetParameters();

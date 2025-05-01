@@ -26,9 +26,9 @@ partial class AccessDataSource
 		var connection = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
 		OleDbTransaction transaction;
 		if (isolationLevel == null)
-			transaction = connection.BeginTransaction();
+			transaction = (OleDbTransaction)await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 		else
-			transaction = connection.BeginTransaction(isolationLevel.Value);
+			transaction = (OleDbTransaction)await connection.BeginTransactionAsync(isolationLevel.Value, cancellationToken).ConfigureAwait(false);
 
 		return new AccessTransactionalDataSource(this, forwardEvents, connection, transaction);
 	}

@@ -7,13 +7,13 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsUpdateTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdate
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsUpdateTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdate
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
 where TDbType : struct
 {
-
 	[Container(RegisterInterface = true)]
 	internal IUpdateDeleteHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
@@ -22,7 +22,6 @@ where TDbType : struct
 
 	IObjectDbCommandBuilder<TArgument> ISupportsUpdate.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
 		=> DataSource.OnUpdateObject(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-
 
 	/// <summary>
 	/// Update an object in the specified table.
@@ -35,8 +34,6 @@ where TDbType : struct
 	public ObjectDbCommandBuilder<TCommand, TParameter, TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class
 		=> DataSource.OnUpdateObject(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 
-
-
 	/// <summary>
 	/// Update an object in the specified table.
 	/// </summary>
@@ -48,8 +45,4 @@ where TDbType : struct
 	public ObjectDbCommandBuilder<TCommand, TParameter, TArgument> Update<TArgument>(TObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
 		where TArgument : class
 		=> DataSource.OnUpdateObject(tableName, argumentValue, options);
-
 }
-
-
-

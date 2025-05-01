@@ -54,7 +54,7 @@ internal class MySqlScalarFunction : ScalarFunctionCommandBuilder<MySqlCommand, 
 
 		var sql = new StringBuilder();
 		sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )", "?");
-		sql.Append(";");
+		sql.Append(';');
 
 		List<MySqlParameter> parameters;
 		parameters = sqlBuilder.GetParameters();

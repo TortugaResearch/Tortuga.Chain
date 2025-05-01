@@ -7,7 +7,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsInsertTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsInsert
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsInsertTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsInsert
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
@@ -15,7 +16,6 @@ where TDbType : struct
 {
 	[Container(RegisterInterface = true)]
 	internal IInsertHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
-
 
 	IObjectDbCommandBuilder<TArgument> ISupportsInsert.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
 	{
@@ -26,8 +26,6 @@ where TDbType : struct
 	{
 		return DataSource.OnInsertObject(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 	}
-
-
 
 	/// <summary>
 	/// Inserts an object into the specified table.
@@ -42,7 +40,6 @@ where TDbType : struct
 		return Insert(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 	}
 
-
 	/// <summary>
 	/// Creates an operation used to perform an insert operation.
 	/// </summary>
@@ -56,11 +53,4 @@ where TDbType : struct
 	{
 		return DataSource.OnInsertObject(tableName, argumentValue, options);
 	}
-
-
-
-
 }
-
-
-

@@ -205,7 +205,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                     break;
             }
 
-            sql.Append(";");
+            sql.Append(';');
 
             return new PostgreSqlCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }

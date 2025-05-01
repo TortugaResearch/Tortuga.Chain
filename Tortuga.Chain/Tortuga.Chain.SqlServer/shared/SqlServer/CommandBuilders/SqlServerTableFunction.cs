@@ -210,7 +210,7 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 				break;
 		}
 
-		sql.Append(";");
+		sql.Append(';');
 
 		return new SqlServerCommandExecutionToken(DataSource, "Query Function " + m_Table.Name, sql.ToString(), parameters);
 	}

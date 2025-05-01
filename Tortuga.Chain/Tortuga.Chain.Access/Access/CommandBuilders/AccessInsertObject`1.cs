@@ -49,7 +49,7 @@ internal sealed class AccessInsertObject<TArgument> : AccessObjectCommand<TArgum
 		var sql = new StringBuilder();
 		sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
 		sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
-		sql.Append(";");
+		sql.Append(';');
 
 		var result = new AccessCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(DataSource));
 		if (desiredColumns == Materializer.AutoSelectDesiredColumns)
@@ -90,7 +90,7 @@ internal sealed class AccessInsertObject<TArgument> : AccessObjectCommand<TArgum
 		sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 		sql.Append(" FROM " + Table.Name.ToQuotedString());
 		sql.Append(" WHERE " + where);
-		sql.Append(";");
+		sql.Append(';');
 
 		return new AccessCommandExecutionToken(DataSource, "Select after insert into " + Table.Name, sql.ToString(), parameters);
 	}

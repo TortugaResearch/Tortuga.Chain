@@ -54,7 +54,7 @@ internal sealed class OleDbSqlServerDeleteObject<TArgument> : OleDbSqlServerObje
 		sql.Append("DELETE FROM " + Table.Name.ToQuotedString());
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);
 		sqlBuilder.BuildAnonymousWhereClause(sql, " WHERE ", null, true);
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		return new OleDbCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckDeleteRowCount(m_Options);

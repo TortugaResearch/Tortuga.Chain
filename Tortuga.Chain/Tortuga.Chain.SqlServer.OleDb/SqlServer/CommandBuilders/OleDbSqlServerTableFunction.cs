@@ -189,7 +189,7 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
                 break;
         }
 
-        sql.Append(";");
+        sql.Append(';');
 
         return new OleDbCommandExecutionToken(DataSource, "Query Function " + m_Table.Name, sql.ToString(), parameters);
     }

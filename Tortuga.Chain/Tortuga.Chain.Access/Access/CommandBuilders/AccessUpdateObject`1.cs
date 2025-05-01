@@ -53,7 +53,7 @@ internal sealed class AccessUpdateObject<TArgument> : AccessObjectCommand<TArgum
 		var sql = new StringBuilder($"UPDATE {Table.Name.ToQuotedString()}");
 		sqlBuilder.BuildSetClause(sql, " SET ", null, null);
 		sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
-		sql.Append(";");
+		sql.Append(';');
 
 		var updateCommand = new AccessCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParametersKeysLast()).CheckUpdateRowCount(m_Options);
 		updateCommand.ExecutionMode = AccessCommandExecutionMode.NonQuery;
@@ -84,7 +84,7 @@ internal sealed class AccessUpdateObject<TArgument> : AccessObjectCommand<TArgum
 		sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 		sql.Append(" FROM " + Table.Name.ToQuotedString());
 		sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
-		sql.Append(";");
+		sql.Append(';');
 
 		return new AccessCommandExecutionToken(DataSource, $"Query {label} updating " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(DataSource));
 	}

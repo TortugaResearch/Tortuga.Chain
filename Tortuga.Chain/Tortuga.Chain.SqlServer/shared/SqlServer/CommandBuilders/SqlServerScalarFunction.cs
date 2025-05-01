@@ -56,7 +56,7 @@ internal class SqlServerScalarFunction : ScalarFunctionCommandBuilder<SqlCommand
 
 		var sql = new StringBuilder();
 		sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");
-		sql.Append(";");
+		sql.Append(';');
 
 		List<SqlParameter> parameters;
 		parameters = sqlBuilder.GetParameters();

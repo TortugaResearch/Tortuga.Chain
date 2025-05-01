@@ -153,7 +153,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                     break;
             }
 
-            sql.Append(";");
+            sql.Append(';');
 
             return new SQLiteCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters, lockType: LockType.Read);
         }

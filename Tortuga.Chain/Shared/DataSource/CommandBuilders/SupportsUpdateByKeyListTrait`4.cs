@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -8,7 +7,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdateByKey, ISupportsUpdateByKeyList
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdateByKey, ISupportsUpdateByKeyList
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct
@@ -16,7 +16,6 @@ class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 {
 	[Container(RegisterInterface = true)]
 	internal IUpdateDeleteByKeyHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
-
 
 	ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
 	{
@@ -27,14 +26,6 @@ class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	{
 		return DataSource.OnUpdateByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), newValues, new List<string> { key }, options);
 	}
-
-	IMultipleRowDbCommandBuilder ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
-	{
-		return DataSource.OnUpdateByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), newValues, keys, options);
-	}
-
-
-
 
 	/// <summary>
 	/// Update a record by its primary key.
@@ -53,8 +44,6 @@ class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 		return DataSource.OnUpdateByKeyList(tableName, newValues, new List<TKey> { key }, options);
 	}
 
-
-
 	/// <summary>
 	/// Update a record by its primary key.
 	/// </summary>
@@ -68,6 +57,11 @@ class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	public SingleRowDbCommandBuilder<TCommand, TParameter> UpdateByKey<TArgument>(TObjectName tableName, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None)
 	{
 		return DataSource.OnUpdateByKeyList(tableName, newValues, new List<string> { key }, options);
+	}
+
+	IMultipleRowDbCommandBuilder ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
+	{
+		return DataSource.OnUpdateByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), newValues, keys, options);
 	}
 
 	/// <summary>
@@ -87,8 +81,4 @@ class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	{
 		return DataSource.OnUpdateByKeyList(tableName, newValues, keys, options);
 	}
-
 }
-
-
-

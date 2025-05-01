@@ -7,7 +7,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsUpdateSetTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdateSet
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsUpdateSetTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdateSet
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct

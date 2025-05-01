@@ -10,7 +10,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResult> : ISupportsInsertBatch
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResult> : ISupportsInsertBatch
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct
@@ -137,7 +138,7 @@ where TObject : class
 	/// <summary>
 	/// MultiBatcher is used by InsertMultipleBatch to perform a series of batch inserts.
 	/// </summary>
-	class MultiBatcher<TObject> : ILink<int>
+	sealed class MultiBatcher<TObject> : ILink<int>
 	{
 		int m_BatchSize;
 

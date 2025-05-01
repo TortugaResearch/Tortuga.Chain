@@ -162,7 +162,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			{
 				sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
 			}
-			sql.Append(";");
+			sql.Append(';');
 
 			if (m_Parameters != null)
 				parameters.AddRange(m_Parameters);

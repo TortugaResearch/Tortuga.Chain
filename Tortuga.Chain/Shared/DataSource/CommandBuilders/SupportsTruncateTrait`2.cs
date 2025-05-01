@@ -6,7 +6,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsTruncateTrait<TParameter, TObjectName, TDbType> : ISupportsTruncate
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsTruncateTrait<TParameter, TObjectName, TDbType> : ISupportsTruncate
 	where TObjectName : struct
 	where TDbType : struct
 	where TParameter : DbParameter

@@ -56,7 +56,7 @@ internal class OleDbSqlServerScalarFunction : ScalarFunctionCommandBuilder<OleDb
 
 		var sql = new StringBuilder();
 		sqlBuilder.BuildAnonymousFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");
-		sql.Append(";");
+		sql.Append(';');
 
 		List<OleDbParameter> parameters;
 		parameters = sqlBuilder.GetParameters();
