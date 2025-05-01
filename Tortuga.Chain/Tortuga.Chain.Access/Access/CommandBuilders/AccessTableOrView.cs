@@ -58,7 +58,7 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 	/// Gets the columns from the metadata.
 	/// </summary>
 	/// <value>The columns.</value>
-	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
+	public override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Gets the default limit option.

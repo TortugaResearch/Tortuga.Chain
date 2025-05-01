@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DefineConstants>SQL_SERVER_OLEDB</DefineConstants>
+		<DefineConstants>SQL_SERVER_OLEDB;COUNT64</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

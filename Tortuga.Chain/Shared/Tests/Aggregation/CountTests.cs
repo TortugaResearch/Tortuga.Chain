@@ -1,4 +1,5 @@
 ﻿using Tests.Models;
+using Tortuga.Chain.CommandBuilders;
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
@@ -27,6 +28,26 @@ public class CountTests : TestBase
 		}
 	}
 
+#if COUNT64
+
+	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	public void Count64(string dataSourceName, DataSourceType mode, string tableName)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		//WriteLine($"Table {tableName}");
+		try
+		{
+			var count = ((ISupportsCount64)dataSource.From(tableName)).AsCount64().Execute();
+			Assert.IsTrue(count >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
+
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
@@ -50,8 +71,7 @@ public class CountTests : TestBase
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task Count_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
-		//WriteLine($"Table {tableName}");
+		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
 		try
 		{
 			var count = await dataSource.From(tableName).AsCount().ExecuteAsync().ConfigureAwait(false);
@@ -62,6 +82,25 @@ public class CountTests : TestBase
 			Release(dataSource);
 		}
 	}
+
+#if COUNT64
+
+	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	public async Task Count64_Async(string dataSourceName, DataSourceType mode, string tableName)
+	{
+		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
+		try
+		{
+			var count = await ((ISupportsCount64)dataSource.From(tableName)).AsCount64().ExecuteAsync().ConfigureAwait(false);
+			Assert.IsTrue(count >= 0);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
 
 #if NO_DISTINCT_COUNT
 
@@ -111,6 +150,54 @@ public class CountTests : TestBase
 
 #endif
 
+#if COUNT64
+
+	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+	public void Count64ByColumn(string dataSourceName, DataSourceType mode, string tableName, string columnName)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		//WriteLine($"Table {tableName}");
+		try
+		{
+			var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+			if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
+				return; //SQL Server limitation
+
+			var count = ((ISupportsCount64)dataSource.From(tableName)).AsCount64(columnName).Execute();
+			var countDistinct = ((ISupportsCount64)dataSource.From(tableName)).AsCount64(columnName, true).Execute();
+			Assert.IsTrue(count >= 0, "Count cannot be less than zero");
+			Assert.IsTrue(countDistinct <= count, "Count distinct cannot be greater than count");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+	public async Task Count64ByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
+	{
+		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
+		//WriteLine($"Table {tableName}");
+		try
+		{
+			var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+			if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
+				return; //SQL Server limitation
+
+			var count = await ((ISupportsCount64)dataSource.From(tableName)).AsCount64(columnName).ExecuteAsync().ConfigureAwait(false);
+			var countDistinct = await ((ISupportsCount64)dataSource.From(tableName)).AsCount64(columnName, true).ExecuteAsync().ConfigureAwait(false);
+			Assert.IsTrue(count >= 0, "Count cannot be less than zero");
+			Assert.IsTrue(countDistinct <= count, "Count distinct cannot be greater than count");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
+
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
@@ -140,7 +227,7 @@ public class CountTests : TestBase
     [DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
     public async Task CountByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
     {
-        var dataSource = await DataSourceAsync(dataSourceName, mode);
+        var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
         //WriteLine($"Table {tableName}");
         try
         {

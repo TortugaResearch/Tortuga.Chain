@@ -5,12 +5,15 @@ using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Materializers;
+using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders;
 
 /// <summary>
 /// SqlServerTableOrView supports queries against tables and views.
 /// </summary>
+[UseTrait(typeof(SupportsCount64Trait<SqlCommand, SqlParameter, SqlServerLimitOption>))]
 internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount, ISupportsChangeListener
 	where TObject : class
 {
@@ -62,6 +65,12 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	}
 
 	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	/// <value>The columns.</value>
+	public override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
+
+	/// <summary>
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
@@ -69,12 +78,6 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	{
 		get { return (SqlServerDataSourceBase)base.DataSource; }
 	}
-
-	/// <summary>
-	/// Gets the columns from the metadata.
-	/// </summary>
-	/// <value>The columns.</value>
-	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Return the approximate distinct count using the APPROX_COUNT_DISTINCT function.

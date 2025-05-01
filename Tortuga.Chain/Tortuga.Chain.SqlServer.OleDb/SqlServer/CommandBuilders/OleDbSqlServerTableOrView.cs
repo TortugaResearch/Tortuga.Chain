@@ -4,12 +4,15 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders;
 
 /// <summary>
 /// OleDbSqlServerTableOrView supports queries against tables and views.
 /// </summary>
+[UseTrait(typeof(SupportsCount64Trait<OleDbCommand, OleDbParameter, SqlServerLimitOption>))]
 internal sealed partial class OleDbSqlServerTableOrView<TObject> : TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption, TObject>
 		where TObject : class
 {
@@ -61,16 +64,16 @@ internal sealed partial class OleDbSqlServerTableOrView<TObject> : TableDbComman
 	}
 
 	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	/// <value>The columns.</value>
+	public override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
+
+	/// <summary>
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
 	public new OleDbSqlServerDataSourceBase DataSource => (OleDbSqlServerDataSourceBase)base.DataSource;
-
-	/// <summary>
-	/// Gets the columns from the metadata.
-	/// </summary>
-	/// <value>The columns.</value>
-	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.
