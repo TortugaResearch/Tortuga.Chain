@@ -9,7 +9,6 @@ namespace Tortuga.Chain;
 [UseTrait(typeof(Traits.RootDataSourceTrait<AbstractDataSource, OleDbSqlServerTransactionalDataSource, OleDbSqlServerOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, OleDbConnectionStringBuilder>))]
 partial class OleDbSqlServerDataSource
 {
-
 	private partial OleDbSqlServerTransactionalDataSource OnBeginTransaction(IsolationLevel? isolationLevel, bool forwardEvents)
 	{
 		return BeginTransaction(null, isolationLevel, forwardEvents);
@@ -18,7 +17,6 @@ partial class OleDbSqlServerDataSource
 	private partial Task<OleDbSqlServerTransactionalDataSource> OnBeginTransactionAsync(IsolationLevel? isolationLevel, bool forwardEvents, CancellationToken cancellationToken)
 	{
 		return BeginTransactionAsync(null, isolationLevel, forwardEvents, cancellationToken);
-
 	}
 
 	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
@@ -72,7 +70,7 @@ partial class OleDbSqlServerDataSource
 
 		if (sql != null)
 			using (var cmd = new OleDbCommand(sql, con))
-				await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+				await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
 
 		return con;
 	}
@@ -80,4 +78,3 @@ partial class OleDbSqlServerDataSource
 	private partial OleDbSqlServerOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction)
 		=> new OleDbSqlServerOpenDataSource(this, connection, transaction);
 }
-

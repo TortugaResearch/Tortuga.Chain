@@ -49,6 +49,9 @@ public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCo
 	/// </summary>
 	protected override void OnBuildCommand(SqlCommand command)
 	{
+		if (command == null)
+
+			throw new ArgumentNullException(nameof(command), $"{nameof(command)} is null.");
 		base.OnBuildCommand(command);
 		if (m_OnChangeEventHandler != null)
 		{

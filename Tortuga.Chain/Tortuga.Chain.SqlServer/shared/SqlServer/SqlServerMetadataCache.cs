@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.Aggregates;
+﻿using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
@@ -1134,7 +1133,7 @@ ORDER BY ic.key_ordinal;";
 		}
 	}
 
-	class SqlServerIndexColumnMetadata : IndexColumnMetadata<SqlDbType>
+	sealed class SqlServerIndexColumnMetadata : IndexColumnMetadata<SqlDbType>
 	{
 		/// <summary>
 		/// Initializes a new instance of the IndexColumnMetadata class.

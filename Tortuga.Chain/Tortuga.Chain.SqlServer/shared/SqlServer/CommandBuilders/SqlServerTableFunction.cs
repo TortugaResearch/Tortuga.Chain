@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// Use for table-valued functions.
 /// </summary>
 /// <seealso cref="TableDbCommandBuilder{SqlCommand, SqlParameter, SqlServerLimitOption}" />
-internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsApproximateCount
+sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsApproximateCount
 {
 	readonly object? m_FunctionArgumentValue;
 	readonly TableFunctionMetadata<SqlServerObjectName, SqlDbType> m_Table;
@@ -98,7 +98,7 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 		}
 
 		//Support check
-		if (!Enum.IsDefined(typeof(SqlServerLimitOption), m_LimitOptions))
+		if (!Enum.IsDefined(m_LimitOptions))
 			throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions}");
 		if (m_LimitOptions == SqlServerLimitOption.TableSampleSystemRows || m_LimitOptions == SqlServerLimitOption.TableSampleSystemPercentage)
 			throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions} with table-valued functions");

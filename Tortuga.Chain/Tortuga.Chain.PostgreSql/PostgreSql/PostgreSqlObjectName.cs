@@ -36,6 +36,8 @@
 			Name = name;
 		}
 
+		static readonly char[] s_DotSeparator = ['.'];
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PostgreSqlObjectName"/> struct.
 		/// </summary>
@@ -50,7 +52,7 @@
 			if (string.IsNullOrEmpty(qualifiedName))
 				throw new ArgumentException("Fully qualified name is null or empty.", nameof(qualifiedName));
 
-			var parts = qualifiedName.Split(['.'], 3);
+			var parts = qualifiedName.Split(s_DotSeparator, 3);
 			if (parts.Length == 1)
 			{
 				Database = null;

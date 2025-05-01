@@ -16,7 +16,7 @@ internal static class Utilities
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
 			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
 			null => DBNull.Value,
-			_ => value ?? DBNull.Value
+			_ => value
 		};
 
 		if (details.DbType.HasValue)

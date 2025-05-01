@@ -1,10 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.Appenders;
+﻿using Tortuga.Chain.Appenders;
 using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain.SqlServer.Appenders;
 
-internal class NotifyChangeAppender<TResult> : Appender<TResult>
+sealed internal class NotifyChangeAppender<TResult> : Appender<TResult>
 {
 	readonly OnChangeEventHandler m_EventHandler;
 

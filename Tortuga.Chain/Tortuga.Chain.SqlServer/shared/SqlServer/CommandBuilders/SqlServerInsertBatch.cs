@@ -10,7 +10,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// Class SqlServerInsertBatchTable is when using a values clause with an array of rows.
 /// </summary>
-internal class SqlServerInsertBatch<TObject> : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
+internal sealed class SqlServerInsertBatch<TObject> : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
 	where TObject : class
 {
 	readonly InsertOptions m_Options;

@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// Class SqlServerInsertBatchTable is when a table-type parameter is provided.
 /// </summary>
-internal class SqlServerInsertBatchTable : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
+internal sealed class SqlServerInsertBatchTable : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
 {
 	readonly InsertOptions m_Options;
 

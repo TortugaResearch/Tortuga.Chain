@@ -23,6 +23,8 @@ public struct MySqlObjectName : IEquatable<MySqlObjectName>
 		Name = Normalize(name);
 	}
 
+	static readonly char[] s_DotSeparator = ['.'];
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MySqlObjectName"/> struct.
 	/// </summary>
@@ -32,7 +34,7 @@ public struct MySqlObjectName : IEquatable<MySqlObjectName>
 		if (string.IsNullOrEmpty(schemaAndName))
 			throw new ArgumentException($"{nameof(schemaAndName)} is null or empty.", nameof(schemaAndName));
 
-		var parts = schemaAndName.Split(['.'], 2);
+		var parts = schemaAndName.Split(s_DotSeparator, 2);
 		if (parts.Length == 1)
 		{
 			Schema = null;

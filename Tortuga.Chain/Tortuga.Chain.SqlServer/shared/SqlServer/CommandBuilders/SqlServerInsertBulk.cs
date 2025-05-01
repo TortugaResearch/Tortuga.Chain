@@ -183,7 +183,7 @@ public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlT
 		{
 			SetupBulkCopy(bcp);
 
-			await bcp.WriteToServerAsync(m_Source).ConfigureAwait(false);
+			await bcp.WriteToServerAsync(m_Source, cancellationToken).ConfigureAwait(false);
 			return m_Source.RecordsAffected;
 		}
 	}
