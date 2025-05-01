@@ -1,4 +1,4 @@
-## Version 5.0
+## Version 5.1
 
 ### Breaking Changes
 
@@ -14,6 +14,13 @@ These changes were prompted by PostgreSQL database driver no longer supporting t
 This package is obsolete. Use Microsoft.Data.SqlClient instead, which is exposed via Tortuga.Chain.SqlServer.MDS. 
 
 Changing from Tortuga.Chain.SqlServer to Tortuga.Chain.SqlServer.MDS should not affect application code. Both packages use the same namespace and class names. The only difference is the database driver they use.
+
+## Version 4.5.1
+
+Add timeouts to bulk insert.
+
+* `.WithNoTimeout()`
+* `.WithTimeout(TimeSpan timeout)`
 
 ## Version 4.4
 
