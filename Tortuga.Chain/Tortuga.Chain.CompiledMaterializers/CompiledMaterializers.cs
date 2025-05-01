@@ -1,7 +1,6 @@
 ﻿using CSScriptLib;
 using System.ComponentModel;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
@@ -122,7 +121,7 @@ public static class CompiledMaterializers
 
 		var code = new StringBuilder();
 
-		var typeName = MetadataCache.GetMetadata(typeof(TObject)).CSharpFullName;
+		var typeName = MetadataCache.GetMetadata<TObject>().CSharpFullName;
 
 		var changeTracker = typeof(TObject).GetInterfaces().Any(x => x == typeof(IChangeTracking));
 
@@ -175,7 +174,7 @@ public static class CompiledMaterializers
 		code.AppendLine("{");
 		code.AppendLine($"    var result = new {typeName}();");
 
-		var properties = MetadataCache.GetMetadata(typeof(TObject)).Properties;
+		var properties = MetadataCache.GetMetadata<TObject>().Properties;
 		var path = "result";
 
 		ConstructDecomposedObjects(code, path, properties);
@@ -366,7 +365,7 @@ public static class CompiledMaterializers
 		}
 	}
 
-	private class ColumnData
+	sealed class ColumnData
 	{
 		public ColumnData(int index, Type columnType, string getter, bool isNullable)
 		{
