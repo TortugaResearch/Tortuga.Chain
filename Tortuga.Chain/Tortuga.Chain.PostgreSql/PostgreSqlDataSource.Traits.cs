@@ -9,7 +9,6 @@ namespace Tortuga.Chain;
 [UseTrait(typeof(Traits.RootDataSourceTrait<AbstractDataSource, PostgreSqlTransactionalDataSource, PostgreSqlOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, NpgsqlConnectionStringBuilder>))]
 partial class PostgreSqlDataSource
 {
-
 	private partial PostgreSqlTransactionalDataSource OnBeginTransaction(IsolationLevel? isolationLevel, bool forwardEvents)
 	{
 		return new PostgreSqlTransactionalDataSource(this, isolationLevel, forwardEvents);
@@ -20,11 +19,10 @@ partial class PostgreSqlDataSource
 		var connection = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
 		NpgsqlTransaction transaction;
 		if (isolationLevel.HasValue)
-			transaction = connection.BeginTransaction(isolationLevel.Value);
+			transaction = await connection.BeginTransactionAsync(isolationLevel.Value, cancellationToken).ConfigureAwait(false);
 		else
-			transaction = connection.BeginTransaction();
+			transaction = await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 		return new PostgreSqlTransactionalDataSource(this, forwardEvents, connection, transaction);
-
 	}
 
 	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
@@ -62,4 +60,3 @@ partial class PostgreSqlDataSource
 	private partial PostgreSqlOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction)
 		=> new PostgreSqlOpenDataSource(this, connection, transaction);
 }
-

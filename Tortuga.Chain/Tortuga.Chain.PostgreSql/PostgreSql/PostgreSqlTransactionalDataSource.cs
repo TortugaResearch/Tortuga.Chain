@@ -8,6 +8,11 @@ namespace Tortuga.Chain.PostgreSql
 	/// Class PostgreSqlTransactionalDataSource
 	/// </summary>
 	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<PostgreSqlDataSource, NpgsqlConnection, NpgsqlTransaction, NpgsqlCommand, PostgreSqlMetadataCache>))]
+	[SuppressMessage("Design", "CA1200")]
+	[SuppressMessage("Design", "CA1033")]
+	[SuppressMessage("Design", "CA1063")]
+	[SuppressMessage("Design", "CA1816")]
+	[SuppressMessage("Design", "CA2213")]
 	public partial class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase
 	{
 		/// <summary>
@@ -75,6 +80,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <param name="state">The state.</param>
 		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
+		[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 		public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, StreamingCommandImplementation<NpgsqlCommand> implementation, object? state)
 		{
 			if (executionToken == null)
@@ -116,6 +122,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <param name="state">The state.</param>
 		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
+		[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 		public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, StreamingCommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object? state)
 		{
 			if (executionToken == null)

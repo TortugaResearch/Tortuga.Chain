@@ -78,6 +78,46 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 	/// </summary>
 	/// <param name="cmd">The command.</param>
 	/// <param name="implementation">The implementation.</param>
+	protected static NpgsqlTransaction? DereferenceCursors(NpgsqlCommand cmd, StreamingCommandImplementation<NpgsqlCommand> implementation)
+	{
+		if (cmd == null)
+			throw new ArgumentNullException(nameof(cmd), $"{nameof(cmd)} is null.");
+		if (cmd.Connection == null)
+			throw new ArgumentNullException($"{nameof(cmd)}.{nameof(cmd.Connection)}", $"{nameof(cmd)}.{nameof(cmd.Connection)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var closeTransaction = false;
+
+		if (cmd.Transaction == null)
+		{
+			cmd.Transaction = cmd.Connection.BeginTransaction();
+			closeTransaction = true;
+		}
+
+		var sql = new StringBuilder();
+		using (var reader = cmd.ExecuteReader())
+			while (reader.Read())
+				sql.AppendLine($"FETCH ALL IN \"{reader.GetString(0)}\";");
+
+		using (var cmd2 = new NpgsqlCommand())
+		{
+			cmd2.Connection = cmd.Connection;
+			cmd2.Transaction = cmd.Transaction;
+			cmd2.CommandTimeout = cmd.CommandTimeout;
+			cmd2.CommandText = sql.ToString();
+			cmd2.CommandType = CommandType.Text;
+			implementation(cmd2);
+		}
+
+		return closeTransaction ? cmd.Transaction : null;
+	}
+
+	/// <summary>
+	/// Dereferences cursors returned by a stored procedure.
+	/// </summary>
+	/// <param name="cmd">The command.</param>
+	/// <param name="implementation">The implementation.</param>
 	protected static async Task<int?> DereferenceCursorsAsync(NpgsqlCommand cmd, CommandImplementationAsync<NpgsqlCommand> implementation)
 	{
 		if (cmd == null)
@@ -92,7 +132,7 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 		{
 			if (cmd.Transaction == null)
 			{
-				cmd.Transaction = cmd.Connection.BeginTransaction();
+				cmd.Transaction = await cmd.Connection.BeginTransactionAsync().ConfigureAwait(false);
 				closeTransaction = true;
 			}
 
@@ -136,7 +176,7 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 
 		if (cmd.Transaction == null)
 		{
-			cmd.Transaction = cmd.Connection.BeginTransaction();
+			cmd.Transaction = await cmd.Connection.BeginTransactionAsync().ConfigureAwait(false);
 			closeTransaction = true;
 		}
 
@@ -153,46 +193,6 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 			cmd2.CommandText = sql.ToString();
 			cmd2.CommandType = CommandType.Text;
 			await implementation(cmd2).ConfigureAwait(false);
-		}
-
-		return closeTransaction ? cmd.Transaction : null;
-	}
-
-	/// <summary>
-	/// Dereferences cursors returned by a stored procedure.
-	/// </summary>
-	/// <param name="cmd">The command.</param>
-	/// <param name="implementation">The implementation.</param>
-	protected NpgsqlTransaction? DereferenceCursors(NpgsqlCommand cmd, StreamingCommandImplementation<NpgsqlCommand> implementation)
-	{
-		if (cmd == null)
-			throw new ArgumentNullException(nameof(cmd), $"{nameof(cmd)} is null.");
-		if (cmd.Connection == null)
-			throw new ArgumentNullException($"{nameof(cmd)}.{nameof(cmd.Connection)}", $"{nameof(cmd)}.{nameof(cmd.Connection)} is null.");
-		if (implementation == null)
-			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
-
-		var closeTransaction = false;
-
-		if (cmd.Transaction == null)
-		{
-			cmd.Transaction = cmd.Connection.BeginTransaction();
-			closeTransaction = true;
-		}
-
-		var sql = new StringBuilder();
-		using (var reader = cmd.ExecuteReader())
-			while (reader.Read())
-				sql.AppendLine($"FETCH ALL IN \"{reader.GetString(0)}\";");
-
-		using (var cmd2 = new NpgsqlCommand())
-		{
-			cmd2.Connection = cmd.Connection;
-			cmd2.Transaction = cmd.Transaction;
-			cmd2.CommandTimeout = cmd.CommandTimeout;
-			cmd2.CommandText = sql.ToString();
-			cmd2.CommandType = CommandType.Text;
-			implementation(cmd2);
 		}
 
 		return closeTransaction ? cmd.Transaction : null;

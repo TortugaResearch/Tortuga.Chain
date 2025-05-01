@@ -1,6 +1,5 @@
 using Npgsql;
 using NpgsqlTypes;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
@@ -80,7 +79,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			}
 
 			//Support check
-			if (!Enum.IsDefined(typeof(PostgreSqlLimitOption), m_LimitOptions))
+			if (!Enum.IsDefined(m_LimitOptions))
 				throw new NotSupportedException($"PostgreSQL does not support limit option {(LimitOptions)m_LimitOptions}");
 
 			//Validation

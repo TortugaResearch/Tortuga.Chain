@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Tortuga.Chain.PostgreSql
+﻿namespace Tortuga.Chain.PostgreSql
 {
 	/// <summary>
 	/// Represents an object in PostgreSql (e.g. table, view, procedure)
@@ -52,7 +50,7 @@ namespace Tortuga.Chain.PostgreSql
 			if (string.IsNullOrEmpty(qualifiedName))
 				throw new ArgumentException("Fully qualified name is null or empty.", nameof(qualifiedName));
 
-			var parts = qualifiedName.Split(new[] { '.' }, 3);
+			var parts = qualifiedName.Split(['.'], 3);
 			if (parts.Length == 1)
 			{
 				Database = null;
@@ -148,7 +146,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// </returns>
 		public override bool Equals(object? obj)
 		{
-			var other = obj as PostgreSqlObjectName?;
+			var other = obj as AbstractObjectName?;
 			if (other == null)
 				return false;
 			return this == other;
@@ -159,7 +157,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// </summary>
 		/// <param name="other">The other.</param>
 		/// <returns></returns>
-		public bool Equals(PostgreSqlObjectName other) => this == other;
+		public bool Equals(AbstractObjectName other) => this == other;
 
 		/// <summary>
 		/// Returns a hash code for this instance.
@@ -167,7 +165,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <returns>
 		/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 		/// </returns>
-		public override int GetHashCode() => Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
+		public override int GetHashCode() => Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// To the quoted string.
