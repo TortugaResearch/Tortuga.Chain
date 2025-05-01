@@ -91,7 +91,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 				return $"SUM(DISTINCT {QuoteColumnName(columnName!)})";
 
 			default:
-				throw new ArgumentOutOfRangeException(nameof(AggregateType));
+				throw new ArgumentOutOfRangeException(nameof(aggregateType));
 		}
 	}
 
@@ -243,6 +243,9 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// <returns>DatabaseObject.</returns>
 	public TableOrViewMetadata<TObjectName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
 	{
+		if (type == null)
+			throw new ArgumentNullException(nameof(type), $"{nameof(type)} is null.");
+
 		var cacheKey = (type, operation);
 
 		if (m_TypeTableMap.TryGetValue(cacheKey, out var cachedResult))
@@ -276,8 +279,8 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 		//This section infers the schema from namespace
 		{
 			var schema = type.Namespace;
-			if (schema != null && schema.Contains(".", StringComparison.Ordinal))
-				schema = schema.Substring(schema.LastIndexOf(".", StringComparison.Ordinal) + 1);
+			if (schema != null && schema.Contains('.', StringComparison.Ordinal))
+				schema = schema.Substring(schema.LastIndexOf('.') + 1);
 
 			var nameA = ParseObjectName(schema, type.Name);
 			var nameB = ParseObjectName(null, type.Name);

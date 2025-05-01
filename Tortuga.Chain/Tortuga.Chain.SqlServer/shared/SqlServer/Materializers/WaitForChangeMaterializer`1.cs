@@ -4,7 +4,7 @@ using Tortuga.Chain.SqlServer.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer.Materializers;
 
-internal class WaitForChangeMaterializer<TCommandBuilder> : Materializer<SqlCommand, SqlParameter>
+sealed internal class WaitForChangeMaterializer<TCommandBuilder> : Materializer<SqlCommand, SqlParameter>
 		where TCommandBuilder : DbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
 {
 	/// <summary>

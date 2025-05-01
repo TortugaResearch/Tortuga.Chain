@@ -41,7 +41,6 @@ public class ToObjectStreamTests : TestBase
 		}
 	}
 
-#if NET6_0_OR_GREATER
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task ToObjectStreamAsync(string dataSourceName, DataSourceType mode)
 	{
@@ -66,7 +65,7 @@ public class ToObjectStreamTests : TestBase
 			var empB3 = new Employee() { FirstName = "B", LastName = "3", Title = uniqueKey };
 			dataSource.Insert(EmployeeTableName, empB3).ToObject<Employee>().Execute();
 
-			await using var objectStream = await dataSource.From<Employee>(new { Title = uniqueKey }).ToObjectStream<Employee>().ExecuteAsync();
+			await using var objectStream = await dataSource.From<Employee>(new { Title = uniqueKey }).ToObjectStream<Employee>().ExecuteAsync().ConfigureAwait(false);
 			await foreach (var item in objectStream)
 			{
 				Assert.AreEqual(uniqueKey, item.Title);
@@ -77,5 +76,4 @@ public class ToObjectStreamTests : TestBase
 			Release(dataSource);
 		}
 	}
-#endif
 }

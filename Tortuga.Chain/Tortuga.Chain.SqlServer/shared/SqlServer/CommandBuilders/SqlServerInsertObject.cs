@@ -55,7 +55,7 @@ internal sealed class SqlServerInsertObject<TArgument> : SqlServerObjectCommand<
 		sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
 		sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
-		sql.Append(";");
+		sql.Append(';');
 
 		sql.Append(footer);
 

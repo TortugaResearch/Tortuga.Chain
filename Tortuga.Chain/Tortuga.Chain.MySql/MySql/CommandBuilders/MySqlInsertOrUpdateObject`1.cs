@@ -55,14 +55,14 @@ internal sealed class MySqlInsertOrUpdateObject<TArgument> : MySqlObjectCommand<
 				sqlBuilder.BuildInsertStatement(sql, Table.Name.ToString(), null);
 			else
 				sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToString(), null);
-			sql.Append(";");
+			sql.Append(';');
 		}
 		else
 		{
 			sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")", identityInsert);
 			sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
 			sqlBuilder.BuildSetClause(sql, $" ON DUPLICATE KEY UPDATE ", null, null);
-			sql.Append(";");
+			sql.Append(';');
 		}
 
 		if (sqlBuilder.HasReadFields)

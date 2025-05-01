@@ -61,7 +61,7 @@ internal sealed class OleDbSqlServerUpdateObject<TArgument> : OleDbSqlServerObje
 		sqlBuilder.BuildAnonymousSetClause(sql, " SET ", null, null);
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
 		sqlBuilder.BuildAnonymousWhereClause(sql, " WHERE ", null, false); //second pass parameters
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		return new OleDbCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);

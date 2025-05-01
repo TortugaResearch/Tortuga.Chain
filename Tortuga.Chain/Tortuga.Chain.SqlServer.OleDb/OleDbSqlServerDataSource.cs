@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Data.OleDb;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.SqlServer;
@@ -180,6 +179,7 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementation<OleDbCommand> implementation, object? state)
 	{
 		if (executionToken == null)
@@ -222,6 +222,7 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementationAsync<OleDbCommand> implementation, CancellationToken cancellationToken, object? state)
 	{
 		if (executionToken == null)
@@ -247,12 +248,8 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 		}
 		catch (Exception ex)
 		{
-#if NET6_0_OR_GREATER
 			if (con != null)
 				await con.DisposeAsync().ConfigureAwait(false);
-#else
-			con?.Dispose();
-#endif
 			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
 			{
 				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
@@ -413,7 +410,7 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 
 		try
 		{
-			using (var con = CreateConnection())
+			using (var con = await CreateConnectionAsync().ConfigureAwait(false))
 			{
 				var rows = await implementation(con, null, cancellationToken).ConfigureAwait(false);
 				OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);

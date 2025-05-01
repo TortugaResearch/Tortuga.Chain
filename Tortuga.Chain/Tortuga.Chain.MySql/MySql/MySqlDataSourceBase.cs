@@ -7,6 +7,7 @@ namespace Tortuga.Chain.MySql;
 /// <summary>
 /// Class MySqlDataSourceBase.
 /// </summary>
+[SuppressMessage("Design", "CA1200")]
 public abstract partial class MySqlDataSourceBase : DataSource<MySqlConnection, MySqlTransaction, MySqlCommand, MySqlParameter>
 {
 	/// <summary>

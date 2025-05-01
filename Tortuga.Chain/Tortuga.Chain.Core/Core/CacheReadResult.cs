@@ -6,8 +6,8 @@ namespace Tortuga.Chain.Core;
 /// Lightweight alternative to a Tuple for reading from the cache asynchronously.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-[SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
-public struct CacheReadResult<T>
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
+public readonly struct CacheReadResult<T>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CacheReadResult{T}"/> struct.

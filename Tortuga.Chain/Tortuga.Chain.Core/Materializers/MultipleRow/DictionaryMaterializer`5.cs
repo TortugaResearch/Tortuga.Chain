@@ -65,7 +65,7 @@ internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDict
 		{
 			using (var reader = (await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
-				while (await reader.ReadAsync().ConfigureAwait(false))
+				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
 					AddToDictionary(result, reader, reader.Current!);
 
 				return reader.RowsRead;

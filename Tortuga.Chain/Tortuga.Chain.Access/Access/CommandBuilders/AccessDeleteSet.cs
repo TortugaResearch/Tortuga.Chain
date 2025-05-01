@@ -82,7 +82,7 @@ internal sealed class AccessDeleteSet : DeleteSetDbCommandBuilder<OleDbCommand, 
 		{
 			parameters = sqlBuilder.GetParameters(DataSource);
 		}
-		sql.Append(";");
+		sql.Append(';');
 		if (Parameters != null)
 			parameters.AddRange(Parameters);
 
@@ -127,7 +127,7 @@ internal sealed class AccessDeleteSet : DeleteSetDbCommandBuilder<OleDbCommand, 
 		{
 			parameters = sqlBuilder.GetParameters(DataSource);
 		}
-		sql.Append(";");
+		sql.Append(';');
 
 		if (Parameters != null)
 			parameters.AddRange(Parameters.Select(p => p.Clone()));

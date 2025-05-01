@@ -70,7 +70,7 @@ internal sealed class DynamicCollectionMaterializer<TCommand, TParameter> : Colu
 					IDictionary<string, object?> item = new ExpandoObject();
 					for (var i = 0; i < reader.FieldCount; i++)
 					{
-						if (reader.IsDBNull(i))
+						if (await reader.IsDBNullAsync(i).ConfigureAwait(false))
 							item[reader.GetName(i)] = null;
 						else
 							item[reader.GetName(i)] = reader.GetValue(i);

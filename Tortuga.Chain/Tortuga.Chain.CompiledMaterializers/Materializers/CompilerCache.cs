@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace Tortuga.Chain.Materializers;
 
-internal class CompilerCache
+sealed internal class CompilerCache
 {
 	readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, object>> m_Cache = new ConcurrentDictionary<Type, ConcurrentDictionary<string, object>>();
 

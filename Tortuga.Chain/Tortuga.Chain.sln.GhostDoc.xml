@@ -112,7 +112,6 @@
       <SelectedProject>Tortuga.Chain.MySql</SelectedProject>
       <SelectedProject>Tortuga.Chain.PostgreSql</SelectedProject>
       <SelectedProject>Tortuga.Chain.SQLite</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SqlServer</SelectedProject>
       <SelectedProject>Tortuga.Chain.SqlServer.MDS</SelectedProject>
       <SelectedProject>Tortuga.Chain.SqlServer.OleDb</SelectedProject>
     </SelectedProjects>

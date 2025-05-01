@@ -29,10 +29,12 @@ public class AggregateColumnCollection : System.Collections.ObjectModel.Collecti
 	/// <remarks>This does not include the phrase 'SELECT'</remarks>
 	public void BuildGroupByClause(StringBuilder sql, string? header, IDataSource dataSource, string? footer)
 	{
+		if (sql == null)
+			throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
 		if (!HasGroupBy)
 			throw new InvalidOperationException($"{nameof(HasGroupBy)} is false. There are no GROUP BY columns to process.");
 
-		sql.Append(header + string.Join(", ", this.Where(c => c.GroupBy).Select(c => c.ToGroupBySql(dataSource.DatabaseMetadata))) + footer);
+		sql.Append($"{header}{string.Join(", ", this.Where(c => c.GroupBy).Select(c => c.ToGroupBySql(dataSource.DatabaseMetadata)))}{footer}");
 	}
 
 	/// <summary>
@@ -45,9 +47,11 @@ public class AggregateColumnCollection : System.Collections.ObjectModel.Collecti
 	/// <remarks>This does not include the phrase 'SELECT'</remarks>
 	public void BuildSelectClause(StringBuilder sql, string? header, IDataSource dataSource, string? footer)
 	{
+		if (sql == null)
+			throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
 		if (IsEmpty)
 			throw new InvalidOperationException($"{nameof(IsEmpty)} is true. There are no columns to process.");
 
-		sql.Append(header + string.Join(", ", this.Select(c => c.ToSelectSql(dataSource.DatabaseMetadata))) + footer);
+		sql.Append($"{header}{string.Join(", ", this.Select(c => c.ToSelectSql(dataSource.DatabaseMetadata)))}{footer}");
 	}
 }

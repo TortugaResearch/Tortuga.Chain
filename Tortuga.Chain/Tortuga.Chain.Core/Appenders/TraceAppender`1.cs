@@ -39,7 +39,7 @@ internal sealed class TraceAppender<TResult> : Appender<TResult>
 	{
 		if (m_Stream == null)
 		{
-			Debug.WriteLine("Command Text: " + e.Command.CommandText);
+			Debug.WriteLine($"Command Text: {e.Command.CommandText}");
 			Debug.Indent();
 			foreach (var parameter in e.Command.Parameters.Enumerate())
 			{
@@ -50,7 +50,7 @@ internal sealed class TraceAppender<TResult> : Appender<TResult>
 		}
 		else
 		{
-			m_Stream.WriteLine("Command Text: " + e.Command.CommandText);
+			m_Stream.WriteLine($"Command Text: {e.Command.CommandText}");
 
 			foreach (var parameter in e.Command.Parameters.Enumerate())
 			{

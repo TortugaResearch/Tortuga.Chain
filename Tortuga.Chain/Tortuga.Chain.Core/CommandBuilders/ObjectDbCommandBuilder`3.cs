@@ -36,7 +36,7 @@ public abstract class ObjectDbCommandBuilder<TCommand, TParameter, TArgument> : 
 	/// <summary>
 	/// Gets the set of key column(s) to use instead of the primary key(s).
 	/// </summary>
-	protected ImmutableHashSet<string> KeyColumns { get; private set; } = ImmutableHashSet<string>.Empty;
+	protected ImmutableHashSet<string> KeyColumns { get; private set; } = [];
 
 	/// <summary>
 	/// Materializes the result as a new instance of the same type as the argumentValue
@@ -98,7 +98,7 @@ public abstract class ObjectDbCommandBuilder<TCommand, TParameter, TArgument> : 
 		var table = OnGetTable();
 
 		//normalize the column names.
-		KeyColumns = columnNames.Select(c => table.Columns[c].SqlName).ToImmutableHashSet();
+		KeyColumns = [.. columnNames.Select(c => table.Columns[c].SqlName)];
 		return this;
 	}
 

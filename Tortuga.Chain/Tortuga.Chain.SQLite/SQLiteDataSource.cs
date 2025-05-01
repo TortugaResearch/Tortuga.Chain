@@ -1,7 +1,6 @@
 ﻿using Nito.AsyncEx;
 using System.Collections.Concurrent;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.SQLite;
 
@@ -12,7 +11,7 @@ namespace Tortuga.Chain;
 /// </summary>
 public partial class SQLiteDataSource : SQLiteDataSourceBase
 {
-	readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
+	readonly AsyncReaderWriterLock m_SyncLock = new(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 	SQLiteMetadataCache m_DatabaseMetadata;
 
 	/// <summary>
@@ -129,6 +128,7 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 	/// <param name="implementation">The implementation.</param>
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementation<SQLiteCommand> implementation, object? state)
 	{
 		if (executionToken == null)
@@ -182,6 +182,7 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object? state)
 	{
 		if (executionToken == null)
@@ -220,12 +221,8 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 		{
 			lockToken?.Dispose();
 
-#if NET6_0_OR_GREATER
 			if (con != null)
 				await con.DisposeAsync().ConfigureAwait(false);
-#else
-			con?.Dispose();
-#endif
 
 			if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException
 			{

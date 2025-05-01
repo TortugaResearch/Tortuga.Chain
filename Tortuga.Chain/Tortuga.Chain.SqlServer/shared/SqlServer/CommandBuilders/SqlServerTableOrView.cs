@@ -120,7 +120,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
 		//Support check
-		if (!Enum.IsDefined(typeof(SqlServerLimitOption), m_LimitOptions))
+		if (!Enum.IsDefined(m_LimitOptions))
 			throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions}");
 
 		//Validation
@@ -254,7 +254,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 				break;
 		}
 
-		sql.Append(";");
+		sql.Append(';');
 
 		return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
 	}

@@ -91,11 +91,6 @@ public class ComplexAggregateTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			//PostgreSQL is case sensitive, so we need to ensure we're using the correct name.
-			var table = dataSource.DatabaseMetadata.GetTableOrViewFromClass<Employee>();
-			var ekColumnName = table.Columns["EmployeeKey"].SqlName;
-			var gColumnName = table.Columns["Gender"].SqlName;
-
 			var result = dataSource.From<Employee>(Filter).AsAggregate<GroupedEmployeeReport>().ToCollection().Execute();
 		}
 		finally

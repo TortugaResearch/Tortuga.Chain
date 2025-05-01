@@ -61,7 +61,7 @@ internal sealed class SqlServerUpdateObject<TArgument> : SqlServerObjectCommand<
 		sqlBuilder.BuildSetClause(sql, " SET ", null, null);
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
 		sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		return new SqlServerCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);

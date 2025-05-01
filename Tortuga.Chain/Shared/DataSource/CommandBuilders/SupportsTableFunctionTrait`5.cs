@@ -6,7 +6,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsTableFunctionTrait<TCommand, TParameter, TObjectName, TDbType, TLimitOption> : ISupportsTableFunction
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsTableFunctionTrait<TCommand, TParameter, TObjectName, TDbType, TLimitOption> : ISupportsTableFunction
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
@@ -52,6 +53,3 @@ where TLimitOption : struct
 		return OnTableFunction(tableFunctionName, functionArgumentValue);
 	}
 }
-
-
-

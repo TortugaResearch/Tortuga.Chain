@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Shipwright;
@@ -6,7 +7,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsProcedureTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsProcedure
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsProcedureTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsProcedure
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
@@ -54,6 +56,3 @@ where TDbType : struct
 		return OnProcedure(procedureName, argumentValue);
 	}
 }
-
-
-

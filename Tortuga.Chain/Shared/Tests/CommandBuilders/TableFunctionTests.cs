@@ -124,7 +124,7 @@ public class TableFunctionTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var result = await dataSource.TableFunction(TableFunction1Name, Parameter1).ToTable().ExecuteAsync();
+			var result = await dataSource.TableFunction(TableFunction1Name, Parameter1).ToTable().ExecuteAsync().ConfigureAwait(false);
 		}
 		finally
 		{
@@ -152,7 +152,7 @@ public class TableFunctionTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var result = await dataSource.TableFunction(TableFunction1Name, DictParameter1a).ToTable().ExecuteAsync();
+			var result = await dataSource.TableFunction(TableFunction1Name, DictParameter1a).ToTable().ExecuteAsync().ConfigureAwait(false);
 		}
 		finally
 		{
@@ -180,7 +180,7 @@ public class TableFunctionTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var result = await dataSource.TableFunction(TableFunction1Name, DictParameter1b).ToTable().ExecuteAsync();
+			var result = await dataSource.TableFunction(TableFunction1Name, DictParameter1b).ToTable().ExecuteAsync().ConfigureAwait(false);
 		}
 		finally
 		{

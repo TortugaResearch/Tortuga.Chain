@@ -1,11 +1,9 @@
 ﻿using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.CommandBuilders;
 
-[SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
 class GenericDbSqlCall : SqlCallCommandBuilder<DbCommand, DbParameter>
 {
 	readonly GenericDbDataSource m_DataSource;

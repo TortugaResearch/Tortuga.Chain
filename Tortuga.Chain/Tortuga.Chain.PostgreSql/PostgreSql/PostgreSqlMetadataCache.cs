@@ -3,7 +3,6 @@ using NpgsqlTypes;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Tortuga.Anchor;
@@ -88,7 +87,7 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 					{
 						defaultSchema = (string)cmd.ExecuteScalar()!;
 					}
-					defaultSchema = defaultSchema.Replace("\"$user\"", currentUser);
+					defaultSchema = defaultSchema.Replace("\"$user\"", currentUser, StringComparison.Ordinal);
 					m_DefaultSchemaList = defaultSchema.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToImmutableArray();
 				}
 			}
@@ -112,8 +111,8 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 					using (var cmd = new NpgsqlCommand("SHOW server_version;", con))
 					{
 						var versionString = (string)cmd.ExecuteScalar()!;
-						if (versionString.Contains(" ", StringComparison.Ordinal))
-							versionString = versionString.Substring(0, versionString.IndexOf(" ", StringComparison.Ordinal));
+						if (versionString.Contains(' ', StringComparison.Ordinal))
+							versionString = versionString.Substring(0, versionString.IndexOf(' ', StringComparison.Ordinal));
 						m_ServerVersion = Version.Parse(versionString);
 					}
 				}
@@ -530,7 +529,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 			throw new ArgumentException($"{nameof(typeName)} is null or empty.", nameof(typeName));
 
 #pragma warning disable CS0618 // Type or member is obsolete
-		switch (typeName.ToUpperInvariant().Replace("_", "").Replace("\"", ""))
+		switch (typeName.ToUpperInvariant().Replace("_", "", StringComparison.Ordinal).Replace("\"", "", StringComparison.Ordinal))
 		{
 			case "ABSTIME": return NpgsqlDbType.Abstime;
 			case "ARRAY": return NpgsqlDbType.Array;
@@ -678,6 +677,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 		return new PostgreSqlObjectName(schema, name);
 	}
 
+	[SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "<Pending>")]
 	Tuple<ParameterMetadataCollection<NpgsqlDbType>, ColumnMetadataCollection<NpgsqlDbType>> GetParametersAndColumns(string specificName, NpgsqlConnection connection)
 	{
 		const string parameterSql = @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
@@ -1015,7 +1015,7 @@ WHERE c.relname ILIKE @Name AND
 		throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
 	}
 
-	IEnumerable<string> GetSchemasToCheck(PostgreSqlObjectName objectName) => objectName.Schema == null ? DefaultSchemaList : ImmutableArray.Create(objectName.Schema);
+	ImmutableArray<string> GetSchemasToCheck(PostgreSqlObjectName objectName) => objectName.Schema == null ? DefaultSchemaList : [objectName.Schema];
 
 	ImmutableHashSet<string> GetSequenceColumns(PostgreSqlObjectName tableName)
 	{

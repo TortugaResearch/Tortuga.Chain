@@ -9,7 +9,6 @@ namespace Tortuga.Chain;
 [UseTrait(typeof(Traits.RootDataSourceTrait<AbstractDataSource, MySqlTransactionalDataSource, MySqlOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, MySqlConnectionStringBuilder>))]
 partial class MySqlDataSource
 {
-
 	private partial MySqlTransactionalDataSource OnBeginTransaction(IsolationLevel? isolationLevel, bool forwardEvents)
 	{
 		return new MySqlTransactionalDataSource(this, isolationLevel, forwardEvents);
@@ -20,9 +19,9 @@ partial class MySqlDataSource
 		var connection = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
 		MySqlTransaction transaction;
 		if (isolationLevel.HasValue)
-			transaction = connection.BeginTransaction(isolationLevel.Value);
+			transaction = await connection.BeginTransactionAsync(isolationLevel.Value, cancellationToken).ConfigureAwait(false);
 		else
-			transaction = connection.BeginTransaction();
+			transaction = await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 		return new MySqlTransactionalDataSource(this, forwardEvents, connection, transaction);
 	}
 
@@ -61,4 +60,3 @@ partial class MySqlDataSource
 	private partial MySqlOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction)
 		=> new MySqlOpenDataSource(this, connection, transaction);
 }
-

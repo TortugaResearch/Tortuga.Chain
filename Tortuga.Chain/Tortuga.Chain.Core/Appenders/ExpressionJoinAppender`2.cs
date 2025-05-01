@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor.Metadata;
+﻿using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.Appenders;
 
@@ -24,7 +23,7 @@ internal sealed class ExpressionJoinAppender<T1, T2> : Appender<Tuple<List<T1>, 
 		if (string.IsNullOrEmpty(targetCollectionName))
 			throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
-		var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
+		var targetPropertyStub = MetadataCache.GetMetadata<T1>().Properties[targetCollectionName]; //don't inline this variable.
 		m_TargetCollectionExpression = (p) => (ICollection<T2>)(targetPropertyStub.InvokeGet(p!) ?? $"{targetCollectionName} is null. Expected a non-null collection.");
 
 		m_JoinOptions = joinOptions;
@@ -40,12 +39,11 @@ internal sealed class ExpressionJoinAppender<T1, T2> : Appender<Tuple<List<T1>, 
 
 	public override async Task<List<T1>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
 	{
-		var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
+		var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 		Match(result);
 		return result.Item1;
 	}
 
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
 	void Match(Tuple<List<T1>, List<T2>> result)
 	{
 		foreach (var child in result.Item2)

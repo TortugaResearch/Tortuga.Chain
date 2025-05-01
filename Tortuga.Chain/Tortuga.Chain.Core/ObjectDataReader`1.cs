@@ -13,8 +13,7 @@ namespace Tortuga.Chain;
 /// </summary>
 /// <typeparam name="TObject"></typeparam>
 /// <seealso cref="DbDataReader" />
-[SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-[SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")]
+[SuppressMessage("Design", "CA1010:Generic interface should also be implemented", Justification = "<Pending>")]
 public class ObjectDataReader<TObject> : DbDataReader
 {
 	readonly ImmutableArray<PropertyMetadata> m_PropertyList;
@@ -115,8 +114,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 		get
 #pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
 		{
-			if (m_Source == null)
-				throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+			ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 			return m_PropertyList[m_PropertyLookup[name]].InvokeGet(m_Source.Current!);
 		}
@@ -133,8 +131,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 		get
 #pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
 		{
-			if (m_Source == null)
-				throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+			ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 			return m_PropertyList[ordinal].InvokeGet(m_Source.Current!);
 		}
@@ -237,8 +234,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	/// <returns>An <see cref="System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.</returns>
 	public override IEnumerator GetEnumerator()
 	{
-		if (m_Source == null)
-			throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+		ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 		return m_Source;
 	}
@@ -366,8 +362,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	/// <returns>true if there are more rows; otherwise false.</returns>
 	public override bool Read()
 	{
-		if (m_Source == null)
-			throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
+		ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 		return m_Source.MoveNext();
 	}
@@ -390,9 +385,9 @@ public class ObjectDataReader<TObject> : DbDataReader
 	[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
 	[SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
 	[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-	static ObjectDataReaderMetadata BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
+	static ObjectDataReaderMetadata BuildStructure(string targetName, ColumnMetadataCollection columns, bool allColumnsRequired, OperationTypes operationType)
 	{
-		var propertyList = MetadataCache.GetMetadata(typeof(TObject)).Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
+		var propertyList = MetadataCache.GetMetadata<TObject>().Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
 		bool checkIgnoreOnInsert = operationType == OperationTypes.Insert;
 		bool checkIgnoreOnUpdate = operationType == OperationTypes.Update;
 

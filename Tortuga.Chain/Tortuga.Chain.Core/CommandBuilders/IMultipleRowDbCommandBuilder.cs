@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 
 namespace Tortuga.Chain.CommandBuilders;
@@ -86,7 +85,6 @@ public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
 	/// <typeparam name="TCollection">The type of the collection.</typeparam>
 	/// <param name="collectionOptions">The collection options.</param>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	IConstructibleMaterializer<TCollection> ToCollection<TObject, TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
 		where TObject : class
 		where TCollection : ICollection<TObject>, new();
@@ -252,7 +250,6 @@ public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
 	/// <param name="keyColumn">The key column.</param>
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns>IConstructibleMaterializer&lt;TDictionary&gt;.</returns>
-	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull
 		where TObject : class
@@ -279,7 +276,6 @@ public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
 	/// <param name="keyFunction">The key function.</param>
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns>IConstructibleMaterializer&lt;TDictionary&gt;.</returns>
-	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull
 		where TObject : class
@@ -412,7 +408,6 @@ public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
 	/// <param name="keyColumn">The key column.</param>
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull
 		where TObject : class;

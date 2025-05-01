@@ -37,6 +37,7 @@ namespace Tortuga.Chain.SQLite
 		/// <param name="state">The state.</param>
 		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
+		[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 		public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementation<SQLiteCommand> implementation, object? state)
 		{
 			if (executionToken == null)
@@ -86,6 +87,7 @@ namespace Tortuga.Chain.SQLite
 		/// <param name="state">The state.</param>
 		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
+		[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 		public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object? state)
 		{
 			if (executionToken == null)

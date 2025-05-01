@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
 using Tortuga.Shipwright;
@@ -6,7 +7,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsDeleteAllTrait<TParameter, TObjectName, TDbType> : ISupportsDeleteAll
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsDeleteAllTrait<TParameter, TObjectName, TDbType> : ISupportsDeleteAll
 	where TObjectName : struct
 	where TDbType : struct
 	where TParameter : DbParameter

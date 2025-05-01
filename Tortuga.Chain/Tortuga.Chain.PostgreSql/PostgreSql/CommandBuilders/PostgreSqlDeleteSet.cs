@@ -85,7 +85,7 @@ internal sealed class PostgreSqlDeleteSet : DeleteSetDbCommandBuilder<NpgsqlComm
 			parameters = sqlBuilder.GetParameters();
 		}
 		sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
-		sql.Append(";");
+		sql.Append(';');
 
 		if (Parameters != null)
 			parameters.AddRange(Parameters);

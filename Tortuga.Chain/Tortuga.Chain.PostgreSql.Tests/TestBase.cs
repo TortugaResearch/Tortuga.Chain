@@ -82,10 +82,10 @@ public abstract partial class TestBase
 			case DataSourceType.Normal: return AttachTracers(ds);
 			case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new PostgreSqlDataSourceSettings() { StrictMode = true });
 			case DataSourceType.SequentialAccess: return AttachTracers(ds).WithSettings(new PostgreSqlDataSourceSettings() { SequentialAccessMode = true });
-			case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync());
+			case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync().ConfigureAwait(false));
 			case DataSourceType.Open:
 				var root = (IRootDataSource)ds;
-				return AttachTracers((PostgreSqlDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
+				return AttachTracers((PostgreSqlDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync().ConfigureAwait(false), null));
 		}
 		throw new ArgumentException($"Unknown mode {mode}");
 	}

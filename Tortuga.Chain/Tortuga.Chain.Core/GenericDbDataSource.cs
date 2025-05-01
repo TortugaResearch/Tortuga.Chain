@@ -15,10 +15,9 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 {
 	readonly ICacheAdapter m_Cache;
 	readonly DbConnectionStringBuilder m_ConnectionBuilder;
+	readonly GenericDatabaseMetadataCache m_DatabaseMetadataCache = new();
 	readonly ConcurrentDictionary<Type, object> m_ExtensionCache;
 	readonly DbProviderFactory? m_Factory;
-
-	GenericDatabaseMetadataCache m_DatabaseMetadataCache = new();
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GenericDbDataSource{TConnection, TCommand, TParameter}" /> class.
@@ -207,12 +206,8 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 		}
 		catch (Exception ex)
 		{
-#if NET6_0_OR_GREATER
 			if (con != null)
 				await con.DisposeAsync().ConfigureAwait(false);
-#else
-			con?.Dispose();
-#endif
 			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
 			{
 				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);

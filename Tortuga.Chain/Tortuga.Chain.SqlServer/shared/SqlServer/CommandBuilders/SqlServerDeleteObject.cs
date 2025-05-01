@@ -50,7 +50,7 @@ internal sealed class SqlServerDeleteObject<TArgument> : SqlServerObjectCommand<
 		sql.Append("DELETE FROM " + Table.Name.ToQuotedString());
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);
 		sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		return new SqlServerCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckDeleteRowCount(m_Options);

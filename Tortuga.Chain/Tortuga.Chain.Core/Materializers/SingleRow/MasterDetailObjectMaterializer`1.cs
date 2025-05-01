@@ -48,17 +48,17 @@ sealed partial class MasterDetailObjectMaterializer<TMaster> : IMasterDetailMate
 
 	TMaster ILink<TMaster>.Execute(object? state)
 	{
-		return ConvertResult(m_CommandBuilder.Execute(state));
+		return MasterDetailObjectMaterializer<TMaster>.ConvertResult(m_CommandBuilder.Execute(state));
 	}
 
 	async Task<TMaster> ILink<TMaster>.ExecuteAsync(object? state)
 	{
-		return ConvertResult(await m_CommandBuilder.ExecuteAsync(state).ConfigureAwait(false));
+		return MasterDetailObjectMaterializer<TMaster>.ConvertResult(await m_CommandBuilder.ExecuteAsync(state).ConfigureAwait(false));
 	}
 
 	async Task<TMaster> ILink<TMaster>.ExecuteAsync(CancellationToken cancellationToken, object? state)
 	{
-		return ConvertResult(await m_CommandBuilder.ExecuteAsync(cancellationToken, state).ConfigureAwait(false));
+		return MasterDetailObjectMaterializer<TMaster>.ConvertResult(await m_CommandBuilder.ExecuteAsync(cancellationToken, state).ConfigureAwait(false));
 	}
 
 	IMasterDetailMaterializer<TMaster> IMasterDetailMaterializer<TMaster>.WithDetailConstructor(params Type[] constructorSignature)
@@ -204,7 +204,7 @@ sealed partial class MasterDetailObjectMaterializer<TMaster> : IMasterDetailMate
 		return this;
 	}
 
-	TMaster ConvertResult(TMaster? result)
+	static TMaster ConvertResult(TMaster? result)
 	{
 		if (result == null)
 			throw new MissingDataException("No records were returned");

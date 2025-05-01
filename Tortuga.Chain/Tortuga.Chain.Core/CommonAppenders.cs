@@ -156,7 +156,7 @@ public static class CommonAppenders
 	/// <param name="joinOptions">The join options.</param>
 	public static ILink<List<T1>> Join<T1, T2>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions = JoinOptions.None)
 	{
-		var keyType = MetadataCache.GetMetadata(typeof(T1)).Properties[primaryKeyName].PropertyType;
+		var keyType = MetadataCache.GetMetadata<T1>().Properties[primaryKeyName].PropertyType;
 		var methodType = typeof(CommonAppenders).GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Single(m => m.Name == "Join_Helper");
 		var genericMethod = methodType.MakeGenericMethod(typeof(T1), typeof(T2), keyType);
 
@@ -174,7 +174,7 @@ public static class CommonAppenders
 	/// <param name="joinOptions">The join options.</param>
 	public static ILink<List<T1>> Join<T1, T2>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, string keyName, string targetCollectionName, JoinOptions joinOptions = JoinOptions.None)
 	{
-		var keyType = MetadataCache.GetMetadata(typeof(T1)).Properties[keyName].PropertyType;
+		var keyType = MetadataCache.GetMetadata<T1>().Properties[keyName].PropertyType;
 		var methodType = typeof(CommonAppenders).GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Single(m => m.Name == "Join_Helper");
 		var genericMethod = methodType.MakeGenericMethod(typeof(T1), typeof(T2), keyType);
 

@@ -19,7 +19,7 @@ internal class RefreshMaterializer<TCommand, TParameter, TArgument> : Materializ
 	public RefreshMaterializer(ObjectDbCommandBuilder<TCommand, TParameter, TArgument> commandBuilder)
 		: base(commandBuilder)
 	{
-		m_ObjectMetadata = MetadataCache.GetMetadata(typeof(TArgument));
+		m_ObjectMetadata = MetadataCache.GetMetadata<TArgument>();
 		m_CommandBuilder = commandBuilder;
 	}
 

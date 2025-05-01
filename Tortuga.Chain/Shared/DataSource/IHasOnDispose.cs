@@ -1,7 +1,6 @@
-﻿namespace Traits
+﻿namespace Traits;
+
+interface IHasOnDispose
 {
-	interface IHasOnDispose
-	{
-		void OnDispose();
-	}
+	void OnDispose();
 }

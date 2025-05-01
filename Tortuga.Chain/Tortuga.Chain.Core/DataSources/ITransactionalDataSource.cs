@@ -6,10 +6,7 @@ namespace Tortuga.Chain.DataSources;
 /// <remarks>
 /// This interface is primarily for testing purposes.
 /// </remarks>
-public interface ITransactionalDataSource : IOpenDataSource, IDisposable
-#if NET6_0_OR_GREATER
-, IAsyncDisposable
-#endif
+public interface ITransactionalDataSource : IOpenDataSource, IDisposable, IAsyncDisposable
 
 {
 	/// <summary>

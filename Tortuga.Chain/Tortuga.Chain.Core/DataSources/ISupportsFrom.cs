@@ -48,7 +48,6 @@ public interface ISupportsFrom
 	/// <summary>
 	/// This is used to directly query a table or view.
 	/// </summary>
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	ITableDbCommandBuilder<TObject> From<TObject>() where TObject : class;
 
 	/// <summary>
@@ -57,7 +56,6 @@ public interface ISupportsFrom
 	/// <typeparam name="TObject">The type of the object.</typeparam>
 	/// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
 	/// <returns></returns>
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	ITableDbCommandBuilder<TObject> From<TObject>(string whereClause) where TObject : class;
 
 	/// <summary>

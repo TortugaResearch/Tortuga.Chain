@@ -9,7 +9,6 @@ namespace Tortuga.Chain;
 [UseTrait(typeof(Traits.RootDataSourceTrait<AbstractDataSource, SQLiteTransactionalDataSource, SQLiteOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, SQLiteConnectionStringBuilder>))]
 partial class SQLiteDataSource
 {
-
 	private partial SQLiteTransactionalDataSource OnBeginTransaction(IsolationLevel? isolationLevel, bool forwardEvents)
 	{
 		IDisposable? lockToken = null;
@@ -30,14 +29,14 @@ partial class SQLiteDataSource
 	{
 		IDisposable? lockToken = null;
 		if (!DisableLocks)
-			lockToken = await SyncLock.WriterLockAsync();
+			lockToken = await SyncLock.WriterLockAsync(cancellationToken).ConfigureAwait(false);
 
 		var connection = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
 		SQLiteTransaction transaction;
 		if (isolationLevel == null)
-			transaction = connection.BeginTransaction();
+			transaction = (AbstractTransaction)await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 		else
-			transaction = connection.BeginTransaction(isolationLevel.Value);
+			transaction = (AbstractTransaction)await connection.BeginTransactionAsync(isolationLevel.Value, cancellationToken).ConfigureAwait(false);
 
 		return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
 	}
@@ -80,7 +79,5 @@ partial class SQLiteDataSource
 		return con;
 	}
 
-	private partial SQLiteOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction)
-		=> new SQLiteOpenDataSource(this, connection, transaction);
+	private partial SQLiteOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction) => new(this, connection, transaction);
 }
-

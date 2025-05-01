@@ -154,7 +154,7 @@ internal sealed class OleDbSqlServerUpdateSet : UpdateSetDbCommandBuilder<OleDbC
 		{
 			parameters.AddRange(sqlBuilder.GetParameters());
 		}
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		if (m_Parameters != null)

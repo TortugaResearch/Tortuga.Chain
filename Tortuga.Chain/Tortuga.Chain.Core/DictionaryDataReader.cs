@@ -112,8 +112,7 @@ public class DictionaryDataReader : DbDataReader
 		get
 #pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
 		{
-			if (m_Source == null)
-				throw new ObjectDisposedException(nameof(DictionaryDataReader));
+			ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 			return m_Source.Current![m_PropertyList[m_PropertyLookup[name]].Key];
 		}
@@ -130,8 +129,7 @@ public class DictionaryDataReader : DbDataReader
 		get
 #pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
 		{
-			if (m_Source == null)
-				throw new ObjectDisposedException(nameof(DictionaryDataReader));
+			ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 			return m_Source.Current![m_PropertyList[ordinal].Key];
 		}
@@ -234,8 +232,7 @@ public class DictionaryDataReader : DbDataReader
 	/// <returns>An <see cref="System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.</returns>
 	public override IEnumerator GetEnumerator()
 	{
-		if (m_Source == null)
-			throw new ObjectDisposedException(nameof(DictionaryDataReader));
+		ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 		return m_Source;
 	}
@@ -363,8 +360,7 @@ public class DictionaryDataReader : DbDataReader
 	/// <returns>true if there are more rows; otherwise false.</returns>
 	public override bool Read()
 	{
-		if (m_Source == null)
-			throw new ObjectDisposedException(nameof(DictionaryDataReader));
+		ObjectDisposedException.ThrowIf(m_Source == null, this);
 
 		return m_Source.MoveNext();
 	}
@@ -387,11 +383,9 @@ public class DictionaryDataReader : DbDataReader
 	[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
 	[SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
 	[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-	static DictionaryDataReaderMetadata BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType, Dictionary<string, object?> dictionary)
+	static DictionaryDataReaderMetadata BuildStructure(string targetName, ColumnMetadataCollection columns, bool allColumnsRequired, OperationTypes operationType, Dictionary<string, object?> dictionary)
 	{
 		var propertyList = dictionary.Keys;
-		var checkIgnoreOnInsert = operationType == OperationTypes.Insert;
-		var checkIgnoreOnUpdate = operationType == OperationTypes.Update;
 
 		var dtSchema = new DataTable();
 		dtSchema.Columns.Add("ColumnName", typeof(string));

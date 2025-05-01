@@ -56,7 +56,7 @@ internal sealed class OleDbSqlServerInsertObject<TArgument> : OleDbSqlServerObje
 		sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
 		sqlBuilder.BuildAnonymousValuesClause(sql, " VALUES (", ")", identityInsert);
-		sql.Append(";");
+		sql.Append(';');
 
 		sql.Append(footer);
 

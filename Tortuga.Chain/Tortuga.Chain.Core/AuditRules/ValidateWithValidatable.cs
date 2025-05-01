@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor.ComponentModel;
 
 namespace Tortuga.Chain.AuditRules;
@@ -8,7 +7,6 @@ namespace Tortuga.Chain.AuditRules;
 /// When this rule is in effect, objects that implement IValidatable will be checked.
 /// </summary>
 /// <seealso cref="AuditRule" />
-[SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validatable")]
 public class ValidateWithValidatable : ValidationRule
 {
 	/// <summary>
@@ -29,14 +27,14 @@ public class ValidateWithValidatable : ValidationRule
 	/// <exception cref="ValidationException"></exception>
 	public override void CheckValue(object argumentValue)
 	{
-		if (!(argumentValue is IValidatable validation))
+		if (argumentValue is not IValidatable validation)
 			return;
 
 		validation.Validate();
 		if (!validation.HasErrors)
 			return;
 
-		throw new ValidationException($"Validation errors: "
+		throw new ValidationException("Validation errors: "
 			+ Environment.NewLine
 			+ string.Join(Environment.NewLine + "\t", validation.GetAllErrors().Select(e => e.ToString())));
 	}

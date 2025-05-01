@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// Use for scalar functions.
 /// </summary>
 /// <seealso cref="ScalarDbCommandBuilder{SqlCommand, SqlParameter}" />
-internal class OleDbSqlServerScalarFunction : ScalarFunctionCommandBuilder<OleDbCommand, OleDbParameter>
+sealed internal class OleDbSqlServerScalarFunction : ScalarFunctionCommandBuilder<OleDbCommand, OleDbParameter>
 {
 	readonly ScalarFunctionMetadata<SqlServerObjectName, OleDbType> m_Function;
 
@@ -56,7 +56,7 @@ internal class OleDbSqlServerScalarFunction : ScalarFunctionCommandBuilder<OleDb
 
 		var sql = new StringBuilder();
 		sqlBuilder.BuildAnonymousFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");
-		sql.Append(";");
+		sql.Append(';');
 
 		List<OleDbParameter> parameters;
 		parameters = sqlBuilder.GetParameters();

@@ -5,7 +5,7 @@ namespace Tortuga.Chain.Appenders;
 /// </summary>
 internal class TransformLink<TSource, TResult> : Appender<TSource, TResult>
 {
-	Func<TSource, TResult> m_Transformation;
+	readonly Func<TSource, TResult> m_Transformation;
 
 	public TransformLink(ILink<TSource> previousLink, Func<TSource, TResult> transformation) : base(previousLink)
 	{

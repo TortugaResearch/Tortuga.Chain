@@ -166,7 +166,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			var sql = SetupSql(columns);
 			var nextNotification = m_NotifyAfter;
 
-			using (var writer = connection.BeginBinaryImport(sql))
+			using (var writer = await connection.BeginBinaryImportAsync(sql, cancellationToken).ConfigureAwait(false))
 			{
 				while (m_Source.Read())
 				{
@@ -191,7 +191,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 						if (e.Abort)
 						{
-							writer.Complete();
+							await writer.CompleteAsync(cancellationToken).ConfigureAwait(false);
 							throw new TaskCanceledException("Bulk insert operation aborted.");
 						}
 					}

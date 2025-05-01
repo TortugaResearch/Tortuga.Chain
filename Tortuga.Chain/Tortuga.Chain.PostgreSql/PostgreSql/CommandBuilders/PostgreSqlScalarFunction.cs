@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
@@ -13,7 +12,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 	/// Use for scalar functions.
 	/// </summary>
 	/// <seealso cref="ScalarDbCommandBuilder{NpgsqlCommand, NpgsqlParameter}" />
-	internal class PostgreSqlScalarFunction : ScalarFunctionCommandBuilder<NpgsqlCommand, NpgsqlParameter>
+	internal sealed class PostgreSqlScalarFunction : ScalarFunctionCommandBuilder<NpgsqlCommand, NpgsqlParameter>
 	{
 		readonly ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Function;
 
@@ -55,7 +54,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 			var sql = new StringBuilder();
 			sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");
-			sql.Append(";");
+			sql.Append(';');
 
 			List<NpgsqlParameter> parameters;
 			parameters = sqlBuilder.GetParameters();

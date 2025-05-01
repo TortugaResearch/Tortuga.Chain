@@ -23,7 +23,7 @@ internal sealed class CompiledObjectMaterializer<TCommand, TParameter, TObject> 
 	/// Returns the list of columns the materializer would like to have.
 	/// </summary>
 	/// <returns></returns>
-	public override IReadOnlyList<string> DesiredColumns() => MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
+	public override IReadOnlyList<string> DesiredColumns() => MetadataCache.GetMetadata<TObject>().ColumnsFor;
 
 	public override TObject Execute(object? state = null)
 	{

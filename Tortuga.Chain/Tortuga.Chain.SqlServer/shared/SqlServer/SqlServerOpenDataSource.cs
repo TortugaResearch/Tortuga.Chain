@@ -21,6 +21,24 @@ public partial class SqlServerOpenDataSource : SqlServerDataSourceBase
 	}
 
 	/// <summary>
+	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public override int? DefaultNVarCharLength => m_BaseDataSource.DefaultNVarCharLength;
+
+	/// <summary>
+	/// Gets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
+	/// </summary>
+	/// <remarks>Set this if encountering performance issues from type conversions in the execution plan.</remarks>
+	public override SqlDbType? DefaultStringType => m_BaseDataSource.DefaultStringType;
+
+	/// <summary>
+	/// Gets the default length of varChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// </summary>
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public override int? DefaultVarCharLength => m_BaseDataSource.DefaultVarCharLength;
+
+	/// <summary>
 	/// Executes the specified implementation.
 	/// </summary>
 	/// <param name="executionToken">The execution token.</param>
@@ -28,6 +46,7 @@ public partial class SqlServerOpenDataSource : SqlServerDataSourceBase
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, StreamingCommandImplementation<SqlCommand> implementation, object? state)
 	{
 		if (executionToken == null)
@@ -68,6 +87,7 @@ public partial class SqlServerOpenDataSource : SqlServerDataSourceBase
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, StreamingCommandImplementationAsync<SqlCommand> implementation, CancellationToken cancellationToken, object? state)
 	{
 		if (executionToken == null)
@@ -281,22 +301,4 @@ public partial class SqlServerOpenDataSource : SqlServerDataSourceBase
 
 		return this;
 	}
-
-	/// <summary>
-	/// Gets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
-	/// </summary>
-	/// <remarks>Set this if encountering performance issues from type conversions in the execution plan.</remarks>
-	public override SqlDbType? DefaultStringType => m_BaseDataSource.DefaultStringType;
-
-	/// <summary>
-	/// Gets the default length of varChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
-	/// </summary>
-	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
-	public override int? DefaultVarCharLength => m_BaseDataSource.DefaultVarCharLength;
-
-	/// <summary>
-	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
-	/// </summary>
-	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
-	public override int? DefaultNVarCharLength => m_BaseDataSource.DefaultNVarCharLength;
 }

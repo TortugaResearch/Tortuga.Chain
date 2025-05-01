@@ -11,7 +11,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders;
 /// <summary>
 /// Class MySqlInsertBatchTable is when using a values clause with an array of rows.
 /// </summary>
-internal class MySqlInsertBatch<TObject> : DbCommandBuilder<MySqlCommand, MySqlParameter>
+sealed internal class MySqlInsertBatch<TObject> : DbCommandBuilder<MySqlCommand, MySqlParameter>
 	where TObject : class
 {
 	readonly InsertOptions m_Options;

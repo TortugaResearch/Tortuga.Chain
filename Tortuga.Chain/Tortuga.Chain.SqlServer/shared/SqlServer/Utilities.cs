@@ -6,16 +6,6 @@ namespace Tortuga.Chain.SqlServer;
 
 internal static class Utilities
 {
-	/// <summary>
-	/// Gets the parameters from a SQL Builder.
-	/// </summary>
-	/// <param name="sqlBuilder">The SQL builder.</param>
-	/// <returns></returns>
-	public static List<SqlParameter> GetParameters(this SqlBuilder<SqlDbType> sqlBuilder)
-	{
-		return sqlBuilder.GetParameters(ParameterBuilderCallback);
-	}
-
 	public static SqlParameter CreateParameter(ISqlBuilderEntryDetails<SqlDbType> details, string parameterName, object? value)
 	{
 		var result = new SqlParameter();
@@ -23,12 +13,10 @@ internal static class Utilities
 
 		result.Value = value switch
 		{
-#if NET6_0_OR_GREATER
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
 			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
-#endif
 			null => DBNull.Value,
-			_ => value ?? DBNull.Value
+			_ => value
 		};
 
 		if (details.DbType.HasValue)
@@ -57,6 +45,16 @@ internal static class Utilities
 		result.Direction = details.Direction;
 
 		return result;
+	}
+
+	/// <summary>
+	/// Gets the parameters from a SQL Builder.
+	/// </summary>
+	/// <param name="sqlBuilder">The SQL builder.</param>
+	/// <returns></returns>
+	public static List<SqlParameter> GetParameters(this SqlBuilder<SqlDbType> sqlBuilder)
+	{
+		return sqlBuilder.GetParameters(ParameterBuilderCallback);
 	}
 
 	public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)

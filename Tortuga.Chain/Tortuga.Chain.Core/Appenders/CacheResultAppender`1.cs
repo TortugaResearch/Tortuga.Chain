@@ -63,7 +63,7 @@ internal sealed class CacheResultAppender<TResult> : Appender<TResult>, ICacheLi
 	/// <returns></returns>
 	public override async Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
 	{
-		var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
+		var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 
 		m_ActualCacheKey = m_CacheKey ?? m_CacheKeyFunction!(result);
 		await DataSource.Cache.WriteAsync(m_ActualCacheKey, result, m_Policy).ConfigureAwait(false);

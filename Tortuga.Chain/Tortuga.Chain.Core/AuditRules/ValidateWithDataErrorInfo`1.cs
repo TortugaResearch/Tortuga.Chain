@@ -30,7 +30,7 @@ public class ValidateWithDataErrorInfo<T> : ValidateWithDataErrorInfo
 	/// <param name="argumentValue">The argument value.</param>
 	public override void CheckValue(object argumentValue)
 	{
-		if (!(argumentValue is T validation))
+		if (argumentValue is not T validation)
 			return;
 
 		m_ValidationMethod(validation);

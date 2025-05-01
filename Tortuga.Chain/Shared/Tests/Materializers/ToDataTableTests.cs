@@ -34,7 +34,7 @@ public class ToDataTableTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDataRowOrNull().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDataRowOrNull().ExecuteAsync().ConfigureAwait(false);
 			if (result != null)
 			{
 				Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
@@ -67,12 +67,12 @@ public class ToDataTableTests : TestBase
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToDataTable_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
+		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
 		try
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDataTable().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDataTable().ExecuteAsync().ConfigureAwait(false);
 			Assert.IsTrue(result.Rows.Count <= 10);
 			Assert.AreEqual(table.Columns.Count, result.Columns.Count);
 		}
@@ -110,7 +110,7 @@ public class ToDataTableTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToRowOrNull().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToRowOrNull().ExecuteAsync().ConfigureAwait(false);
 			if (result != null)
 			{
 				Assert.AreEqual(table.Columns.Count, result.Count);
@@ -148,7 +148,7 @@ public class ToDataTableTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToTable().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToTable().ExecuteAsync().ConfigureAwait(false);
 			Assert.IsTrue(result.Rows.Count <= 10);
 			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
 		}
@@ -200,7 +200,7 @@ public class ToDataTableTests : TestBase
 					prep = prep.WithSorting(table.Columns[0].SqlName);
 					break;
 			}
-			var result = await prep.ToTable().ExecuteAsync();
+			var result = await prep.ToTable().ExecuteAsync().ConfigureAwait(false);
 			//Assert.IsTrue(result.Rows.Count <= 10, $"Row count was {result.Rows.Count}");
 			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
 		}

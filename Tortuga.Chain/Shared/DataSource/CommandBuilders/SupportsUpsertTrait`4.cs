@@ -7,17 +7,15 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsUpsertTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpsert
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsUpsertTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpsert
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
 where TDbType : struct
 {
-
 	[Container(RegisterInterface = true)]
 	internal IUpsertHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
-
-
 
 	IObjectDbCommandBuilder<TArgument> ISupportsUpsert.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
 	{
@@ -28,7 +26,6 @@ where TDbType : struct
 	{
 		return DataSource.OnInsertOrUpdateObject(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 	}
-
 
 	/// <summary>
 	/// Creates a operation used to perform an "upsert" operation.
@@ -56,8 +53,4 @@ where TDbType : struct
 	{
 		return DataSource.OnInsertOrUpdateObject(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 	}
-
 }
-
-
-

@@ -12,10 +12,8 @@ public class DateAndTimeOnlyTests : TestBase
 	const long TimeSpanDelta = TimeSpan.TicksPerSecond * 60;
 
 #else
-	const long TimeSpanDelta = TimeSpan.TicksPerSecond ;
+	const long TimeSpanDelta = TimeSpan.TicksPerSecond;
 #endif
-
-#if NET6_0_OR_GREATER
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToObject_DateOnlyColumn(string dataSourceName, DataSourceType mode)
@@ -198,6 +196,4 @@ public class DateAndTimeOnlyTests : TestBase
 			Release(dataSource);
 		}
 	}
-
-#endif
 }

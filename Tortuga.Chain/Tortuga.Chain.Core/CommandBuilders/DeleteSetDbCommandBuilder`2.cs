@@ -1,5 +1,4 @@
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
@@ -12,28 +11,20 @@ namespace Tortuga.Chain.CommandBuilders;
 /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
 /// <seealso cref="MultipleRowDbCommandBuilder{TCommand, TParameter}" />
 /// <seealso cref="IUpdateSetDbCommandBuilder" />
-[SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
 public abstract class DeleteSetDbCommandBuilder<TCommand, TParameter> : MultipleRowDbCommandBuilder<TCommand, TParameter>
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DeleteSetDbCommandBuilder{TCommand, TParameter}" /> class.
+	/// Initializes a new instance of the <see cref="DeleteSetDbCommandBuilder{TCommand, TParameter}"/> class.
 	/// </summary>
 	/// <param name="dataSource">The data source.</param>
-	/// <param name="whereClause">The where clause.</param>
-	/// <param name="parameters">The parameters.</param>
-	/// <param name="expectedRowCount">The expected row count.</param>
-	/// <param name="options">The options.</param>
-	public DeleteSetDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, string whereClause, IEnumerable<TParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
+	/// <param name="filterValue">The filter value.</param>
+	/// <param name="filterOptions">The options.</param>
+	protected DeleteSetDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, object filterValue, FilterOptions filterOptions) : base(dataSource)
 	{
-		if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-			throw new NotSupportedException("Cannot use Key attributes with this operation.");
-
-		WhereClause = whereClause;
-		Parameters = parameters;
-		Options = options;
-		ExpectedRowCount = expectedRowCount;
+		FilterValue = filterValue;
+		FilterOptions = filterOptions;
 	}
 
 	/// <summary>
@@ -42,22 +33,29 @@ public abstract class DeleteSetDbCommandBuilder<TCommand, TParameter> : Multiple
 	/// <param name="dataSource">The data source.</param>
 	/// <param name="whereClause">The where clause.</param>
 	/// <param name="argumentValue">The argument value.</param>
-	public DeleteSetDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, string whereClause, object? argumentValue) : base(dataSource)
+	protected DeleteSetDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, string whereClause, object? argumentValue) : base(dataSource)
 	{
 		WhereClause = whereClause;
 		ArgumentValue = argumentValue;
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DeleteSetDbCommandBuilder{TCommand, TParameter}"/> class.
+	/// Initializes a new instance of the <see cref="DeleteSetDbCommandBuilder{TCommand, TParameter}" /> class.
 	/// </summary>
 	/// <param name="dataSource">The data source.</param>
-	/// <param name="filterValue">The filter value.</param>
-	/// <param name="filterOptions">The options.</param>
-	public DeleteSetDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, object filterValue, FilterOptions filterOptions) : base(dataSource)
+	/// <param name="whereClause">The where clause.</param>
+	/// <param name="parameters">The parameters.</param>
+	/// <param name="expectedRowCount">The expected row count.</param>
+	/// <param name="options">The options.</param>
+	protected DeleteSetDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, string whereClause, IEnumerable<TParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
 	{
-		FilterValue = filterValue;
-		FilterOptions = filterOptions;
+		if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+			throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
+		WhereClause = whereClause;
+		Parameters = parameters;
+		Options = options;
+		ExpectedRowCount = expectedRowCount;
 	}
 
 	/// <summary>

@@ -7,13 +7,13 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsDeleteTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsDelete
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsDeleteTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsDelete
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct
 	where TDbType : struct
 {
-
 	[Container(RegisterInterface = true)]
 	internal IUpdateDeleteHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
@@ -67,6 +67,3 @@ class SupportsDeleteTrait<TCommand, TParameter, TObjectName, TDbType> : ISupport
 		return DataSource.OnUpdateObject(table.Name, argumentValue, effectiveOptions);
 	}
 }
-
-
-

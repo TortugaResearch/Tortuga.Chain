@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Tortuga.Anchor;
 using Tortuga.Anchor.ComponentModel;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.AuditRules;
@@ -26,7 +27,7 @@ public sealed class SqlBuilder<TDbType>
 
 		m_Entries = new SqlBuilderEntry<TDbType>[columns.Count + parameters.Count];
 
-		for (int i = 0; i < columns.Count; i++)
+		for (var i = 0; i < columns.Count; i++)
 		{
 			var column = columns[i];
 			m_Entries[i] = new SqlBuilderEntry<TDbType>()
@@ -39,7 +40,7 @@ public sealed class SqlBuilder<TDbType>
 		}
 
 		var offset = columns.Count;
-		for (int i = 0; i < parameters.Count; i++)
+		for (var i = 0; i < parameters.Count; i++)
 		{
 			var column = parameters[i];
 			m_Entries[offset + i] = new SqlBuilderEntry<TDbType>()
@@ -56,7 +57,7 @@ public sealed class SqlBuilder<TDbType>
 
 		m_Entries = new SqlBuilderEntry<TDbType>[columns.Count];
 
-		for (int i = 0; i < columns.Count; i++)
+		for (var i = 0; i < columns.Count; i++)
 		{
 			var column = columns[i];
 			m_Entries[i] = new SqlBuilderEntry<TDbType>()
@@ -74,7 +75,7 @@ public sealed class SqlBuilder<TDbType>
 		m_Name = name;
 
 		m_Entries = new SqlBuilderEntry<TDbType>[parameters.Count];
-		for (int i = 0; i < parameters.Count; i++)
+		for (var i = 0; i < parameters.Count; i++)
 		{
 			var column = parameters[i];
 			m_Entries[i] = new SqlBuilderEntry<TDbType>()
@@ -88,7 +89,9 @@ public sealed class SqlBuilder<TDbType>
 	SqlBuilder(string name, SqlBuilderEntry<TDbType>[] entries, bool strictMode)
 	{
 		m_Name = name;
+#pragma warning disable IDE0305 // Simplify collection initialization
 		m_Entries = entries.ToArray(); //since this is an array of struct, this does a deep copy
+#pragma warning restore IDE0305 // Simplify collection initialization
 		StrictMode = strictMode;
 	}
 
@@ -125,7 +128,6 @@ public sealed class SqlBuilder<TDbType>
 	/// <exception cref="MappingException">
 	/// </exception>
 	/// <exception cref="ArgumentNullException"></exception>
-	[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
 	public string ApplyAnonymousFilterValue(object filterValue, FilterOptions filterOptions, bool useSecondSlot = false)
 	{
 		if (filterValue == null)
@@ -133,7 +135,7 @@ public sealed class SqlBuilder<TDbType>
 
 		var ignoreNullProperties = filterOptions.HasFlag(FilterOptions.IgnoreNullProperties);
 		var parts = new string[m_Entries.Length];
-		bool found = false;
+		var found = false;
 
 		if (filterValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
 		{
@@ -256,7 +258,6 @@ public sealed class SqlBuilder<TDbType>
 	/// <remarks>
 	/// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
 	/// </remarks>
-	[SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "options")]
 	public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, InsertOptions options)
 	{
 		ApplyArgumentValue(dataSource, OperationTypes.Insert, argumentValue, false, false, false);
@@ -328,7 +329,7 @@ public sealed class SqlBuilder<TDbType>
 		if (desiredColumns == null)
 			throw new ArgumentNullException(nameof(desiredColumns), $"{nameof(desiredColumns)} is null.");
 
-		bool found = false;
+		var found = false;
 
 		if (desiredColumns == Materializer.NoColumns)
 			return;//no-op, we default m_Entries[i].Read to false
@@ -381,11 +382,13 @@ public sealed class SqlBuilder<TDbType>
 			return;
 		}
 
+		var desiredColumnsList = desiredColumns.AsList();
+
 		//This has to go last. THe special case versions of desired columns also have 0 named columns.
-		if (desiredColumns.Count() == 0)
+		if (!desiredColumnsList.Any())
 			throw new ChainInternalException("No desired columns were requested.");
 
-		foreach (var column in desiredColumns)
+		foreach (var column in desiredColumnsList)
 		{
 			var columnFound = false;
 
@@ -442,7 +445,7 @@ public sealed class SqlBuilder<TDbType>
 
 		var ignoreNullProperties = filterOptions.HasFlag(FilterOptions.IgnoreNullProperties);
 		var parts = new List<string>();
-		bool found = false;
+		var found = false;
 
 		if (filterValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
 		{
@@ -758,7 +761,7 @@ public sealed class SqlBuilder<TDbType>
 		if (string.IsNullOrEmpty(tableName))
 			throw new ArgumentException($"{nameof(tableName)} is null or empty.", nameof(tableName));
 
-		BuildInsertClause(sql, "INSERT INTO " + tableName + " (", null, ")", includeIdentityColumn);
+		BuildInsertClause(sql, $"INSERT INTO {tableName} (", null, ")", includeIdentityColumn);
 		BuildValuesClause(sql, " VALUES (", ")", includeIdentityColumn);
 		sql.Append(footer);
 	}
@@ -800,7 +803,7 @@ public sealed class SqlBuilder<TDbType>
 			}
 			else if (expression.ColumnName.EndsWith(" ACS", StringComparison.OrdinalIgnoreCase))
 			{
-				var truncateedName = expression.ColumnName.Substring(0, expression.ColumnName.Length - 4);
+				var truncateedName = expression.ColumnName[..^4];
 				columnIndex = FindColumnIndexByName(truncateedName);
 				if (columnIndex.HasValue)
 					sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName!);
@@ -809,7 +812,7 @@ public sealed class SqlBuilder<TDbType>
 			}
 			else if (expression.ColumnName.EndsWith(" DESC", StringComparison.OrdinalIgnoreCase))
 			{
-				var truncateedName = expression.ColumnName.Substring(0, expression.ColumnName.Length - 5);
+				var truncateedName = expression.ColumnName[..^5];
 				columnIndex = FindColumnIndexByName(truncateedName);
 				if (columnIndex.HasValue)
 					sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName! + " DESC ");
@@ -841,7 +844,7 @@ public sealed class SqlBuilder<TDbType>
 		if (!HasReadFields)
 			return;
 
-		BuildSelectClause(sql, "SELECT ", null, " FROM " + tableName);
+		BuildSelectClause(sql, "SELECT ", null, $" FROM {tableName}");
 		BuildWhereClause(sql, " WHERE ", footer);
 	}
 
@@ -980,7 +983,7 @@ public sealed class SqlBuilder<TDbType>
 	/// <param name="footer">The footer.</param>
 	public void BuildUpdateByKeyStatement(StringBuilder sql, string tableName, string? footer)
 	{
-		BuildSetClause(sql, "UPDATE " + tableName + " SET ", null, null);
+		BuildSetClause(sql, $"UPDATE {tableName} SET ", null, null);
 		BuildWhereClause(sql, " WHERE ", null);
 		sql.Append(footer);
 	}
@@ -1058,7 +1061,7 @@ public sealed class SqlBuilder<TDbType>
 			throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
 		sql.Append(header);
-		sql.Append(string.Join(" AND ", GetKeyColumns().Select(x => x.QuotedSqlName + " = " + x.SqlVariableName)));
+		sql.Append(string.Join(" AND ", GetKeyColumns().Select(x => $"{x.QuotedSqlName} = {x.SqlVariableName}")));
 		sql.Append(footer);
 	}
 
@@ -1066,7 +1069,7 @@ public sealed class SqlBuilder<TDbType>
 	/// Gets every column with a ParameterValue.
 	/// </summary>
 	/// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+	[SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "<Pending>")]
 	public IEnumerable<string> GetFormalParameters()
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1080,7 +1083,6 @@ public sealed class SqlBuilder<TDbType>
 	/// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
 	/// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
 	/// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public IEnumerable<ColumnNamePair> GetInsertColumns(bool includeIdentityColumn = false)
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1098,7 +1100,6 @@ public sealed class SqlBuilder<TDbType>
 	/// </summary>
 	/// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
 	/// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public IEnumerable<ColumnNamePair> GetKeyColumns()
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1116,7 +1117,6 @@ public sealed class SqlBuilder<TDbType>
 	/// </summary>
 	/// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
 	/// <remarks>This will mark the returned columns as participating in the second pass of parameter generation.</remarks>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public IEnumerable<ColumnNamePair> GetKeyColumns2()
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1132,7 +1132,6 @@ public sealed class SqlBuilder<TDbType>
 	/// </summary>
 	/// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
 	/// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public IEnumerable<ColumnNamePair> GetParameterizedColumns()
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1149,7 +1148,6 @@ public sealed class SqlBuilder<TDbType>
 	/// <typeparam name="TParameter">The type of the parameter.</typeparam>
 	/// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
 	public List<TParameter> GetParameters<TParameter>(ParameterBuilderCallback<TParameter, TDbType> parameterBuilder)
 		where TParameter : DbParameter
 	{
@@ -1186,7 +1184,6 @@ public sealed class SqlBuilder<TDbType>
 	/// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
 	/// <returns></returns>
 	/// <remarks>This is needed for positional parameters such as MS Access</remarks>
-	[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
 	public List<TParameter> GetParametersKeysLast<TParameter>(ParameterBuilderCallback<TParameter, TDbType> parameterBuilder)
 		where TParameter : DbParameter
 	{
@@ -1220,7 +1217,7 @@ public sealed class SqlBuilder<TDbType>
 	/// Gets the select columns with metadata details.
 	/// </summary>
 	/// <returns>Each entry has the column's metadata</returns>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+	[SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "<Pending>")]
 	public IEnumerable<ISqlBuilderEntryDetails<TDbType>> GetSelectColumnDetails()
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1232,7 +1229,6 @@ public sealed class SqlBuilder<TDbType>
 	/// Gets the select columns.
 	/// </summary>
 	/// <returns>Each entry has the column's QuotedSqlName</returns>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public IEnumerable<string> GetSelectColumns()
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1250,7 +1246,6 @@ public sealed class SqlBuilder<TDbType>
 	/// </summary>
 	/// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
 	/// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
-	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public IEnumerable<ColumnNamePair> GetUpdateColumns()
 	{
 		for (var i = 0; i < m_Entries.Length; i++)
@@ -1343,17 +1338,15 @@ public sealed class SqlBuilder<TDbType>
 	/// <param name="parameterBuilder">The parameter builder.</param>
 	/// <param name="keyParameters">The key parameters.</param>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#")]
-	[SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
 	public bool PrimaryKeyIsIdentity<TParameter>(Func<TDbType?, TParameter> parameterBuilder, out List<TParameter> keyParameters)
 		 where TParameter : DbParameter
 	{
 		if (parameterBuilder == null)
 			throw new ArgumentNullException(nameof(parameterBuilder), $"{nameof(parameterBuilder)} is null.");
 
-		bool primKeyIsIdent = false;
-		keyParameters = new List<TParameter>();
-		for (int i = 0; i < m_Entries.Length; i++)
+		var primKeyIsIdent = false;
+		keyParameters = [];
+		for (var i = 0; i < m_Entries.Length; i++)
 		{
 			ref var entry = ref m_Entries[i];
 
@@ -1390,7 +1383,7 @@ public sealed class SqlBuilder<TDbType>
 		if (value == null || value.Count == 0)
 			throw new ArgumentException($"{nameof(value)} is null or empty.", nameof(value));
 
-		bool found = false;
+		var found = false;
 
 		foreach (var item in value)
 		{

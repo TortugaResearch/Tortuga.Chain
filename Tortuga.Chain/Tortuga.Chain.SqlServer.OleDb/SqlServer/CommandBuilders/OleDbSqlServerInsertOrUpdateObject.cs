@@ -67,7 +67,7 @@ internal sealed class OleDbSqlServerInsertOrUpdateObject<TArgument> : OleDbSqlSe
 		sql.Append(string.Join(", ", insertColumns.Select(x => "source." + x.QuotedSqlName)));
 		sql.Append(" )");
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		return new OleDbCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());

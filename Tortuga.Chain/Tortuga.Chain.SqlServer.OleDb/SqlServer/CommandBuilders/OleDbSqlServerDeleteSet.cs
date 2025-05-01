@@ -95,7 +95,7 @@ internal sealed class OleDbSqlServerDeleteSet : DeleteSetDbCommandBuilder<OleDbC
 		{
 			parameters = sqlBuilder.GetParameters();
 		}
-		sql.Append(";");
+		sql.Append(';');
 		sql.Append(footer);
 
 		if (Parameters != null)

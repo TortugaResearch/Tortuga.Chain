@@ -123,7 +123,6 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 		var bl = new MySqlBulkLoader(connection);
 		var mappedColumns = SetupBulkCopy(bl);
 
-		var lastNotification = 0;
 		var totalCount = 0;
 		var rowCount = 0;
 		var output = new StringBuilder();
@@ -149,9 +148,8 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 
 					if ((totalCount % m_NotifyAfter) > notificationCount)
 					{
-						lastNotification = notificationCount;
 						var e = new AbortableOperationEventArgs(totalCount);
-						m_EventHandler?.Invoke(this, e);
+						m_EventHandler.Invoke(this, e);
 						if (e.Abort)
 							throw new TaskCanceledException("Bulk insert operation aborted.");
 					}
@@ -173,7 +171,7 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 			if (m_EventHandler != null)
 			{
 				var e = new AbortableOperationEventArgs(totalCount);
-				m_EventHandler?.Invoke(this, e);
+				m_EventHandler.Invoke(this, e);
 				//can't abort at this point;
 			}
 		}
@@ -227,7 +225,7 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 		return totalCount;
 	}
 
-	MemoryStream CreateMemoryStream(StringBuilder output)
+	static MemoryStream CreateMemoryStream(StringBuilder output)
 	{
 		var memoryStreamBytes = Encoding.UTF8.GetBytes(output.ToString());
 		return new MemoryStream(memoryStreamBytes, false);
@@ -274,10 +272,10 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 				case string s:
 					output.Append("\"" +
 						s
-						.Replace("\"", "\\\"")
-						.Replace("\t", @"\t")
-						.Replace("\r", @"\r")
-						.Replace("\n", @"\n")
+						.Replace("\"", "\\\"", StringComparison.Ordinal)
+						.Replace("\t", @"\t", StringComparison.Ordinal)
+						.Replace("\r", @"\r", StringComparison.Ordinal)
+						.Replace("\n", @"\n", StringComparison.Ordinal)
 						+ "\"");
 					break;
 
@@ -305,7 +303,7 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 			if (i == mappedColumns.Count - 1)
 				output.Append(Environment.NewLine);
 			else
-				output.Append(",");
+				output.Append(',');
 		}
 	}
 }

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.Appenders;
@@ -24,7 +23,7 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 		if (string.IsNullOrEmpty(targetCollectionName))
 			throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
-		var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
+		var targetPropertyStub = MetadataCache.GetMetadata<T1>().Properties[targetCollectionName]; //don't inline this variable.
 		m_TargetCollectionExpression = (p) => (ICollection<T2>)(targetPropertyStub.InvokeGet(p!) ?? $"{targetCollectionName} is null. Expected a non-null collection.");
 
 		m_ForeignKeyExpression = foreignKeyExpression ?? throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
@@ -43,13 +42,13 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 		if (string.IsNullOrEmpty(targetCollectionName))
 			throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
-		var primaryKeyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[primaryKeyName]; //don't inline this variable.
+		var primaryKeyStub = MetadataCache.GetMetadata<T1>().Properties[primaryKeyName]; //don't inline this variable.
 		m_PrimaryKeyExpression = (p) => (TKey)primaryKeyStub.InvokeGet(p!)!;
 
-		var foreignKeyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[foreignKeyName]; //don't inline this variable.
+		var foreignKeyStub = MetadataCache.GetMetadata<T1>().Properties[foreignKeyName]; //don't inline this variable.
 		m_ForeignKeyExpression = (p) => (TKey)foreignKeyStub.InvokeGet(p!)!;
 
-		var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
+		var targetPropertyStub = MetadataCache.GetMetadata<T1>().Properties[targetCollectionName]; //don't inline this variable.
 		m_TargetCollectionExpression = (p) => (ICollection<T2>)(targetPropertyStub.InvokeGet(p!) ?? $"{targetCollectionName} is null. Expected a non-null collection.");
 
 		m_JoinOptions = joinOptions;
@@ -64,7 +63,7 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 
 	public override async Task<List<T1>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
 	{
-		var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
+		var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 		Match(result);
 		return result.Item1;
 	}
@@ -92,7 +91,6 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 		}
 	}
 
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
 	void MatchParallel(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
 	{
 		//build the dictionary
@@ -108,7 +106,7 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 				}
 				else if (!ignoreUnmatchedChildren)
 				{
-					var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
+					var ex = new UnexpectedDataException($"Found child object with the foreign key \"{fk}\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
 					ex.Data["ForeignKey"] = fk;
 					ex.Data["ChildObject"] = child;
 					throw ex;
@@ -116,7 +114,6 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 			});
 	}
 
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
 	void MatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
 	{
 		//build the dictionary
@@ -131,7 +128,7 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 			}
 			else if (!ignoreUnmatchedChildren)
 			{
-				var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
+				var ex = new UnexpectedDataException($"Found child object with the foreign key \"{fk}\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
 				ex.Data["ForeignKey"] = fk;
 				ex.Data["ChildObject"] = child;
 				throw ex;
@@ -139,7 +136,6 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 		}
 	}
 
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
 	void MultiMatchParallel(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
 	{
 		//build the dictionary
@@ -167,7 +163,7 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 				}
 				else if (!ignoreUnmatchedChildren)
 				{
-					var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
+					var ex = new UnexpectedDataException($"Found child object with the foreign key \"{fk}\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
 					ex.Data["ForeignKey"] = fk;
 					ex.Data["ChildObject"] = child;
 					throw ex;
@@ -175,7 +171,6 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 			});
 	}
 
-	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
 	void MultiMatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
 	{
 		//build the dictionary
@@ -202,7 +197,7 @@ internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, L
 			}
 			else if (!ignoreUnmatchedChildren)
 			{
-				var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
+				var ex = new UnexpectedDataException($"Found child object with the foreign key \"{fk}\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
 				ex.Data["ForeignKey"] = fk;
 				ex.Data["ChildObject"] = child;
 				throw ex;

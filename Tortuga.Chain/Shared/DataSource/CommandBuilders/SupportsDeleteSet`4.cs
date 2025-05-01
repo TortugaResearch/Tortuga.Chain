@@ -7,7 +7,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsDeleteSet<TCommand, TParameter, TObjectName, TDbType> : ISupportsDeleteSet
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsDeleteSet<TCommand, TParameter, TObjectName, TDbType> : ISupportsDeleteSet
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
@@ -30,7 +31,6 @@ where TDbType : struct
 	{
 		return DeleteSet(DataSource.DatabaseMetadata.ParseObjectName(tableName), filterValue, filterOptions);
 	}
-
 
 	/// <summary>
 	/// Delete multiple records using a filter object.
@@ -89,10 +89,4 @@ where TDbType : struct
 		var tableName = DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
 		return DeleteSet(tableName, whereClause, argumentValue);
 	}
-
 }
-
-
-
-
-

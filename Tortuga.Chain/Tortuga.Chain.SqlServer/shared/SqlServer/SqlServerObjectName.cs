@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
+﻿using Tortuga.Anchor;
 
 namespace Tortuga.Chain.SqlServer;
 
@@ -45,7 +44,7 @@ public struct SqlServerObjectName : IEquatable<SqlServerObjectName>
 		if (string.IsNullOrEmpty(schemaAndName))
 			throw new ArgumentException($"{nameof(schemaAndName)} is null or empty.", nameof(schemaAndName));
 
-		var parts = schemaAndName.Split(new[] { '.' }, 2);
+		var parts = schemaAndName.Split(s_DotSeparator, 2);
 		if (parts.Length == 1)
 		{
 			Database = null;
@@ -91,6 +90,8 @@ public struct SqlServerObjectName : IEquatable<SqlServerObjectName>
 	/// The schema.
 	/// </value>
 	public string? Schema { get; }
+
+	static readonly char[] s_DotSeparator = ['.'];
 
 #pragma warning disable CA2225 // Operator overloads have named alternates
 

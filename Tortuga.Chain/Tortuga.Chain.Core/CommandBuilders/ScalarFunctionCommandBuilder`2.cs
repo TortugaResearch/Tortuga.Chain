@@ -5,6 +5,8 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
+#pragma warning disable IDE0301 // Simplify collection initialization
+
 /// <summary>
 /// Base class for scalar function command builders.
 /// </summary>

@@ -103,6 +103,9 @@ public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
 	/// <param name="timeout">An optional command timeout.</param>
 	public void PopulateCommand(TCommand command, TimeSpan? timeout)
 	{
+		if (command == null)
+			throw new ArgumentNullException(nameof(command), $"{nameof(command)} is null.");
+
 		if (timeout.HasValue)
 			command.CommandTimeout = (int)timeout.Value.TotalSeconds;
 		command.CommandText = CommandText;

@@ -1,6 +1,5 @@
 ﻿using Nito.AsyncEx;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Shipwright;
 using Traits;
@@ -12,6 +11,10 @@ namespace Tortuga.Chain.SQLite
 	/// </summary>
 
 	[UseTrait(typeof(TransactionalDataSourceTrait<SQLiteDataSource, SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteMetadataCache>))]
+	[SuppressMessage("Design", "CA1033")]
+	[SuppressMessage("Design", "CA1816")]
+	[SuppressMessage("Design", "CA2213")]
+	[SuppressMessage("Design", "CA1063")]
 	public partial class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IHasOnDispose
 	{
 		[SuppressMessage("Microsoft.Usage", "CA2213")]
@@ -105,6 +108,7 @@ namespace Tortuga.Chain.SQLite
 		/// <param name="state">The state.</param>
 		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
+		[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 		public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementation<SQLiteCommand> implementation, object? state)
 		{
 			if (executionToken == null)
@@ -142,6 +146,7 @@ namespace Tortuga.Chain.SQLite
 		/// <param name="state">The state.</param>
 		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
+		[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 		public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object? state)
 		{
 			if (executionToken == null)

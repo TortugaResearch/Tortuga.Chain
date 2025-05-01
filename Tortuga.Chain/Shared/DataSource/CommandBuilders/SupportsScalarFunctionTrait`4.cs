@@ -6,7 +6,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsScalarFunctionTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsScalarFunction
+[SuppressMessage("Performance", "CA1812")]
+sealed class SupportsScalarFunctionTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsScalarFunction
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
@@ -51,4 +52,3 @@ where TDbType : struct
 		return OnScalarFunction(scalarFunctionName, functionArgumentValue);
 	}
 }
-

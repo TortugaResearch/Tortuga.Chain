@@ -6,6 +6,7 @@ namespace Tortuga.Chain.SqlServer;
 /// <summary>
 /// Class SqlServerDataSourceBase.
 /// </summary>
+[SuppressMessage("Design", "CA1200")]
 public abstract partial class SqlServerDataSourceBase : DataSource<SqlConnection, SqlTransaction, SqlCommand, SqlParameter>
 {
 	/// <summary>
@@ -23,10 +24,10 @@ public abstract partial class SqlServerDataSourceBase : DataSource<SqlConnection
 	public abstract new SqlServerMetadataCache DatabaseMetadata { get; }
 
 	/// <summary>
-	/// Called when Database.DatabaseMetadata is invoked.
+	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
 	/// </summary>
-	/// <returns></returns>
-	protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
+	public abstract int? DefaultNVarCharLength { get; }
 
 	/// <summary>
 	/// Gets the default type of string parameters. This is used when the query builder cannot determine the best parameter type.
@@ -41,8 +42,8 @@ public abstract partial class SqlServerDataSourceBase : DataSource<SqlConnection
 	public abstract int? DefaultVarCharLength { get; }
 
 	/// <summary>
-	/// Gets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.
+	/// Called when Database.DatabaseMetadata is invoked.
 	/// </summary>
-	/// <remarks>Set this if encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
-	public abstract int? DefaultNVarCharLength { get; }
+	/// <returns></returns>
+	protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
 }

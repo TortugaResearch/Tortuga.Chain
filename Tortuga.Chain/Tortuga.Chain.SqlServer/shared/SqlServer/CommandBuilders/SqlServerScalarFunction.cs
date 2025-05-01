@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -11,7 +10,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// Use for scalar functions.
 /// </summary>
 /// <seealso cref="ScalarDbCommandBuilder{SqlCommand, SqlParameter}" />
-internal class SqlServerScalarFunction : ScalarFunctionCommandBuilder<SqlCommand, SqlParameter>
+sealed internal class SqlServerScalarFunction : ScalarFunctionCommandBuilder<SqlCommand, SqlParameter>
 {
 	readonly ScalarFunctionMetadata<SqlServerObjectName, SqlDbType> m_Function;
 
@@ -56,7 +55,7 @@ internal class SqlServerScalarFunction : ScalarFunctionCommandBuilder<SqlCommand
 
 		var sql = new StringBuilder();
 		sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");
-		sql.Append(";");
+		sql.Append(';');
 
 		List<SqlParameter> parameters;
 		parameters = sqlBuilder.GetParameters();

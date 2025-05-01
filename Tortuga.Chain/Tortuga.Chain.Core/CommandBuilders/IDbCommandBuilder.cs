@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
@@ -25,6 +26,7 @@ public interface IDbCommandBuilder
 	/// </summary>
 	/// <param name="state">User defined state, usually used for logging.</param>
 	/// <returns>Task.</returns>
+	[SuppressMessage("Async/await", "CRR0035:No CancellationToken parameter in the asynchronous method", Justification = "<Pending>")]
 	Task<int?> ExecuteAsync(object? state = null);
 
 	/// <summary>

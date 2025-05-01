@@ -92,7 +92,7 @@ internal sealed class SQLiteDeleteSet : DeleteSetDbCommandBuilder<SQLiteCommand,
 		{
 			parameters = sqlBuilder.GetParameters();
 		}
-		sql.Append(";");
+		sql.Append(';');
 
 		if (Parameters != null)
 			parameters.AddRange(Parameters);

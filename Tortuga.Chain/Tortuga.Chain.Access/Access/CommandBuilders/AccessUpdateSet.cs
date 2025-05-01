@@ -144,7 +144,7 @@ internal sealed class AccessUpdateSet : UpdateSetDbCommandBuilder<OleDbCommand, 
 		{
 			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
-		sql.Append(";");
+		sql.Append(';');
 
 		if (m_Parameters != null)
 			parameters.AddRange(m_Parameters);
@@ -242,7 +242,7 @@ internal sealed class AccessUpdateSet : UpdateSetDbCommandBuilder<OleDbCommand, 
 		{
 			parameters = sqlBuilder.GetParameters(DataSource);
 		}
-		sql.Append(";");
+		sql.Append(';');
 
 		if (m_Parameters != null)
 			parameters.AddRange(m_Parameters.Select(p => p.Clone()));

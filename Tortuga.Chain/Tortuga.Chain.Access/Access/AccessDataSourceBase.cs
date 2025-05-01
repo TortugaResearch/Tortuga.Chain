@@ -1,5 +1,4 @@
 ﻿using System.Data.OleDb;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
@@ -9,6 +8,7 @@ namespace Tortuga.Chain.Access
 	/// Base class that represents a Access Data Source.
 	/// </summary>
 	[SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
+	[SuppressMessage("Design", "CA1200")]
 	public abstract partial class AccessDataSourceBase : DataSource<OleDbConnection, OleDbTransaction, OleDbCommand, OleDbParameter>
 	{
 		/// <summary>
@@ -30,7 +30,5 @@ namespace Tortuga.Chain.Access
 		/// </summary>
 		/// <returns></returns>
 		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
-
 	}
 }
-

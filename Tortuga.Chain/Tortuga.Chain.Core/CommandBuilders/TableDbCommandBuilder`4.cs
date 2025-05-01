@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
@@ -15,7 +14,6 @@ namespace Tortuga.Chain.CommandBuilders;
 /// <typeparam name="TObject">The type of the object to be constructed.</typeparam>
 /// <seealso cref="CommandBuilders.MultipleRowDbCommandBuilder{TCommand, TParameter}" />
 /// <seealso cref="ITableDbCommandBuilder" />
-[SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
 public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject> : TableDbCommandBuilder<TCommand, TParameter, TLimit>, ITableDbCommandBuilder<TObject>
 	where TCommand : DbCommand
 	where TParameter : DbParameter
@@ -97,7 +95,6 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	/// <param name="keyColumn">The key column.</param>
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns></returns>
-	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	public IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull
 		=> ToImmutableDictionary<TKey, TObject>(keyColumn, dictionaryOptions);

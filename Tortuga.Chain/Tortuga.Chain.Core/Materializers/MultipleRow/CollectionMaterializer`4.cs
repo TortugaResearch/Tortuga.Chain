@@ -12,7 +12,6 @@ namespace Tortuga.Chain.Materializers;
 /// <typeparam name="TObject">The type of the object returned.</typeparam>
 /// <typeparam name="TCollection">The type of the collection.</typeparam>
 /// <seealso cref="Materializer{TCommand, TParameter, TCollection}"/>
-[SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
 internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : ConstructibleMaterializer<TCommand, TParameter, TCollection, TObject>
 	where TCommand : DbCommand
 	where TParameter : DbParameter
@@ -70,7 +69,7 @@ internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCol
 		{
 			using (var reader = (await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
-				while (await reader.ReadAsync().ConfigureAwait(false))
+				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
 					result.Add(reader.Current!);
 				return result.Count;
 			}
