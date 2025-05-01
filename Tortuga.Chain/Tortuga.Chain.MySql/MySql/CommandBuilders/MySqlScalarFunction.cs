@@ -1,5 +1,4 @@
 ﻿using MySqlConnector;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
@@ -12,7 +11,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders;
 /// Use for scalar functions.
 /// </summary>
 /// <seealso cref="ScalarDbCommandBuilder{MySqlCommand, MySqlParameter}" />
-internal class MySqlScalarFunction : ScalarFunctionCommandBuilder<MySqlCommand, MySqlParameter>
+sealed internal class MySqlScalarFunction : ScalarFunctionCommandBuilder<MySqlCommand, MySqlParameter>
 {
 	private readonly ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> m_Function;
 

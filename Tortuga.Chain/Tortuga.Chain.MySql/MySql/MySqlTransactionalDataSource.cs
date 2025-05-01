@@ -10,6 +10,10 @@ namespace Tortuga.Chain.MySql;
 /// <seealso cref="MySqlDataSourceBase" />
 /// <seealso cref="IDisposable" />
 [UseTrait(typeof(Traits.TransactionalDataSourceTrait<MySqlDataSource, MySqlConnection, MySqlTransaction, MySqlCommand, MySqlMetadataCache>))]
+[SuppressMessage("Performance", "CA1033")]
+[SuppressMessage("Design", "CA1063")]
+[SuppressMessage("Design", "CA1816")]
+[SuppressMessage("Design", "CA2213")]
 public partial class MySqlTransactionalDataSource : MySqlDataSourceBase
 {
 	/// <summary>
@@ -77,6 +81,7 @@ public partial class MySqlTransactionalDataSource : MySqlDataSourceBase
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<MySqlCommand, MySqlParameter> executionToken, StreamingCommandImplementation<MySqlCommand> implementation, object? state)
 	{
 		if (executionToken == null)
@@ -114,6 +119,7 @@ public partial class MySqlTransactionalDataSource : MySqlDataSourceBase
 	/// <param name="state">The state.</param>
 	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
+	[SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
 	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<MySqlCommand, MySqlParameter> executionToken, StreamingCommandImplementationAsync<MySqlCommand> implementation, CancellationToken cancellationToken, object? state)
 	{
 		if (executionToken == null)

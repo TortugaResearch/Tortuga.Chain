@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
+﻿using Tortuga.Anchor;
 
 namespace Tortuga.Chain.MySql;
 
@@ -33,7 +32,7 @@ public struct MySqlObjectName : IEquatable<MySqlObjectName>
 		if (string.IsNullOrEmpty(schemaAndName))
 			throw new ArgumentException($"{nameof(schemaAndName)} is null or empty.", nameof(schemaAndName));
 
-		var parts = schemaAndName.Split(new[] { '.' }, 2);
+		var parts = schemaAndName.Split(['.'], 2);
 		if (parts.Length == 1)
 		{
 			Schema = null;
@@ -147,7 +146,7 @@ public struct MySqlObjectName : IEquatable<MySqlObjectName>
 	/// <remarks>This is a case-insensitive comparison.</remarks>
 	public override int GetHashCode()
 	{
-		return Name.ToUpperInvariant().GetHashCode();
+		return Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
 	}
 
 	/// <summary>
@@ -181,6 +180,6 @@ public struct MySqlObjectName : IEquatable<MySqlObjectName>
 		if (value.IsNullOrWhiteSpace())
 			return null;
 
-		return value.Replace("`", "");
+		return value.Replace("`", "", StringComparison.Ordinal);
 	}
 }

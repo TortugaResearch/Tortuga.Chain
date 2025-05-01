@@ -7,6 +7,7 @@ namespace Tortuga.Chain.SqlServer;
 /// <summary>
 /// Class SqlServerDataSourceBase.
 /// </summary>
+[SuppressMessage("Design", "CA1200")]
 public abstract partial class OleDbSqlServerDataSourceBase : DataSource<OleDbConnection, OleDbTransaction, OleDbCommand, OleDbParameter>
 {
 	/// <summary>

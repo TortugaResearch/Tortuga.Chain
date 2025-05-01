@@ -1,6 +1,5 @@
 ﻿using MySqlConnector;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer;
@@ -612,10 +611,10 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 						//var comment = reader.GetString("COLUMN_COMMENT"); #224
 						//var collation =  reader.GetStringOrNull("COLLATION_NAME"); #225
 
-						var computed = extra.Contains("VIRTUAL");
-						var primary = key.Contains("PRI");
-						var isIdentity = extra.Contains("auto_increment");
-						var isUnsigned = fullTypeName.Contains("unsigned");
+						var computed = extra.Contains("VIRTUAL", StringComparison.Ordinal);
+						var primary = key.Contains("PRI", StringComparison.Ordinal);
+						var isIdentity = extra.Contains("auto_increment", StringComparison.Ordinal);
+						var isUnsigned = fullTypeName.Contains("unsigned", StringComparison.Ordinal);
 
 						var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
@@ -652,7 +651,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 						{
 							var name = reader.GetString("PARAMETER_NAME");
 							var typeName = reader.GetString("DATA_TYPE");
-							bool isNullable = true;
+							var isNullable = true;
 							var maxLength = reader.GetUInt64OrNull("CHARACTER_MAXIMUM_LENGTH");
 							var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
 							var scale = reader.GetInt32OrNull("NUMERIC_SCALE");
@@ -660,7 +659,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 							var precision = precisionA ?? precisionB;
 							var fullTypeName = reader.GetString("DTD_IDENTIFIER");
 
-							var isUnsigned = fullTypeName.Contains("unsigned");
+							var isUnsigned = fullTypeName.Contains("unsigned", StringComparison.Ordinal);
 							var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
 							//TASK-383: OUTPUT Parameters for MySQL
@@ -717,7 +716,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 					fullTypeName = reader.GetString("DTD_IDENTIFIER");
 					specificName = reader.GetString("SPECIFIC_NAME");
 
-					var isUnsigned = fullTypeName.Contains("unsigned");
+					var isUnsigned = fullTypeName.Contains("unsigned", StringComparison.Ordinal);
 					dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 				}
 			}
@@ -794,7 +793,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 		return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
 	}
 
-	class IndexTemp
+	sealed class IndexTemp
 	{
 		public string? Collation { get; set; }
 		public string ColumnName { get; set; } = "";
