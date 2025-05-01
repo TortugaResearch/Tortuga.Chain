@@ -4,13 +4,16 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.MySql.CommandBuilders;
 
 /// <summary>
 /// Class MySqlTableOrView
 /// </summary>
-public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject>
+[UseTrait(typeof(SupportsCount64Trait<MySqlCommand, MySqlParameter, MySqlLimitOption>))]
+public partial class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject>
 	where TObject : class
 {
 	private readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
@@ -79,16 +82,16 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
 	}
 
 	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	/// <value>The columns.</value>
+	public override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
+
+	/// <summary>
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
 	public new MySqlDataSourceBase DataSource => (MySqlDataSourceBase)base.DataSource;
-
-	/// <summary>
-	/// Gets the columns from the metadata.
-	/// </summary>
-	/// <value>The columns.</value>
-	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.

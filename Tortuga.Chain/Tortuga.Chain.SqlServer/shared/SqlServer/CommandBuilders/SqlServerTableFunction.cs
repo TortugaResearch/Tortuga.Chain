@@ -39,16 +39,16 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 	}
 
 	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	/// <value>The columns.</value>
+	public override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
+
+	/// <summary>
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
 	public new SqlServerDataSourceBase DataSource => (SqlServerDataSourceBase)base.DataSource;
-
-	/// <summary>
-	/// Gets the columns from the metadata.
-	/// </summary>
-	/// <value>The columns.</value>
-	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Return the approximate distinct count using the APPROX_COUNT_DISTINCT function.

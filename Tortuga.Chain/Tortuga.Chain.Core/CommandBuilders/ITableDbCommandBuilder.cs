@@ -12,7 +12,7 @@ public interface ITableDbCommandBuilder : IMultipleRowDbCommandBuilder
 	/// Returns the row count using a <c>SELECT Count(*)</c> style query.
 	/// </summary>
 	/// <returns></returns>
-	ILink<long> AsCount();
+	ILink<int> AsCount();
 
 	/// <summary>
 	/// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
@@ -20,7 +20,7 @@ public interface ITableDbCommandBuilder : IMultipleRowDbCommandBuilder
 	/// <param name="columnName">Name of the column.</param>
 	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
 	/// <returns></returns>
-	ILink<long> AsCount(string columnName, bool distinct = false);
+	ILink<int> AsCount(string columnName, bool distinct = false);
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.

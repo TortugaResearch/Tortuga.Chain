@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
@@ -79,9 +78,11 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 				return $"AVG({QuoteColumnName(columnName!)})";
 
 			case AggregateType.Count:
+			case AggregateType.Count64:
 				return $"COUNT({QuoteColumnName(columnName!)})";
 
 			case AggregateType.CountDistinct:
+			case AggregateType.CountDistinct64:
 				return $"COUNT(DISTINCT {QuoteColumnName(columnName!)})";
 
 			case AggregateType.Sum:
