@@ -1,4 +1,4 @@
-## Version 5.1
+## Version 5.0.2
 
 ### Breaking Changes
 
@@ -15,13 +15,19 @@ This package is obsolete. Use Microsoft.Data.SqlClient instead, which is exposed
 
 Changing from Tortuga.Chain.SqlServer to Tortuga.Chain.SqlServer.MDS should not affect application code. Both packages use the same namespace and class names. The only difference is the database driver they use.
 
+[#514 Make Count() return Int32. Add Count64() as a separate function.](https://github.com/TortugaResearch/Tortuga.Chain/issues/514)
+
+`AsCount` now returns an Int32. If you want a long, then you need to use `AsCount64`. 
+
+This was done because SQL Server can take a huge performance hit when you request a 64-bit count (`COUNT_BIG()`) instead of a 32-bit count (`COUNT`).
+
 ## Version 4.5.1
 
 Add timeouts to bulk insert.
 
 * `.WithNoTimeout()`
 * `.WithTimeout(TimeSpan timeout)`
-
+* 
 ## Version 4.4
 
 

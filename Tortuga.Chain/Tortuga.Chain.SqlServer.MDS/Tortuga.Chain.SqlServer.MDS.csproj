@@ -13,7 +13,7 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<AnalysisLevel>latest</AnalysisLevel>
 		
-		<Version>5.0.1</Version>
+		<Version>5.0.2</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -64,24 +64,25 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="5.0.1" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="5.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="..\Shared\DataSource\IHasExtensionCache.cs" Link="IHasExtensionCache.cs" />
-		<Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />
+		<!--<Compile Update="..\Shared\DataSource\CommandBuilders\SupportsCount64Trait`3.cs" Link="SupportsCount64Trait`3.cs" />-->
+		<!--<Compile Update="..\Shared\DataSource\IHasExtensionCache.cs" Link="IHasExtensionCache.cs" />
+		<Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />-->
 	</ItemGroup>
 
 	<!-- Code Generator -->
 	<ItemGroup>
-		<PackageReference Include="Tortuga.Shipwright" Version="0.11.0">
+		<PackageReference Include="Tortuga.Shipwright" Version="0.12.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Tortuga.Shipwright.Shared" Version="0.11.0" />
+		<PackageReference Include="Tortuga.Shipwright.Shared" Version="0.12.0" />
 	</ItemGroup>
 
 	<PropertyGroup>
-		<!-- <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles> -->
+		 <!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>--> 
 		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
 	</PropertyGroup>
 

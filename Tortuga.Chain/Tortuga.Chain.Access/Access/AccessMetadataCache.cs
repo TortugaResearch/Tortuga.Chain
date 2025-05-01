@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Data.OleDb;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Chain.Aggregates;
@@ -46,7 +45,9 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	/// <exception cref="System.NotSupportedException">Access does not support distinct sums.</exception>
 	public override string GetAggregateFunction(AggregateType aggregateType, string columnName)
 	{
-		if (aggregateType == AggregateType.CountDistinct)
+		if (aggregateType == AggregateType.Count64)
+			throw new NotSupportedException("Access does not support Int64 counts.");
+		if (aggregateType == AggregateType.CountDistinct || aggregateType == AggregateType.CountDistinct64)
 			throw new NotSupportedException("Access does not support distinct counts.");
 		if (aggregateType == AggregateType.SumDistinct)
 			throw new NotSupportedException("Access does not support distinct sums.");

@@ -53,4 +53,14 @@ public enum AggregateType
 	/// Gets the sum of distinct, non-null values the indicated column.
 	/// </summary>
 	SumDistinct = 7,
+
+	/// <summary>
+	/// Gets the count of non-null values the indicated column using an Int64. May provide '*'.
+	/// </summary>
+	Count64 = 104,
+
+	/// <summary>
+	/// Gets the count of distinct, non-null values the indicated column using an Int64. May provide '*'.
+	/// </summary>
+	CountDistinct64 = 105,
 }

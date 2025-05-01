@@ -39,16 +39,16 @@ internal sealed class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbC
 	}
 
 	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	/// <value>The columns.</value>
+	public override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
+
+	/// <summary>
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
 	public new OleDbSqlServerDataSourceBase DataSource => (OleDbSqlServerDataSourceBase)base.DataSource;
-
-	/// <summary>
-	/// Gets the columns from the metadata.
-	/// </summary>
-	/// <value>The columns.</value>
-	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.

@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3;COUNT64</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

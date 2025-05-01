@@ -85,8 +85,8 @@ public sealed partial class SqlServerMetadataCache
 	{
 		return aggregateType switch
 		{
-			AggregateType.Count => $"COUNT_BIG({QuoteColumnName(columnName!)})",
-			AggregateType.CountDistinct => $"COUNT_BIG(DISTINCT {QuoteColumnName(columnName!)})",
+			AggregateType.Count64 => $"COUNT_BIG({QuoteColumnName(columnName!)})",
+			AggregateType.CountDistinct64 => $"COUNT_BIG(DISTINCT {QuoteColumnName(columnName!)})",
 			_ => base.GetAggregateFunction(aggregateType, columnName),
 		};
 	}

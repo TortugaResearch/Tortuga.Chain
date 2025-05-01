@@ -30,15 +30,15 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	}
 
 	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	public abstract ColumnMetadataCollection Columns { get; }
+
+	/// <summary>
 	/// Gets the aggregate columns.
 	/// </summary>
 	/// <value>The aggregate columns.</value>
 	protected AggregateColumnCollection AggregateColumns { get; } = [];
-
-	/// <summary>
-	/// Gets the columns from the metadata.
-	/// </summary>
-	protected abstract ColumnMetadataCollection Columns { get; }
 
 	/// <summary>
 	/// Gets the default limit option.
@@ -137,10 +137,10 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// Returns the row count using a <c>SELECT Count(*)</c> style query.
 	/// </summary>
 	/// <returns></returns>
-	public ILink<long> AsCount()
+	public ILink<int> AsCount()
 	{
 		AggregateColumns.Add(new AggregateColumn(AggregateType.Count, "*", "RowCount"));
-		return ToInt64();
+		return ToInt32();
 	}
 
 	/// <summary>
@@ -149,12 +149,12 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// <param name="columnName">Name of the column.</param>
 	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
 	/// <returns></returns>
-	public ILink<long> AsCount(string columnName, bool distinct = false)
+	public ILink<int> AsCount(string columnName, bool distinct = false)
 	{
 		var column = Columns[columnName];
 		AggregateColumns.Add(new AggregateColumn(distinct ? AggregateType.CountDistinct : AggregateType.Count, column.SqlName, column.SqlName));
 
-		return ToInt64();
+		return ToInt32();
 	}
 
 	/// <summary>
