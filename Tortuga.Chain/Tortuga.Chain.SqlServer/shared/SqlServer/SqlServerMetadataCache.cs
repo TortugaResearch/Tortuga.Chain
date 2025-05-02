@@ -274,15 +274,22 @@ WHERE o.name = @Name
 	/// Preloads metadata for all tables.
 	/// </summary>
 	/// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-	public void PreloadTables()
+	public void PreloadTables(string? schemaName = null)
 	{
-		const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
+		const string tableList1 = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id";
+
+		const string tableList2 = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id WHERE s.name = @SchemaName";
+
+		var tableList = schemaName == null ? tableList1 : tableList2;
 
 		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
 			using (var cmd = new SqlCommand(tableList, con))
 			{
+				if (schemaName != null)
+					cmd.Parameters.AddWithValue("@SchemaName", schemaName);
+
 				using (var reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())

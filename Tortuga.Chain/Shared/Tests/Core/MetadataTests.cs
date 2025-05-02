@@ -102,6 +102,28 @@ public class MetadataTests : TestBase
 			Release(dataSource);
 		}
 	}
+#endif
+
+#if SQL_SERVER_MDS
+
+	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	public void PreloadBySchema(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			dataSource.DatabaseMetadata.Reset();
+			dataSource.DatabaseMetadata.PreloadTables("HR");
+			var tables = dataSource.DatabaseMetadata.GetTablesAndViews();
+			Assert.IsTrue(tables.Any(t => t.Name.Schema == "HR"), "Expected at least one HR table");
+			Assert.IsFalse(tables.Any(t => t.Name.Schema != "HR"), "Expected no non-HR tables");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 
 #endif
 
