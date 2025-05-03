@@ -4,15 +4,13 @@ using Tortuga.Chain.SqlServer;
 
 namespace Tests.Appenders;
 
-#if SQL_SERVER_SDS
-using System.Data.SqlClient;
-#elif SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 using Microsoft.Data.SqlClient;
 
 #endif
 
-#if (SQL_SERVER_SDS || SQL_SERVER_MDS)
+#if (SQL_SERVER_MDS)
 
 [TestClass]
 public class SqlDependencyTests : TestBase

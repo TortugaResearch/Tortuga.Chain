@@ -5,7 +5,7 @@ namespace Tests.Core;
 [TestClass]
 public class ObjectNameTests : TestBase
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
 	[DataTestMethod]
 	[DataRow("Employee", "employee")]

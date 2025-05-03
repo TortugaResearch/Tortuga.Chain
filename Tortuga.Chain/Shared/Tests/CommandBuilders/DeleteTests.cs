@@ -91,8 +91,7 @@ public class DeleteTests : TestBase
 		}
 	}
 
-
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Delete_Trigger(string dataSourceName, DataSourceType mode)
@@ -117,6 +116,7 @@ public class DeleteTests : TestBase
 			Release(dataSource);
 		}
 	}
+
 #endif
 
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
@@ -158,7 +158,6 @@ public class DeleteTests : TestBase
 
 			var managerKey = dataSource.Insert(manager).ToInt32().Execute();
 
-
 			var original = new Employee()
 			{
 				FirstName = "Test",
@@ -176,12 +175,10 @@ public class DeleteTests : TestBase
 				Assert.Fail($"Expected a {nameof(MappingException)}");
 			}
 			catch (MappingException) { }
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-
 }

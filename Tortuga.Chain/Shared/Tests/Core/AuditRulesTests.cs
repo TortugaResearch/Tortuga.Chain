@@ -261,7 +261,7 @@ public class AuditRulesTests : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
 	public void SoftDeleteByKey(string dataSourceName)

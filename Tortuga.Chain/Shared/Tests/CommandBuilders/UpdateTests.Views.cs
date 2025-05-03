@@ -42,7 +42,7 @@ public class UpdateTests_Views : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void UpdateViaView(string dataSourceName, DataSourceType mode)

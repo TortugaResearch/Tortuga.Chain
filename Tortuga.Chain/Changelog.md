@@ -1,3 +1,9 @@
+## Version 5.1
+
+### Technical Debt
+
+Removed obsolete compiler constants.
+
 ## Version 5.0.2
 
 ### Breaking Changes

@@ -1,12 +1,11 @@
 using System.Collections.Concurrent;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 /// <summary>Class AbstractSqlServerMetadataCache.</summary>
 public abstract class AbstractSqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, AbstractDbType>
@@ -31,7 +30,7 @@ public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadat
 	internal abstract TableOrViewMetadata<SqlServerObjectName, AbstractDbType> OnGetTableOrView(SqlServerObjectName tableName);
 }
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 partial class SqlServerMetadataCache : AbstractSqlServerMetadataCache
 #elif SQL_SERVER_OLEDB

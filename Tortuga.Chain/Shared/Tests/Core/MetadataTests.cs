@@ -6,7 +6,7 @@ namespace Tests.Core;
 [TestClass]
 public class MetadataTests : TestBase
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
 	public void TableIndexes(string dataSourceName, DataSourceType mode, string tableName)
@@ -38,7 +38,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, ViewData(DataSourceGroup.All)]
 	public void ViewIndexes(string dataSourceName, DataSourceType mode, string tableName)
@@ -67,7 +67,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void DatabaseName(string dataSourceName, DataSourceType mode)
@@ -86,7 +86,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || MySQL || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || MySQL || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void DefaultSchema(string dataSourceName, DataSourceType mode)
@@ -169,7 +169,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_TableFunctions(string dataSourceName, DataSourceType mode)
@@ -205,7 +205,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_StoredProcedures(string dataSourceName, DataSourceType mode)
@@ -234,7 +234,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_ScalarFunctions(string dataSourceName, DataSourceType mode)
@@ -415,7 +415,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void VerifyFunction1(string dataSourceName, DataSourceType mode)
@@ -479,7 +479,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void VerifyFunction2(string dataSourceName, DataSourceType mode)
