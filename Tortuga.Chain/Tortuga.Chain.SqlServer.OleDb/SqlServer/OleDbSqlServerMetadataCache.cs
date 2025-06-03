@@ -102,22 +102,22 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// <summary>
 	/// Preloads the scalar functions.
 	/// </summary>
-	public void PreloadScalarFunctions()
+	/// <param name="schemaName">If not null, only the indicated schema will be loaded.</param>
+	public void PreloadScalarFunctions(string? schemaName = null)
 	{
-		const string TvfSql =
-			@"SELECT
-				s.name AS SchemaName,
-				o.name AS Name,
-				o.object_id AS ObjectId
-				FROM sys.objects o
-				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-				WHERE o.type in ('FN')";
+		const string sql1 = "SELECT s.name AS SchemaName, o.name AS Name, o.object_id AS ObjectId FROM sys.objects o INNER JOIN sys.schemas s ON o.schema_id = s.schema_id WHERE o.type in ('FN')";
+		const string sql2 = "SELECT s.name AS SchemaName, o.name AS Name, o.object_id AS ObjectId FROM sys.objects o INNER JOIN sys.schemas s ON o.schema_id = s.schema_id WHERE o.type in ('FN') AND s.name = ?";
+
+		var sql = schemaName == null ? sql1 : sql2;
 
 		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
-			using (var cmd = new OleDbCommand(TvfSql, con))
+			using (var cmd = new OleDbCommand(sql, con))
 			{
+				if (schemaName != null)
+					cmd.Parameters.AddWithValue("@SchemaName", schemaName);
+
 				using (var reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
@@ -134,20 +134,22 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// <summary>
 	/// Preloads the stored procedures.
 	/// </summary>
-	public void PreloadStoredProcedures()
+	/// <param name="schemaName">If not null, only the indicated schema will be loaded.</param>
+	public void PreloadStoredProcedures(string? schemaName = null)
 	{
-		const string StoredProcedureSql =
-		@"SELECT
-				s.name AS SchemaName,
-				sp.name AS Name
-				FROM SYS.procedures sp
-				INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id;";
+		const string sql1 = "SELECT s.name AS SchemaName, sp.name AS Name FROM SYS.procedures sp INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id;";
+		const string sql2 = "SELECT s.name AS SchemaName, sp.name AS Name FROM SYS.procedures sp INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id AND s.name = ?";
+
+		var sql = schemaName == null ? sql1 : sql2;
 
 		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
-			using (var cmd = new OleDbCommand(StoredProcedureSql, con))
+			using (var cmd = new OleDbCommand(sql, con))
 			{
+				if (schemaName != null)
+					cmd.Parameters.AddWithValue("@SchemaName", schemaName);
+
 				using (var reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
@@ -164,22 +166,22 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// <summary>
 	/// Preloads the table value functions.
 	/// </summary>
-	public void PreloadTableFunctions()
+	/// <param name="schemaName">If not null, only the indicated schema will be loaded.</param>
+	public void PreloadTableFunctions(string? schemaName = null)
 	{
-		const string TvfSql =
-			@"SELECT
-				s.name AS SchemaName,
-				o.name AS Name,
-				o.object_id AS ObjectId
-				FROM sys.objects o
-				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-				WHERE o.type in ('TF', 'IF', 'FT')";
+		const string sql1 = "SELECT s.name AS SchemaName, o.name AS Name FROM sys.objects o INNER JOIN sys.schemas s ON o.schema_id = s.schema_id WHERE o.type in ('TF', 'IF', 'FT')";
+		const string sql2 = "SELECT s.name AS SchemaName, o.name AS Name FROM sys.objects o INNER JOIN sys.schemas s ON o.schema_id = s.schema_id WHERE o.type in ('TF', 'IF', 'FT') AND s.name = ?";
+
+		var sql = schemaName == null ? sql1 : sql2;
 
 		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
-			using (var cmd = new OleDbCommand(TvfSql, con))
+			using (var cmd = new OleDbCommand(sql, con))
 			{
+				if (schemaName != null)
+					cmd.Parameters.AddWithValue("@SchemaName", schemaName);
+
 				using (var reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
@@ -196,16 +198,22 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// <summary>
 	/// Preloads metadata for all tables.
 	/// </summary>
-	/// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-	public void PreloadTables()
+	/// <param name="schemaName">If not null, only the indicated schema will be loaded.</param>
+	public void PreloadTables(string? schemaName = null)
 	{
-		const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
+		const string sql1 = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id";
+		const string sql2 = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id WHERE s.name = ?";
+
+		var sql = schemaName == null ? sql1 : sql2;
 
 		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
-			using (var cmd = new OleDbCommand(tableList, con))
+			using (var cmd = new OleDbCommand(sql, con))
 			{
+				if (schemaName != null)
+					cmd.Parameters.AddWithValue("@SchemaName", schemaName);
+
 				using (var reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
@@ -222,16 +230,22 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// <summary>
 	/// Preloads the user defined types.
 	/// </summary>
-	/// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-	public void PreloadUserDefinedTableTypes()
+	/// <param name="schemaName">If not null, only the indicated schema will be loaded.</param>
+	public void PreloadUserDefinedTableTypes(string? schemaName = null)
 	{
-		const string tableList = @"SELECT s.name AS SchemaName, t.name AS Name FROM sys.types t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE	t.is_user_defined = 1;";
+		const string sql1 = @"SELECT s.name AS SchemaName, t.name AS Name FROM sys.types t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE t.is_user_defined = 1 AND t.is_table_type = 1;";
+		const string sql2 = @"SELECT s.name AS SchemaName, t.name AS Name FROM sys.types t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE t.is_user_defined = 1 AND t.is_table_type = 1 AND s.name = ?;";
+
+		var sql = schemaName == null ? sql1 : sql2;
 
 		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
-			using (var cmd = new OleDbCommand(tableList, con))
+			using (var cmd = new OleDbCommand(sql, con))
 			{
+				if (schemaName != null)
+					cmd.Parameters.AddWithValue("@SchemaName", schemaName);
+
 				using (var reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
@@ -248,16 +262,22 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// <summary>
 	/// Preloads metadata for all views.
 	/// </summary>
-	/// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-	public void PreloadViews()
+	/// <param name="schemaName">If not null, only the indicated schema will be loaded.</param>
+	public void PreloadViews(string? schemaName = null)
 	{
-		const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
+		const string sql1 = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id";
+		const string sql2 = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id WHERE s.name = ?";
+
+		var sql = schemaName == null ? sql1 : sql2;
 
 		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
-			using (var cmd = new OleDbCommand(tableList, con))
+			using (var cmd = new OleDbCommand(sql, con))
 			{
+				if (schemaName != null)
+					cmd.Parameters.AddWithValue("@SchemaName", schemaName);
+
 				using (var reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
