@@ -1,3 +1,13 @@
+
+## Version 5.1
+
+### Features
+
+[#518 Preload Tables by Schema](https://github.com/TortugaResearch/Tortuga.Chain/issues/518)
+
+The `DatabaseMetadata.Preload` functions for SQL Server now accept an optional `schemaName` paramters.
+
+
 ## Version 5.0.2
 
 ### Breaking Changes

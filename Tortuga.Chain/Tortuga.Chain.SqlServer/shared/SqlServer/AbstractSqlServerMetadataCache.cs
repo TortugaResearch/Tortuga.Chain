@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 
@@ -156,14 +155,20 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 	/// <summary>
 	/// Preloads all of the metadata for this data source.
 	/// </summary>
-	public override void Preload()
+	public override void Preload() => Preload(null);
+
+	/// <summary>
+	/// Preloads all of the metadata for this data source.
+	/// </summary>
+	/// <param name="schemaName">If not null, only the indicated schema will be loaded.</param>
+	public void Preload(string? schemaName = null)
 	{
-		PreloadTables();
-		PreloadViews();
-		PreloadStoredProcedures();
-		PreloadTableFunctions();
-		PreloadUserDefinedTableTypes();
-		PreloadScalarFunctions();
+		PreloadTables(schemaName);
+		PreloadViews(schemaName);
+		PreloadStoredProcedures(schemaName);
+		PreloadTableFunctions(schemaName);
+		PreloadUserDefinedTableTypes(schemaName);
+		PreloadScalarFunctions(schemaName);
 	}
 
 	/// <summary>

@@ -105,6 +105,45 @@ public class MetadataTests : TestBase
 
 #endif
 
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
+
+	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	public void PreloadBySchema(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			dataSource.DatabaseMetadata.Reset();
+			dataSource.DatabaseMetadata.Preload("HR");
+
+			var tables = dataSource.DatabaseMetadata.GetTablesAndViews();
+			Assert.IsTrue(tables.Any(t => t.IsTable && t.Name.Schema == "HR"), "Expected at least one HR table");
+			Assert.IsFalse(tables.Any(t => t.IsTable && t.Name.Schema != "HR"), "Expected no non-HR tables");
+
+			var views = dataSource.DatabaseMetadata.GetTablesAndViews();
+			Assert.IsTrue(views.Any(t => !t.IsTable && t.Name.Schema == "HR"), "Expected at least one HR view");
+			Assert.IsFalse(views.Any(t => !t.IsTable && t.Name.Schema != "HR"), "Expected no non-HR views");
+
+			var funcs = dataSource.DatabaseMetadata.GetStoredProcedures();
+			Assert.IsTrue(funcs.Any(t => t.Name.Schema == "HR"), "Expected at least one HR func");
+			Assert.IsFalse(funcs.Any(t => t.Name.Schema != "HR"), "Expected no non-HR funcs");
+
+			var procs = dataSource.DatabaseMetadata.GetStoredProcedures();
+			Assert.IsTrue(procs.Any(t => t.Name.Schema == "HR"), "Expected at least one HR proc");
+			Assert.IsFalse(procs.Any(t => t.Name.Schema != "HR"), "Expected no non-HR procs");
+
+			var types = dataSource.DatabaseMetadata.GetUserDefinedTableTypes();
+			Assert.IsTrue(types.Any(t => t.Name.Schema == "HR"), "Expected at least one HR type");
+			Assert.IsFalse(types.Any(t => t.Name.Schema != "HR"), "Expected no non-HR types");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
+
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void Preload(string dataSourceName, DataSourceType mode)
 	{
