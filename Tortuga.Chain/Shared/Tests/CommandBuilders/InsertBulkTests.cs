@@ -1,11 +1,7 @@
 ﻿using System.Diagnostics;
 using Tests.Models;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 using Microsoft.Data.SqlClient;
 
@@ -16,7 +12,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class InsertBulkTests : TestBase
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL || POSTGRESQL
+#if SQL_SERVER_MDS || MYSQL || POSTGRESQL
 
 	IEnumerable<Employee> StreamRecords(string key, int maxRecords)
 	{
@@ -28,7 +24,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
+#if SQL_SERVER_MDS || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_List_WithBatches(string dataSourceName, DataSourceType mode)
@@ -168,7 +164,7 @@ public class InsertBulkTests : TestBase
 		{
 			var count = dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).Execute();
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 			Assert.AreEqual(-1, count); //streaming prevents returning a row count;
 #elif MYSQL || POSTGRESQL
 			Assert.AreEqual(1000, count);
@@ -183,7 +179,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
+#if SQL_SERVER_MDS || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task InsertBulkAsync_List_WithBatches(string dataSourceName, DataSourceType mode)
@@ -266,7 +262,7 @@ public class InsertBulkTests : TestBase
 		{
 			var count = await dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).ExecuteAsync().ConfigureAwait(false);
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 			Assert.AreEqual(-1, count); //streaming prevents returning a row count;
 #elif MYSQL || POSTGRESQL
 			Assert.AreEqual(1000, count);
@@ -283,7 +279,7 @@ public class InsertBulkTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	[Obsolete]
@@ -342,7 +338,7 @@ public class InsertBulkTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)

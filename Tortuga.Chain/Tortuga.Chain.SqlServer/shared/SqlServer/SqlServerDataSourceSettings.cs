@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.SqlServer;
@@ -15,7 +14,7 @@ public class SqlServerDataSourceSettings : DataSourceSettings
 	{
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	internal SqlServerDataSourceSettings(SqlServerDataSource dataSource, bool forwardEvents = false)
 	{
@@ -75,7 +74,6 @@ public class SqlServerDataSourceSettings : DataSourceSettings
 	/// </summary>
 	/// <remarks>Set this is encountering an excessive number of execution plans that only differ by the length of a string .</remarks>
 	public int? DefaultVarCharLength { get; set; }
-
 
 	/// <summary>
 	/// Gets or sets the default length of nVarChar string parameters. This is used when the query builder cannot determine the best parameter type and the parameter's actual length is smaller than the default length.

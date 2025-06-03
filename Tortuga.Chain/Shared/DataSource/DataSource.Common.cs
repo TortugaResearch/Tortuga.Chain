@@ -1,4 +1,4 @@
-﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS
+﻿#if SQL_SERVER_MDS
 
 namespace Tortuga.Chain
 {
@@ -24,25 +24,19 @@ namespace Tortuga.Chain
 {
 	partial class MySqlDataSource
 	{
-
 #elif POSTGRESQL
 
 namespace Tortuga.Chain
 {
 	partial class PostgreSqlDataSource
 	{
-
 #elif ACCESS
 
 namespace Tortuga.Chain
 {
 	partial class AccessDataSource
 	{
-
 #endif
-
-
-
 
 		/*
 

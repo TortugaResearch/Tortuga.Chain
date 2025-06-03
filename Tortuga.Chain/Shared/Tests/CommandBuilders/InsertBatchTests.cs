@@ -8,7 +8,7 @@ public class InsertBatchTests : TestBase
 {
 	const string TableType = "HR.EmployeeTable";
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || SQLITE || POSTGRESQL || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertMultipleBatch(string dataSourceName, DataSourceType mode)
@@ -61,7 +61,7 @@ public class InsertBatchTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || MYSQL
+#if SQL_SERVER_MDS || SQLITE || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatch_IdentityInsert(string dataSourceName, DataSourceType mode)
@@ -99,7 +99,7 @@ public class InsertBatchTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL
+#if SQL_SERVER_MDS || POSTGRESQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatch_ReturnKeys(string dataSourceName, DataSourceType mode)
@@ -157,7 +157,7 @@ public class InsertBatchTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatchTable(string dataSourceName, DataSourceType mode)

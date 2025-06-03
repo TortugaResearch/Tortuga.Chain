@@ -116,7 +116,30 @@ function Initialize(extension)
         ResizeTree();
     }
 }
-
+function InitializeWithFullTOC() {
+    try {
+        var xmlRequest = GetXmlHttpRequest(), now = new Date();
+        xmlRequest.open("GET", "../HelpToc.xml?timestamp=" + now.getTime(), true);
+        xmlRequest.onreadystatechange = function () {
+            if (xmlRequest.readyState == 4) {
+                if (xmlRequest.status != 200) {
+                    alert('This version of the help documentation only works on a web server (ASP.NET or PHP).');
+                    return;
+                }
+                if (xmlRequest.readyState != XMLHttpRequest.DONE) {
+                    return;
+                }
+                if (xmlRequest.status == 200 && xmlRequest.responseText != null) {
+                    document.getElementById('divTree').innerHTML = xmlRequest.responseText;
+                    Initialize();
+                }
+            }
+        }
+        xmlRequest.send(null);
+    } catch (ex) {
+        alert("Error: " + ex);
+    }
+}
 //============================================================================
 // Navigation and expand/collaps code
 
@@ -312,7 +335,7 @@ function Toggle(node)
     var i, childNodes, child, div, link;
     if (childDivs.length === 1 && childDivs[0].className === "Hidden") {
         if (window.location.href.indexOf("file://") >= 0) {
-            //alert('This feature works when hosting the help documentation using ASP.NET or PHP.');
+            //alert('This version of the help documentation only works on a web server (ASP.NET or PHP).');
             node.nextSibling.click();
             return;
         } else {
@@ -325,7 +348,7 @@ function Toggle(node)
                 xmlRequest.onreadystatechange = function () {
                     if (xmlRequest.readyState == 4) {
                         if (xmlRequest.status != 200) {
-                            alert('This feature works when hosting the help documentation using ASP.NET or PHP.');
+                            alert('This version of the help documentation only works on a web server (ASP.NET or PHP).');
                             return;
                         }
 
@@ -660,7 +683,7 @@ function ShowHideSearch(show)
     {
         var href = document.URL;
         if (href.substring(0, 7) != 'http://' && href.substring(0, 8) != 'https://' && href.substring(0, 7) == 'file://') {
-            alert('The Search feature works when hosting the help documentation using ASP.NET or PHP.');
+            alert('The Search feature only works on a web server (ASP.NET or PHP).');
             return;
         }
         
@@ -710,7 +733,7 @@ function PerformSearch()
         {
             if (xmlHttp.status != 200)
             {
-                alert('The Search feature works when hosting the help documentation using ASP.NET or PHP.');
+                alert('The Search feature only works on a web server (ASP.NET or PHP).');
                 return;
             }
             
