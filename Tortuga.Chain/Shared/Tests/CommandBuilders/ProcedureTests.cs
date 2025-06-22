@@ -4,11 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Tests.Models;
 using Tortuga.Chain;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 using Microsoft.Data.SqlClient;
 
@@ -19,7 +15,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class ProcedureTests : TestBase
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 	const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
 	const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
 	static readonly object CheckParameter1 = new { @State = "CA" };
@@ -49,7 +45,7 @@ public class ProcedureTests : TestBase
 	static readonly object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Tuncation_Test(string dataSourceName, DataSourceType mode)
@@ -470,7 +466,7 @@ public class ProcedureTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_IgnoreOutputs(string dataSourceName, DataSourceType mode)

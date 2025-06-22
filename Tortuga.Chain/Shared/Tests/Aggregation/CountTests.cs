@@ -1,7 +1,7 @@
 ﻿using Tests.Models;
 using Tortuga.Chain.CommandBuilders;
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 using Tortuga.Chain.SqlServer;
 
@@ -48,7 +48,7 @@ public class CountTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void AsCountDistinctApproximate_Auto(string dataSourceName, DataSourceType mode)
@@ -198,7 +198,7 @@ public class CountTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
 	public void CountByColumn_DistinctApproximate(string dataSourceName, DataSourceType mode, string tableName, string columnName)

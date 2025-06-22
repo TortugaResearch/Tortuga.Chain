@@ -1,11 +1,11 @@
-﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
+﻿#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
 namespace Tests.CommandBuilders;
 
 [TestClass]
 public class ScalarFunctionTests : TestBase
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 	static object Filter_Integer_WithNullParameter = new { ManagerKey = (int?)null };
 	static object Filter_Integer = new { ManagerKey = 1 };
 #elif MYSQL

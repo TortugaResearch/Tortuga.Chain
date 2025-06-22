@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
 using Tortuga.Chain;
 
@@ -25,12 +25,12 @@ public class TablesAndViewLimitDataAttribute : DataAttribute
 				foreach (var dst in DataSourceTypeList)
 					foreach (var limitType in LimitOptionList)
 					{
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
-							//Cannot use table sample with views
-							if (!table.IsTable && limitType == SqlServerLimitOption.TableSampleSystemPercentage)
-								continue;
-							if (!table.IsTable && limitType == SqlServerLimitOption.TableSampleSystemRows)
-								continue;
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
+						//Cannot use table sample with views
+						if (!table.IsTable && limitType == SqlServerLimitOption.TableSampleSystemPercentage)
+							continue;
+						if (!table.IsTable && limitType == SqlServerLimitOption.TableSampleSystemRows)
+							continue;
 #elif POSTGRESQL
 							//Cannot use table sample with views
 							if (!table.IsTable && limitType == PostgreSqlLimitOption.TableSampleBernoulliPercentage)

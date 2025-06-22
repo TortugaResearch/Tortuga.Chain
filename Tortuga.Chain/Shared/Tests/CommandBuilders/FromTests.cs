@@ -1,7 +1,7 @@
 ﻿using Tests.Models;
 using Tortuga.Chain;
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 using Tortuga.Chain.SqlServer;
 

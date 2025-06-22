@@ -1,9 +1,8 @@
-﻿#if SQL_SERVER_SDS
-using System.Data.SqlClient;
-using Tortuga.Chain;
-#elif SQL_SERVER_MDS
+﻿#if SQL_SERVER_MDS
+
 using Microsoft.Data.SqlClient;
 using Tortuga.Chain;
+
 #elif SQL_SERVER_OLEDB
 using System.Data.OleDb;
 #elif MYSQL
@@ -16,15 +15,12 @@ using System.Data.OleDb;
 using System.Data.SQLite;
 #endif
 
-
 namespace Tests.CommandBuilders;
-
 
 [TestClass]
 public class SqlCallTests : TestBase
 {
-
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 	const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
 	static readonly object CheckParameter1 = new { @State = "CA" };
 	static readonly object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
@@ -71,9 +67,7 @@ public class SqlCallTests : TestBase
 		}
 	}
 
-
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
-
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, RootData(DataSourceGroup.All)]
 	public void Sql_Object_TypeDefault(string dataSourceName)
@@ -104,7 +98,6 @@ public class SqlCallTests : TestBase
 			Release(dataSource);
 		}
 	}
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Object_SizeOverride(string dataSourceName, DataSourceType mode)
@@ -168,6 +161,7 @@ public class SqlCallTests : TestBase
 			Release(dataSource);
 		}
 	}
+
 #endif
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
@@ -200,4 +194,3 @@ public class SqlCallTests : TestBase
 		}
 	}
 }
-

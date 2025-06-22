@@ -47,6 +47,7 @@ public class FromTests_PagingAndSorting : TestBase
 			Release(dataSource);
 		}
 	}
+
 #if SQLITE
 
 		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
@@ -70,7 +71,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #endif
 
-#if SQL_SERVER_OLEDB || SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_OLEDB || SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TakePercent(string dataSourceName, DataSourceType mode)
@@ -447,8 +448,6 @@ public class FromTests_PagingAndSorting : TestBase
 	}
 
 #endif
-
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting_InferredCollection_AutoTableSelection(string dataSourceName, DataSourceType mode)

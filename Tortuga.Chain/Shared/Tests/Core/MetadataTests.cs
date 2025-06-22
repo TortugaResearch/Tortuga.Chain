@@ -6,7 +6,7 @@ namespace Tests.Core;
 [TestClass]
 public class MetadataTests : TestBase
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
 	public void TableIndexes(string dataSourceName, DataSourceType mode, string tableName)
@@ -38,7 +38,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 
 	[DataTestMethod, ViewData(DataSourceGroup.All)]
 	public void ViewIndexes(string dataSourceName, DataSourceType mode, string tableName)
@@ -67,7 +67,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void DatabaseName(string dataSourceName, DataSourceType mode)
@@ -86,7 +86,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || MySQL || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || MySQL || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void DefaultSchema(string dataSourceName, DataSourceType mode)
@@ -96,6 +96,45 @@ public class MetadataTests : TestBase
 		{
 			var defaultSchema = dataSource.DatabaseMetadata.DefaultSchema;
 			Assert.IsFalse(string.IsNullOrWhiteSpace(defaultSchema), "Default schema name wasn't returned");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
+
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
+
+	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	public void PreloadBySchema(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			dataSource.DatabaseMetadata.Reset();
+			dataSource.DatabaseMetadata.Preload("HR");
+
+			var tables = dataSource.DatabaseMetadata.GetTablesAndViews();
+			Assert.IsTrue(tables.Any(t => t.IsTable && t.Name.Schema == "HR"), "Expected at least one HR table");
+			Assert.IsFalse(tables.Any(t => t.IsTable && t.Name.Schema != "HR"), "Expected no non-HR tables");
+
+			var views = dataSource.DatabaseMetadata.GetTablesAndViews();
+			Assert.IsTrue(views.Any(t => !t.IsTable && t.Name.Schema == "HR"), "Expected at least one HR view");
+			Assert.IsFalse(views.Any(t => !t.IsTable && t.Name.Schema != "HR"), "Expected no non-HR views");
+
+			var funcs = dataSource.DatabaseMetadata.GetStoredProcedures();
+			Assert.IsTrue(funcs.Any(t => t.Name.Schema == "HR"), "Expected at least one HR func");
+			Assert.IsFalse(funcs.Any(t => t.Name.Schema != "HR"), "Expected no non-HR funcs");
+
+			var procs = dataSource.DatabaseMetadata.GetStoredProcedures();
+			Assert.IsTrue(procs.Any(t => t.Name.Schema == "HR"), "Expected at least one HR proc");
+			Assert.IsFalse(procs.Any(t => t.Name.Schema != "HR"), "Expected no non-HR procs");
+
+			var types = dataSource.DatabaseMetadata.GetUserDefinedTableTypes();
+			Assert.IsTrue(types.Any(t => t.Name.Schema == "HR"), "Expected at least one HR type");
+			Assert.IsFalse(types.Any(t => t.Name.Schema != "HR"), "Expected no non-HR types");
 		}
 		finally
 		{
@@ -169,7 +208,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_TableFunctions(string dataSourceName, DataSourceType mode)
@@ -205,7 +244,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_StoredProcedures(string dataSourceName, DataSourceType mode)
@@ -234,7 +273,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_ScalarFunctions(string dataSourceName, DataSourceType mode)
@@ -415,7 +454,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void VerifyFunction1(string dataSourceName, DataSourceType mode)
@@ -479,7 +518,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void VerifyFunction2(string dataSourceName, DataSourceType mode)

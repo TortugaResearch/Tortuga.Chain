@@ -1,17 +1,17 @@
-﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS
+﻿#if SQL_SERVER_MDS
 
 using Tortuga.Chain.SqlServer;
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
 
 namespace Tests.CommandBuilders;
 
 [TestClass]
 public class TableFunctionTests : TestBase
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 	static object Parameter1 = new { @State = "CA" };
 	static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
 	static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
@@ -21,7 +21,7 @@ public class TableFunctionTests : TestBase
 	static object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 	//Only SQL Server has inline functions.
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
@@ -40,7 +40,7 @@ public class TableFunctionTests : TestBase
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_MDS
 	//Only SQL Server has inline functions.
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
