@@ -116,7 +116,6 @@
   </HelpKINode>
   <HelpKINode Title="AccessMetadataCache.AccessMetadataCache constructor" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.-ctor.htm" />
   <HelpKINode Title="AccessMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="AccessMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="AccessMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="AccessMetadataCache.GetIndexesForTable method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="AccessMetadataCache.GetTableOrView method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetTableOrView.htm" />
@@ -1946,9 +1945,6 @@
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAsyncEnumerator method" Url="html/M-Tortuga.Chain.ObjectStream-1.GetAsyncEnumerator.htm" />
   <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBoolean.htm" />
   <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetBoolean.htm" />
@@ -4168,7 +4164,6 @@
   <HelpKINode Title="OleDbSqlServerMetadataCache.DatabaseName property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.DatabaseName.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.DefaultSchema property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="OleDbSqlServerMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunctions method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunctions.htm" />
@@ -5641,7 +5636,6 @@
   <HelpKINode Title="SqlServerMetadataCache.DatabaseName property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerMetadataCache.DatabaseName.htm" />
   <HelpKINode Title="SqlServerMetadataCache.DefaultSchema property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="SqlServerMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetIndexesForTable method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetScalarFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetScalarFunction.htm" />

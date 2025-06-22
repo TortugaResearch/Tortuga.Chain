@@ -51,20 +51,7 @@
       <ContentLayout />
       <MediaContent />
     </ConceptualContent>
-    <SelectedProjects>
-      <SelectedProject>Tortuga.Chain.Access</SelectedProject>
-      <SelectedProject>Tortuga.Chain.CompiledMaterializers</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Core</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Core.Odbc</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Core.OleDb</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Core.Tests</SelectedProject>
-      <SelectedProject>Tortuga.Chain.MySql</SelectedProject>
-      <SelectedProject>Tortuga.Chain.PostgreSql</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SQLite</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SqlServer</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SqlServer.MDS</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SqlServer.OleDb</SelectedProject>
-    </SelectedProjects>
+    <SelectedProjects />
   </HelpConfiguration>
   <HelpConfiguration name="API for GitHub">
     <OutputPath>..\docs\API</OutputPath>
@@ -106,16 +93,16 @@
       <MediaContent />
     </ConceptualContent>
     <SelectedProjects>
-      <SelectedProject>Tortuga.Chain.Access</SelectedProject>
-      <SelectedProject>Tortuga.Chain.CompiledMaterializers</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Core</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Core.Odbc</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Core.OleDb</SelectedProject>
-      <SelectedProject>Tortuga.Chain.MySql</SelectedProject>
-      <SelectedProject>Tortuga.Chain.PostgreSql</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SQLite</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SqlServer.MDS</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SqlServer.OleDb</SelectedProject>
+      <SelectedProject>Tortuga.Chain.Access\Tortuga.Chain.Access.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.CompiledMaterializers\Tortuga.Chain.CompiledMaterializers.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.Core.Odbc\Tortuga.Chain.Core.Odbc.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.Core.OleDb\Tortuga.Chain.Core.OleDb.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.Core\Tortuga.Chain.Core.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.MySql\Tortuga.Chain.MySql.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.PostgreSql\Tortuga.Chain.PostgreSql.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SQLite\Tortuga.Chain.SQLite.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SqlServer.MDS\Tortuga.Chain.SqlServer.MDS.csproj</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SqlServer.OleDb\Tortuga.Chain.SqlServer.OleDb.csproj</SelectedProject>
     </SelectedProjects>
   </HelpConfiguration>
 </HelpConfigurations>
