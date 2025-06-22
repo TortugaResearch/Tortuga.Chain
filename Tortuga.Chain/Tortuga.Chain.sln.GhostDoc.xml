@@ -17,6 +17,7 @@
     <CleanupOutputPath>true</CleanupOutputPath>
     <HelpFileName>Tortuga.Chain</HelpFileName>
     <HelpFileNamingMethod>MemberName</HelpFileNamingMethod>
+    <HelpFileLoadIndexPanelOnDemand>false</HelpFileLoadIndexPanelOnDemand>
     <ImageFolderPath />
     <Theme>FlatGray</Theme>
     <HtmlFormats>
@@ -70,6 +71,7 @@
     <CleanupOutputPath>false</CleanupOutputPath>
     <HelpFileName />
     <HelpFileNamingMethod>MemberName</HelpFileNamingMethod>
+    <HelpFileLoadIndexPanelOnDemand>false</HelpFileLoadIndexPanelOnDemand>
     <ImageFolderPath />
     <Theme>FlatGray</Theme>
     <HtmlFormats>
