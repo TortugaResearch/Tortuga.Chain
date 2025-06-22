@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Materializers;
@@ -204,6 +203,30 @@ public sealed class Table
 	/// </summary>
 	/// <value>The name of the table.</value>
 	public string TableName { get; set; }
+
+	/// <summary>
+	/// Copies the contents of this Table into a DataTable.
+	/// </summary>
+	/// <returns>DataTable.</returns>
+	public DataTable ToDataTable()
+	{
+		var dt = new DataTable();
+		foreach (var column in ColumnNames)
+			dt.Columns.Add(new DataColumn(column, ColumnTypeMap[column]));
+
+		foreach (var row in Rows)
+		{
+			var dr = dt.NewRow();
+			foreach (var column in ColumnNames)
+			{
+				var value = row[column];
+				dr[column] = value == null ? DBNull.Value : value;
+			}
+			dt.Rows.Add(dr);
+		}
+
+		return dt;
+	}
 
 	/// <summary>
 	/// Converts the table into an enumeration of objects of the indicated type.
