@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain;
@@ -73,6 +72,19 @@ public sealed class TableSet : IReadOnlyList<Table>
 	public IEnumerator<Table> GetEnumerator() => m_Internal.GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => m_Internal.GetEnumerator();
+
+	/// <summary>
+	/// Copies this TableSet into a DataSet.
+	/// </summary>
+	/// <returns>DataSet.</returns>
+	public DataSet ToDataSet()
+	{
+		var ds = new DataSet();
+		foreach (var table in this)
+			ds.Tables.Add(table.ToDataTable());
+
+		return ds;
+	}
 
 	class TSKeyedCollection : KeyedCollection<string, Table>
 	{

@@ -47,6 +47,24 @@ public class DataTableTests : MaterializerTestBase
 	}
 
 	[TestMethod]
+	public async Task DataTableSet_NoNames()
+	{
+		var materializer = DataSource.Sql(CustomerWithOrdersByState, new { State = "CA" }).ToDataSet();
+		materializer.Execute();
+		await materializer.ExecuteAsync().ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DataTableSet_TooManyNames()
+	{
+		var materializer = DataSource.Sql(CustomerWithOrdersByState, new { State = "CA" }).ToDataSet("Customers", "Orders", "Extra");
+		var ds1 = materializer.Execute();
+		Assert.AreEqual(2, ds1.Tables.Count);
+		var ds2 = await materializer.ExecuteAsync().ConfigureAwait(false);
+		Assert.AreEqual(2, ds1.Tables.Count);
+	}
+
+	[TestMethod]
 	public async Task Table()
 	{
 		var materializer = DataSource.Sql($"SELECT * FROM dbo.AllTypes").ToTable();
