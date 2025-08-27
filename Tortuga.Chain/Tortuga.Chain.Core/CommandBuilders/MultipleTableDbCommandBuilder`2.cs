@@ -86,8 +86,19 @@ public abstract class MultipleTableDbCommandBuilder<TCommand, TParameter> : Mult
 	/// <summary>
 	/// Indicates the results should be materialized as a DataSet.
 	/// </summary>
-	/// <param name="tableNames">The table names.</param>
+	/// <param name="tableNames">The table names. This must either be empty or at least one name per result set returned by the database.</param>
+	/// <remarks>
+	/// There is a performance hit when not providing tableNames. The results will be loaded into a TableSet, then copied into a DataSet.
+	/// </remarks>
 	public ILink<DataSet> ToDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommand, TParameter>(this, tableNames); }
+
+	/// <summary>
+	/// Indicates the results should be materialized as a DataSet.
+	/// </summary>
+	/// <remarks>
+	/// There is a performance hit when not providing tableNames. The results will be loaded into a TableSet, then copied into a DataSet.
+	/// </remarks>
+	public ILink<DataSet> ToDataSet() { return new DataSetMaterializer<TCommand, TParameter>(this, null); }
 
 	/// <summary>
 	/// Indicates the results should be materialized as a set of tables.

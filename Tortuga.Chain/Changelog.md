@@ -1,3 +1,19 @@
+## Version 5.2
+
+### Features
+
+[#521 Table.ToDataTable and TableSet.ToDataSet](https://github.com/TortugaResearch/Tortuga.Chain/issues/521)
+
+`.ToDataSet` no longer needs table names.
+
+If too many table names are provided to `.ToDataSet`, the tables that were not populatd will be pruned. Note, a table with 0 rows is still valid. A table with 0 columns is not.
+
+New functions: 
+
+* `TableSet.DataSet` Copies a `TableSet` into a new `DataSet`.
+* `Table.DataTable` Copies a `Table` into a new `DataTable`.
+
+
 ## Version 5.1
 
 ### Features
