@@ -3,6 +3,7 @@ using NpgsqlTypes;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Tortuga.Anchor;
@@ -148,8 +149,9 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
 	/// <remarks>
-	/// This should be cached on a TableOrViewMetadata object.
+	/// This should be read from a TableOrViewMetadata object. Do not call this method directly.
 	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public override IndexMetadataCollection<PostgreSqlObjectName, NpgsqlDbType> GetIndexesForTable(PostgreSqlObjectName tableName)
 	{
 		string indexSql;

@@ -88,7 +88,7 @@ public class TableOrViewMetadata<TObjectName, TDbType> : TableOrViewMetadata
 	/// Gets the indexes for this table or view.
 	/// </summary>
 	/// <returns></returns>
-	/// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+	/// <exception cref="NotSupportedException">Foreign Keys are not supported by this data source</exception>
 	public ForeignKeyConstraintCollection<TObjectName, TDbType> GetForeignKeys()
 	{
 		if (m_ForeignKeys == null)

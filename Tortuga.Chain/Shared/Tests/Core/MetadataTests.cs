@@ -38,6 +38,29 @@ public class MetadataTests : TestBase
 
 #endif
 
+#if MYSQL
+
+	[DataTestMethod, TableData(DataSourceGroup.All)]
+	public void TableForeignKeyConstraints(string dataSourceName, DataSourceType mode, string tableName)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+			var fKeys = table.GetForeignKeys();
+			foreach (var fKey in fKeys)
+			{
+				Assert.IsFalse(string.IsNullOrWhiteSpace(fKey.Name), $"Constraints should have names. Table name {table.Name}");
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
+
 #if SQL_SERVER_MDS
 
 	[DataTestMethod, ViewData(DataSourceGroup.All)]
@@ -86,7 +109,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_MDS || MySQL || SQL_SERVER_OLEDB
+#if SQL_SERVER_MDS || MYSQL || SQL_SERVER_OLEDB
 
 	[DataTestMethod, BasicData(DataSourceGroup.All)]
 	public void DefaultSchema(string dataSourceName, DataSourceType mode)
