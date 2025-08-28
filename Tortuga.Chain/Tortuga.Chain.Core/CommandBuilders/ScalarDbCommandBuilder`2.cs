@@ -356,6 +356,17 @@ public abstract class ScalarDbCommandBuilder<TCommand, TParameter> : DbCommandBu
 	public ILink<TimeSpan?> ToTimeSpanOrNull(string columnName) => new TimeSpanOrNullMaterializer<TCommand, TParameter>(this, columnName);
 
 	/// <summary>
+	/// Indicates the results should be materialized as a UInt64.
+	/// </summary>
+	public ILink<ulong> ToUInt64() => new UInt64Materializer<TCommand, TParameter>(this);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a UInt64.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	public ILink<ulong> ToUInt64(string columnName) => new UInt64Materializer<TCommand, TParameter>(this, columnName);
+
+	/// <summary>
 	/// Materializes the result as an XElement.
 	/// </summary>
 	/// <returns>ILink&lt;XElement&gt;.</returns>

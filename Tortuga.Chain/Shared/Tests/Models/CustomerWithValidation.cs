@@ -5,18 +5,10 @@ namespace Tests.Models;
 
 public class CustomerWithValidation : ModelBase
 {
-	public int? CustomerKey { get; set; }
-
-	public string FullName
+	[IgnoreOnUpdate]
+	public KeyType? CreatedByKey
 	{
-		get { return Get<string>(); }
-		set { Set(value); }
-	}
-
-	[Required]
-	public string State
-	{
-		get { return Get<string>(); }
+		get { return Get<KeyType?>(); }
 		set { Set(value); }
 	}
 
@@ -27,31 +19,12 @@ public class CustomerWithValidation : ModelBase
 		set { Set(value); }
 	}
 
-	[IgnoreOnInsert, IgnoreOnUpdate]
-	public DateTime? UpdatedDate
-	{
-		get { return Get<DateTime?>(); }
-		set { Set(value); }
-	}
-
-	[IgnoreOnUpdate]
-	public int? CreatedByKey
-	{
-		get { return Get<int?>(); }
-		set { Set(value); }
-	}
+	public int? CustomerKey { get; set; }
 
 	[IgnoreOnInsert, IgnoreOnUpdate]
-	public int? UpdatedByKey
+	public KeyType? DeletedByKey
 	{
-		get { return Get<int?>(); }
-		set { Set(value); }
-	}
-
-	[IgnoreOnInsert, IgnoreOnUpdate]
-	public int? DeletedByKey
-	{
-		get { return Get<int?>(); }
+		get { return Get<KeyType?>(); }
 		set { Set(value); }
 	}
 
@@ -68,7 +41,31 @@ public class CustomerWithValidation : ModelBase
 		get { return Get<bool>(); }
 		set { Set(value); }
 	}
+
+	public string FullName
+	{
+		get { return Get<string>(); }
+		set { Set(value); }
+	}
+
+	[Required]
+	public string State
+	{
+		get { return Get<string>(); }
+		set { Set(value); }
+	}
+
+	[IgnoreOnInsert, IgnoreOnUpdate]
+	public KeyType? UpdatedByKey
+	{
+		get { return Get<KeyType?>(); }
+		set { Set(value); }
+	}
+
+	[IgnoreOnInsert, IgnoreOnUpdate]
+	public DateTime? UpdatedDate
+	{
+		get { return Get<DateTime?>(); }
+		set { Set(value); }
+	}
 }
-
-
-

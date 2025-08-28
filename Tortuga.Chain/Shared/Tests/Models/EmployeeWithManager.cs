@@ -11,7 +11,7 @@ public class EmployeeWithManager
 	public AuditInfo AuditInfo { get; set; }
 
 	public string EmployeeId { get; set; }
-	public int? EmployeeKey { get; set; }
+	public KeyType? EmployeeKey { get; set; }
 	public string FirstName { get; set; }
 	public char Gender { get; set; } = ' ';
 	public string LastName { get; set; }
@@ -19,7 +19,7 @@ public class EmployeeWithManager
 	[Decompose("Manager")]
 	public Manager Manager { get; set; }
 
-	public int? ManagerKey { get; set; }
+	public KeyType? ManagerKey { get; set; }
 	public string MiddleName { get; set; }
 	public string Title { get; set; }
 }
@@ -29,7 +29,7 @@ public class Manager
 	[Decompose]
 	public AuditInfo AuditInfo { get; set; }
 
-	public int? EmployeeKey { get; set; }
+	public KeyType? EmployeeKey { get; set; }
 	public string FirstName { get; set; }
 	public char Gender { get; set; } = ' ';
 	public string LastName { get; set; }

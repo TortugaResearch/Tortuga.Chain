@@ -156,7 +156,13 @@ public class DeleteTests : TestBase
 				Title = "Mail Room"
 			};
 
+#if SQLITE
+			var managerKey = dataSource.Insert(manager).ToInt64().Execute();
+#elif MYSQL
+			var managerKey = dataSource.Insert(manager).ToUInt64().Execute();
+#else
 			var managerKey = dataSource.Insert(manager).ToInt32().Execute();
+#endif
 
 			var original = new Employee()
 			{

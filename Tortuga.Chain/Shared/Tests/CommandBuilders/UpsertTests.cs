@@ -1,6 +1,7 @@
 ﻿#if CLASS_2
 
 using Tests.Models;
+using Tortuga.Chain;
 
 namespace Tests.CommandBuilders;
 
@@ -87,7 +88,13 @@ public class UpsertTests : TestBase
 				primaryColumn = employeeTable.PrimaryKeyColumns.SingleOrDefault();
 
 			//Skipping ahead by 500
+#if SQLITE
+			var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt64().Execute();
+#elif MYSQL
+			var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToUInt64().Execute();
+#else
 			var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();
+#endif
 
 			var original = new Employee()
 			{

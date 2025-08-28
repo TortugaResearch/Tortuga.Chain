@@ -72,12 +72,19 @@ public class InsertBatchTests : TestBase
 		try
 		{
 			//Get the max key, then skip a few rows so we can prove identity insert occurred
+
+#if SQLITE
+			var maxKey = dataSource.Sql("SELECT Max(EmployeeKey) FROM " + EmployeeTableName).ToInt64().Execute() + 10;
+#elif MYSQL
+			var maxKey = dataSource.Sql("SELECT Max(EmployeeKey) FROM " + EmployeeTableName).ToUInt64().Execute() + 10;
+#else
 			var maxKey = dataSource.Sql("SELECT Max(EmployeeKey) FROM " + EmployeeTableName).ToInt32().Execute() + 10;
+#endif
 
 			var maxRows = 10;
 
 			for (var i = 0; i < maxRows; i++)
-				employeeList.Add(new Employee() { EmployeeKey = maxKey + i, FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key });
+				employeeList.Add(new Employee() { EmployeeKey = maxKey + (KeyType)i, FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key });
 
 			var count = dataSource.InsertBatch(EmployeeTableName, employeeList, InsertOptions.IdentityInsert).AsNonQuery().SetStrictMode(true).Execute();
 

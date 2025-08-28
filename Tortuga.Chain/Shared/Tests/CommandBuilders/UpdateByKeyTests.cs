@@ -15,7 +15,14 @@ public class UpdateByKeyTests : TestBase
 			for (var i = 0; i < 10; i++)
 				dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 
+#if SQLITE
+
+			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt64List("EmployeeKey").Execute();
+#elif MYSQL
+			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToUInt64List("EmployeeKey").Execute();
+#else
 			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+#endif
 			var keyToUpdate = allKeys.First();
 
 			var newValues = new { FirstName = "Bob" };
@@ -46,7 +53,14 @@ public class UpdateByKeyTests : TestBase
 			for (var i = 0; i < 10; i++)
 				dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 
+#if SQLITE
+
+			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt64List("EmployeeKey").Execute();
+#elif MYSQL
+			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToUInt64List("EmployeeKey").Execute();
+#else
 			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+#endif
 			var keysToUpdate = allKeys.Take(5).ToList();
 
 			var newValues = new { FirstName = "Bob" };

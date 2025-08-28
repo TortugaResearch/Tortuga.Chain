@@ -47,7 +47,7 @@ public static class Setup
 					MiddleName VARCHAR(50) NULL,
 					LastName VARCHAR(50) NOT NULL,
 					Title VARCHAR(100) null,
-					ManagerKey INTEGER NULL REFERENCES HR.Employee(EmployeeKey),
+					ManagerKey BIGINT UNSIGNED NULL REFERENCES hr.employee(EmployeeKey),
 					OfficePhone VARCHAR(15) NULL ,
 					CellPhone VARCHAR(15) NULL ,
 					CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
