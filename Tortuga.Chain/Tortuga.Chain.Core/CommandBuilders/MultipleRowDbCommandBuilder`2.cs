@@ -1103,6 +1103,27 @@ where TObject : class
 	}
 
 	/// <summary>
+	/// Indicates the results should be materialized as a list of integers.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<List<ulong>> ToUInt64List(string columnName, ListOptions listOptions = ListOptions.None)
+	{
+		return new UInt64ListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of integers.
+	/// </summary>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<List<ulong>> ToUInt64List(ListOptions listOptions = ListOptions.None)
+	{
+		return new UInt64ListMaterializer<TCommand, TParameter>(this, null, listOptions);
+	}
+
+	/// <summary>
 	/// Materializes the result as a list of XElement.
 	/// </summary>
 	/// <param name="listOptions">The list options.</param>

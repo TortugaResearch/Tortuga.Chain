@@ -8,46 +8,60 @@ public abstract class ForeignKeyConstraint
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ForeignKeyConstraint" /> class.
 	/// </summary>
-	/// <param name="parentTableName">Name of the parent table.</param>
-	/// <param name="parentColumns">The parent columns.</param>
-	/// <param name="childTableName">Name of the child table.</param>
-	/// <param name="childColumns">The child columns.</param>
-	/// <exception cref="ArgumentException">
-	/// parentColumns
-	/// or
-	/// childColumns
-	/// </exception>
-	protected ForeignKeyConstraint(string parentTableName, ColumnMetadataCollection parentColumns, string childTableName, ColumnMetadataCollection childColumns)
+	/// <param name="name">Name of the constraint.</param>
+	/// <param name="constrainedTableName">Name of the constrained table.</param>
+	/// <param name="constrainedColumns">The constrained columns.</param>
+	/// <param name="referencedTableName">Name of the referenced table.</param>
+	/// <param name="referencedColumns">The referenced columns.</param>
+	/// <exception cref="System.ArgumentException">name</exception>
+	/// <exception cref="System.ArgumentException">constrainedTableName</exception>
+	/// <exception cref="System.ArgumentException">referencedTableName</exception>
+	/// <exception cref="System.ArgumentException">constrainedColumns</exception>
+	/// <exception cref="System.ArgumentException">referencedColumns</exception>
+	protected ForeignKeyConstraint(string name, string constrainedTableName, ColumnMetadataCollection constrainedColumns, string referencedTableName, ColumnMetadataCollection referencedColumns)
 	{
-		if (parentColumns == null || parentColumns.Count == 0)
-			throw new ArgumentException($"{nameof(parentColumns)} is null or empty.", nameof(parentColumns));
+		if (string.IsNullOrEmpty(name))
+			throw new ArgumentException($"{nameof(name)} is null or empty.", nameof(name));
+		if (string.IsNullOrEmpty(constrainedTableName))
+			throw new ArgumentException($"{nameof(constrainedTableName)} is null or empty.", nameof(constrainedTableName));
+		if (string.IsNullOrEmpty(referencedTableName))
+			throw new ArgumentException($"{nameof(referencedTableName)} is null or empty.", nameof(referencedTableName));
+		if (constrainedColumns == null || constrainedColumns.Count == 0)
+			throw new ArgumentException($"{nameof(constrainedColumns)} is null or empty.", nameof(constrainedColumns));
 
-		if (childColumns == null || childColumns.Count == 0)
-			throw new ArgumentException($"{nameof(childColumns)} is null or empty.", nameof(childColumns));
+		if (referencedColumns == null || referencedColumns.Count == 0)
+			throw new ArgumentException($"{nameof(referencedColumns)} is null or empty.", nameof(referencedColumns));
 
-		ParentTableName = parentTableName;
-		ParentColumns = parentColumns;
-		ChildTableName = childTableName;
-		ChildColumns = childColumns;
+		Name = name;
+		ConstrainedTableName = constrainedTableName;
+		ConstrainedColumns = constrainedColumns;
+		ReferencedTableName = referencedTableName;
+		ReferencedColumns = referencedColumns;
 	}
 
 	/// <summary>
-	/// Gets the columns in the child table.
+	/// Gets the columns in the parent table.
 	/// </summary>
-	public ColumnMetadataCollection ChildColumns { get; }
-
-	/// <summary>
-	/// Gets the name of the child table.
-	/// </summary>
-	public string ChildTableName { get; }
-
-	/// <summary>
-	/// Gets the columns in the parent table. This will usually be the primary key(s).
-	/// </summary>
-	public ColumnMetadataCollection ParentColumns { get; }
+	public ColumnMetadataCollection ConstrainedColumns { get; }
 
 	/// <summary>
 	/// Gets the name of the parent table.
 	/// </summary>
-	public string ParentTableName { get; }
+	public string ConstrainedTableName { get; }
+
+	/// <summary>
+	/// Gets the name of the constraint.
+	/// </summary>
+	/// <value>The name of the constraint.</value>
+	public string Name { get; }
+
+	/// <summary>
+	/// Gets the columns in the referenced table. This will usually be the primary key(s).
+	/// </summary>
+	public ColumnMetadataCollection ReferencedColumns { get; }
+
+	/// <summary>
+	/// Gets the name of the referenced table.
+	/// </summary>
+	public string ReferencedTableName { get; }
 }

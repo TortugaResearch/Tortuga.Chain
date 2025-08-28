@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Data.SQLite;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
@@ -37,8 +38,9 @@ namespace Tortuga.Chain.SQLite
 		/// <param name="tableName">Name of the table.</param>
 		/// <returns></returns>
 		/// <remarks>
-		/// This should be cached on a TableOrViewMetadata object.
+		/// This should be read from a TableOrViewMetadata object. Do not call this method directly.
 		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public override IndexMetadataCollection<SQLiteObjectName, DbType> GetIndexesForTable(SQLiteObjectName tableName)
 		{
 			var table = GetTableOrView(tableName);
