@@ -2,6 +2,10 @@
 
 ### Features
 
+[#372 Implement GetForeignKeysForTable for MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/372)
+
+You can now call `table.GetForeignKeys()` on a MySql table.
+
 [#521 Table.ToDataTable and TableSet.ToDataSet](https://github.com/TortugaResearch/Tortuga.Chain/issues/521)
 
 `.ToDataSet` no longer needs table names.
@@ -12,6 +16,25 @@ New functions:
 
 * `TableSet.DataSet` Copies a `TableSet` into a new `DataSet`.
 * `Table.DataTable` Copies a `Table` into a new `DataTable`.
+
+
+**Support for MySQL 8.4**
+
+Updated the database creation script.
+
+Added these functions to handle MySQL's serial data type.
+
+* `.ToUInt64()`
+* `.ToUInt64List()`
+
+**Support for SQL Server Info Messages**
+
+When SQL Server prints messages (e.g. during a stored proc call), .NET gets a `SqlInfoMessageEvent`. You can capture these using the `.WithInfoMessageNotification()` appender and a `SqlInfoMessageEventHandler`.
+
+	string message = "";
+	SqlInfoMessageEventHandler handler = (object sender, SqlInfoMessageEventArgs e) => { message += e.Message; };
+
+	var result = dataSource.Procedure("HR.EmployeeList").ToTable().WithInfoMessageNotification(handler).Execute();
 
 
 ## Version 5.1
