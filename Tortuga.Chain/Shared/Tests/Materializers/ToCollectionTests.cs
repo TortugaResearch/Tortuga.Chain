@@ -42,7 +42,14 @@ public class ToCollectionTests : TestBase
 			var uniqueKey = Guid.NewGuid().ToString();
 
 			var managerA = new Employee() { FirstName = "A", LastName = "1", Title = managerUniqueKey };
+
+#if SQLITE
+			var managerAKey = dataSource.Insert(EmployeeTableName, managerA).ToInt64().Execute();
+#elif MYSQL
+			var managerAKey = dataSource.Insert(EmployeeTableName, managerA).ToUInt64().Execute();
+#else
 			var managerAKey = dataSource.Insert(EmployeeTableName, managerA).ToInt32().Execute();
+#endif
 
 			var empA1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey, ManagerKey = managerAKey };
 			dataSource.Insert(EmployeeTableName, empA1).ToObject<Employee>().Execute();
@@ -51,7 +58,14 @@ public class ToCollectionTests : TestBase
 			dataSource.Insert(EmployeeTableName, empA2).ToObject<Employee>().Execute();
 
 			var managerB = new Employee() { FirstName = "B", LastName = "1", Title = managerUniqueKey };
+
+#if SQLITE
+			var managerBKey = dataSource.Insert(EmployeeTableName, managerB).ToInt64().Execute();
+#elif MYSQL
+			var managerBKey = dataSource.Insert(EmployeeTableName, managerB).ToUInt64().Execute();
+#else
 			var managerBKey = dataSource.Insert(EmployeeTableName, managerB).ToInt32().Execute();
+#endif
 
 			var empB1 = new Employee() { FirstName = "B", LastName = "1", Title = uniqueKey, ManagerKey = managerBKey };
 			dataSource.Insert(EmployeeTableName, empB1).ToObject<Employee>().Execute();

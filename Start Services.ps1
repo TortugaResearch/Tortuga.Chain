@@ -8,12 +8,12 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 Start-Service MSSQLSERVER
-Start-Service 'postgresql-x64-14'
-Start-Service MySQL80
+Start-Service 'postgresql-x64-17'
+Start-Service MySQL84
 
 Get-Service MSSQLSERVER
-Get-Service 'postgresql-x64-14'
-Get-Service MySQL80
+Get-Service 'postgresql-x64-17'
+Get-Service MySQL84
 
 Write-Host -NoNewLine "Press any key to continue..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

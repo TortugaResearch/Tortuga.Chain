@@ -33,18 +33,18 @@ public static class Setup
 		using (var con = new NpgsqlConnection(connectionString))
 		{
 			con.Open();
-			string sql1 = @"DROP SCHEMA IF Exists Sales Cascade; DROP SCHEMA IF Exists hr Cascade";
+			string sql1 = @"DROP SCHEMA IF Exists Sales Cascade; DROP SCHEMA IF Exists hr Cascade; DROP SCHEMA IF Exists public Cascade";
 
-			string sql = @"
-DROP FUNCTION IF EXISTS hr.EmployeeCount(INTEGER);
-DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
-DROP FUNCTION IF EXISTS Sales.CustomerWithOrdersByState(char(2));
-DROP VIEW IF EXISTS hr.EmployeeWithManager;
-DROP TABLE IF EXISTS sales.order;
-DROP TABLE IF EXISTS public.employee;
-DROP TABLE IF EXISTS hr.employee;
-DROP TABLE IF EXISTS public.employee;
-DROP SCHEMA IF EXISTS hr;";
+			//			string sql = @"
+			//DROP FUNCTION IF EXISTS hr.EmployeeCount(INTEGER);
+			//DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
+			//DROP FUNCTION IF EXISTS Sales.CustomerWithOrdersByState(char(2));
+			//DROP VIEW IF EXISTS hr.EmployeeWithManager;
+			//DROP TABLE IF EXISTS sales.order;
+			//DROP TABLE IF EXISTS public.employee;
+			//DROP TABLE IF EXISTS hr.employee;
+			//DROP TABLE IF EXISTS public.employee;
+			//DROP SCHEMA IF EXISTS hr;";
 
 			string sql2 = @"
 CREATE SCHEMA hr;
@@ -68,6 +68,7 @@ CREATE TABLE hr.employee
 			string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(EmployeeId);";
 
 			string sql2b = @"
+CREATE SCHEMA public;
 CREATE TABLE public.employee
 (
 	EmployeeKey SERIAL PRIMARY KEY,
@@ -225,8 +226,8 @@ FROM    HR.Employee e
 		END;
 $$ LANGUAGE plpgsql;";
 
-			using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
-				cmd.ExecuteNonQuery();
+			//using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+			//	cmd.ExecuteNonQuery();
 
 			using (NpgsqlCommand cmd = new NpgsqlCommand(sql1, con))
 				cmd.ExecuteNonQuery();

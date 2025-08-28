@@ -40,13 +40,28 @@ public class InsertTests : TestBase
 				primaryColumn = employeeTable.PrimaryKeyColumns.SingleOrDefault();
 
 			//Skipping ahead by 500
-			var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();
+#if SQLITE
+			var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt64().Execute();
 
+			var keyForOverriddenRow = dataSource.Insert(EmployeeTableName, new Employee() { EmployeeKey = nextKey, FirstName = "0000", LastName = "Z" + (int.MaxValue), Title = lookupKey, MiddleName = "A0" }, InsertOptions.IdentityInsert).ToInt64().Execute();
+#elif MYSQL
+			var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToUInt64().Execute();
+			var keyForOverriddenRow = dataSource.Insert(EmployeeTableName, new Employee() { EmployeeKey = nextKey, FirstName = "0000", LastName = "Z" + (int.MaxValue), Title = lookupKey, MiddleName = "A0" }, InsertOptions.IdentityInsert).ToUInt64().Execute();
+#else
+			var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();
 			var keyForOverriddenRow = dataSource.Insert(EmployeeTableName, new Employee() { EmployeeKey = nextKey, FirstName = "0000", LastName = "Z" + (int.MaxValue), Title = lookupKey, MiddleName = "A0" }, InsertOptions.IdentityInsert).ToInt32().Execute();
+#endif
 
 			Assert.AreEqual(nextKey, keyForOverriddenRow, "Identity column was not correctly overridden");
 
+#if SQLITE
+			var keyForNewRow = dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "0001", LastName = "Z" + (int.MaxValue - 1), Title = lookupKey, MiddleName = null }).ToInt64().Execute();
+#elif MYSQL
+			var keyForNewRow = dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "0001", LastName = "Z" + (int.MaxValue - 1), Title = lookupKey, MiddleName = null }).ToUInt64().Execute();
+#else
 			var keyForNewRow = dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "0001", LastName = "Z" + (int.MaxValue - 1), Title = lookupKey, MiddleName = null }).ToInt32().Execute();
+#endif
+
 			Assert.AreEqual(keyForOverriddenRow + 1, keyForNewRow, "Next inserted value didn't have the correct key");
 		}
 		finally
