@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer;
@@ -58,13 +59,93 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 	public override int? MaxParameters => 65535;
 
 	/// <summary>
+	/// Gets the foreign keys for a table.
+	/// </summary>
+	/// <param name="tableName">Name of the table.</param>
+	/// <returns>ForeignKeyConstraintCollection&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
+	/// <remarks>This should be read from a TableOrViewMetadata object. Do not call this method directly.</remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public override ForeignKeyConstraintCollection<MySqlObjectName, MySqlDbType> GetForeignKeysForTable(AbstractObjectName tableName)
+	{
+		var table = GetTableOrView(tableName);
+		var results = new List<ForeignKeyConstraint<MySqlObjectName, MySqlDbType>>();
+
+		var scratch = new List<FKTemp>();
+
+		using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+		{
+			con.Open();
+			using (var cmd = new MySqlCommand(@$"SELECT
+    kcu.CONSTRAINT_NAME,
+    kcu.TABLE_SCHEMA,
+    kcu.TABLE_NAME,
+    kcu.COLUMN_NAME,
+    kcu.REFERENCED_TABLE_SCHEMA,
+    kcu.REFERENCED_TABLE_NAME,
+    kcu.REFERENCED_COLUMN_NAME,
+    kcu.ORDINAL_POSITION
+FROM
+    information_schema.KEY_COLUMN_USAGE kcu
+WHERE kcu.REFERENCED_TABLE_NAME IS NOT NULL
+AND (
+		(kcu.TABLE_SCHEMA = '{tableName.Schema}' AND kcu.TABLE_NAME = '{tableName.Name}')
+		OR
+		(kcu.REFERENCED_TABLE_SCHEMA = '{tableName.Schema}' AND kcu.REFERENCED_TABLE_NAME = '{tableName.Name}')
+	)
+", con))
+			using (var reader = cmd.ExecuteReader())
+			{
+				while (reader.Read())
+				{
+					scratch.Add(new FKTemp()
+					{
+						ConstraintName = reader.GetString("CONSTRAINT_NAME"),
+						ConstrainedSchemaName = reader.GetString("TABLE_SCHEMA"),
+						ConstrainedTableName = reader.GetString("TABLE_NAME"),
+						ConstrainedColumnName = reader.GetString("COLUMN_NAME"),
+						ReferencedSchemaName = reader.GetString("REFERENCED_TABLE_SCHEMA"),
+						ReferencedTableName = reader.GetString("REFERENCED_TABLE_NAME"),
+						ReferencedColumnName = reader.GetString("REFERENCED_COLUMN_NAME"),
+						Order = reader.GetInt32("ORDINAL_POSITION")
+					});
+				}
+			}
+		}
+
+		foreach (var fkName in scratch.GroupBy(x => (x.ConstraintName, x.ConstrainedSchemaName, x.ConstrainedTableName, x.ReferencedSchemaName, x.ReferencedTableName)))
+		{
+			TableOrViewMetadata<MySqlObjectName, MySqlDbType> constrainedTable;
+			TableOrViewMetadata<MySqlObjectName, MySqlDbType> referencedTable;
+
+			if (fkName.Key.ConstrainedSchemaName == table.Name.Schema && fkName.Key.ConstrainedTableName == table.Name.Name)
+			{
+				constrainedTable = table;
+				referencedTable = GetTableOrView(new MySqlObjectName(fkName.Key.ReferencedSchemaName, fkName.Key.ReferencedTableName));
+			}
+			else
+			{
+				constrainedTable = GetTableOrView(new MySqlObjectName(fkName.Key.ConstrainedSchemaName, fkName.Key.ConstrainedTableName));
+				referencedTable = table;
+			}
+			var columns = fkName.OrderBy(x => x.Order).ToList();
+			var constrainedColumns = new ColumnMetadataCollection<MySqlDbType>(fkName.Key.ConstraintName, columns.Select(c => constrainedTable.Columns[c.ConstrainedColumnName]).ToList());
+			var referencedColumns = new ColumnMetadataCollection<MySqlDbType>(fkName.Key.ConstraintName, columns.Select(c => referencedTable.Columns[c.ReferencedColumnName]).ToList());
+
+			results.Add(new(fkName.Key.ConstraintName, constrainedTable.Name, constrainedColumns, referencedTable.Name, referencedColumns));
+		}
+
+		return new ForeignKeyConstraintCollection<MySqlObjectName, MySqlDbType>(results);
+	}
+
+	/// <summary>
 	/// Gets the indexes for a table.
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
 	/// <remarks>
-	/// This should be cached on a TableOrViewMetadata object.
+	/// This should be read from a TableOrViewMetadata object. Do not call this method directly.
 	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public override IndexMetadataCollection<MySqlObjectName, MySqlDbType> GetIndexesForTable(MySqlObjectName tableName)
 	{
 		var table = GetTableOrView(tableName);
@@ -73,10 +154,8 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 		var scratch = new List<IndexTemp>();
 
 		using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
-		using (var con2 = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
-			con2.Open();
 			using (var cmd = new MySqlCommand("SHOW INDEXES FROM " + table.Name.ToQuotedString(), con))
 			using (var reader = cmd.ExecuteReader())
 			{
@@ -791,6 +870,18 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 		var columns = GetColumns(actualSchemaName, actualTableName);
 
 		return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
+	}
+
+	sealed class FKTemp
+	{
+		public string ConstrainedColumnName { get; set; } = "";
+		public string ConstrainedSchemaName { get; set; } = "";
+		public string ConstrainedTableName { get; set; } = "";
+		public string ConstraintName { get; set; } = "";
+		public int Order { get; set; }
+		public string ReferencedColumnName { get; set; } = "";
+		public string ReferencedSchemaName { get; set; } = "";
+		public string ReferencedTableName { get; set; } = "";
 	}
 
 	sealed class IndexTemp

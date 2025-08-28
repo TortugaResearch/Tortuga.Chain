@@ -1,4 +1,5 @@
-﻿using Tortuga.Chain.Aggregates;
+﻿using System.ComponentModel;
+using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
@@ -97,8 +98,9 @@ public sealed partial class SqlServerMetadataCache
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
 	/// <remarks>
-	/// This should be cached on a TableOrViewMetadata object.
+	/// This should be read from a TableOrViewMetadata object. Do not call this method directly.
 	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public override IndexMetadataCollection<SqlServerObjectName, SqlDbType> GetIndexesForTable(SqlServerObjectName tableName)
 	{
 		const string indexSql = @"SELECT i.name,

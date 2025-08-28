@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
@@ -103,8 +104,9 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// <returns></returns>
 	/// <exception cref="NotSupportedException">Foreign keys are not supported by this data source</exception>
 	/// <remarks>
-	/// This should be cached on a TableOrViewMetadata object.
+	/// This should be read from a TableOrViewMetadata object. Do not call this method directly.
 	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public virtual ForeignKeyConstraintCollection<TObjectName, TDbType> GetForeignKeysForTable(TObjectName tableName)
 	{
 		throw new NotSupportedException("Foreign Keys are not supported by this data source");
@@ -117,8 +119,9 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// <returns></returns>
 	/// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
 	/// <remarks>
-	/// This should be cached on a TableOrViewMetadata object.
+	/// This should be read from a TableOrViewMetadata object. Do not call this method directly.
 	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public virtual IndexMetadataCollection<TObjectName, TDbType> GetIndexesForTable(TObjectName tableName)
 	{
 		throw new NotSupportedException("Indexes are not supported by this data source");
