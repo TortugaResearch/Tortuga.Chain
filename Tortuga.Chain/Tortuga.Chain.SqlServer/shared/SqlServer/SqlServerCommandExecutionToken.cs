@@ -9,6 +9,7 @@ namespace Tortuga.Chain.SqlServer;
 public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCommand, SqlParameter>
 {
 	OnChangeEventHandler? m_OnChangeEventHandler;
+	SqlInfoMessageEventHandler? m_SqlInfoMessageEventHandler;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CommandExecutionToken{TCommand, TParameter}"/> class.
@@ -45,6 +46,20 @@ public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCo
 	}
 
 	/// <summary>
+	/// Adds a SQL Info MEssage Event listener.
+	/// </summary>
+	/// <param name="eventHandler">The event handler.</param>
+	public void AddInfoMessageEventListener(SqlInfoMessageEventHandler eventHandler)
+	{
+		if (eventHandler == null)
+			throw new ArgumentNullException(nameof(eventHandler), $"{nameof(eventHandler)} is null.");
+
+		m_SqlInfoMessageEventHandler += eventHandler;
+
+		return;
+	}
+
+	/// <summary>
 	/// Subclasses can override this method to change the command object after the command text and parameters are loaded.
 	/// </summary>
 	protected override void OnBuildCommand(SqlCommand command)
@@ -58,6 +73,9 @@ public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCo
 			var sd = new SqlDependency(command);
 			sd.OnChange += m_OnChangeEventHandler;
 		}
+
+		if (m_SqlInfoMessageEventHandler != null)
+			command.Connection.InfoMessage += m_SqlInfoMessageEventHandler;
 
 #if SQL_SERVER_MDS
 		//Stored procedures may have optional parameters that break when EnableOptimizedParameterBinding is turned on.
