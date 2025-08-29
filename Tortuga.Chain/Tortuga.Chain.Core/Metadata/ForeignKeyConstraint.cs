@@ -18,10 +18,8 @@ public abstract class ForeignKeyConstraint
 	/// <exception cref="System.ArgumentException">referencedTableName</exception>
 	/// <exception cref="System.ArgumentException">constrainedColumns</exception>
 	/// <exception cref="System.ArgumentException">referencedColumns</exception>
-	protected ForeignKeyConstraint(string name, string constrainedTableName, ColumnMetadataCollection constrainedColumns, string referencedTableName, ColumnMetadataCollection referencedColumns)
+	protected ForeignKeyConstraint(string? name, string constrainedTableName, ColumnMetadataCollection constrainedColumns, string referencedTableName, ColumnMetadataCollection referencedColumns)
 	{
-		if (string.IsNullOrEmpty(name))
-			throw new ArgumentException($"{nameof(name)} is null or empty.", nameof(name));
 		if (string.IsNullOrEmpty(constrainedTableName))
 			throw new ArgumentException($"{nameof(constrainedTableName)} is null or empty.", nameof(constrainedTableName));
 		if (string.IsNullOrEmpty(referencedTableName))
@@ -53,7 +51,7 @@ public abstract class ForeignKeyConstraint
 	/// Gets the name of the constraint.
 	/// </summary>
 	/// <value>The name of the constraint.</value>
-	public string Name { get; }
+	public string? Name { get; }
 
 	/// <summary>
 	/// Gets the columns in the referenced table. This will usually be the primary key(s).

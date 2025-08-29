@@ -58,4 +58,16 @@ public static class SqlServerAppenders
 	{
 		return new NotifyChangeAppender<TResult>(previousLink, eventHandler);
 	}
+
+	/// <summary>
+	/// Attaches a listener for SQL Server Info Message events.
+	/// </summary>
+	/// <typeparam name="TResult">The type of the t result.</typeparam>
+	/// <param name="previousLink">The previous link.</param>
+	/// <param name="eventHandler">The event handler.</param>
+	/// <returns>ILink&lt;TResult&gt;.</returns>
+	public static ILink<TResult> WithInfoMessageNotification<TResult>(this ILink<TResult> previousLink, SqlInfoMessageEventHandler eventHandler)
+	{
+		return new InfoMessageNotificationAppender<TResult>(previousLink, eventHandler);
+	}
 }

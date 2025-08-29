@@ -137,7 +137,7 @@ public partial class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlComm
 		else
 			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
-		sql.Append(" FROM " + m_Table.Name);
+		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
 		if (m_FilterValue != null)
 		{
