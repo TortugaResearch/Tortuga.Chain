@@ -103,7 +103,7 @@ internal sealed partial class SQLiteTableOrView<TObject> : TableDbCommandBuilder
 		else
 			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
-		sql.Append(" FROM " + m_Table.Name);
+		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
 		if (m_FilterValue != null)
 		{

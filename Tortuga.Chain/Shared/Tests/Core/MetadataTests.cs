@@ -18,9 +18,10 @@ public class MetadataTests : TestBase
 			var indexes = table.GetIndexes();
 			Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
 
+#if SQL_SERVER_MDS
 			if (table.Columns.Any(c => c.IsPrimaryKey))
 				Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() == 1, "A column is marked as primary, so there should be a primary index.");
-
+#endif
 			foreach (var index in indexes)
 			{
 				if (index.IndexType != IndexType.Heap)
@@ -38,7 +39,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || POSTGRESQL || MYSQL
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
 	public void TableForeignKeyConstraints(string dataSourceName, DataSourceType mode, string tableName)
