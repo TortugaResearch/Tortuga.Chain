@@ -182,16 +182,14 @@ AND (
 
 			var isUnique = scratch.First(x => x.IndexName == indexName).NonUnique;
 			var indexTypeName = scratch.First(x => x.IndexName == indexName).IndexType;
-			IndexType indexType;
-			switch (indexTypeName)
+			var indexType = indexTypeName switch
 			{
-				case "BTREE": indexType = IndexType.BTree; break;
-				case "HASH": indexType = IndexType.Hash; break;
-				case "RTREE": indexType = IndexType.RTree; break;
-				case "FULLTEXT": indexType = IndexType.FullText; break;
-				default: indexType = IndexType.Unknown; break;
-			}
-
+				"BTREE" => IndexType.BTree,
+				"HASH" => IndexType.Hash,
+				"RTREE" => IndexType.RTree,
+				"FULLTEXT" => IndexType.FullText,
+				_ => IndexType.Unknown,
+			};
 			results.Add(new IndexMetadata<MySqlObjectName, MySqlDbType>(table.Name, indexName, isPrimaryKey, isUnique, false, new IndexColumnMetadataCollection<MySqlDbType>(indexColumns), null, null, indexType));
 		}
 
@@ -488,66 +486,47 @@ AND (
 		if (string.IsNullOrEmpty(typeName))
 			return null;
 
-		switch (typeName.ToUpperInvariant())
+		return typeName.ToUpperInvariant() switch
 		{
-			case "INT1":
-			case "BOOL":
-			case "BOOLEAN":
-			case "TINYINT": if (isUnsigned == true) return MySqlDbType.UByte; else return MySqlDbType.Byte;
-			case "INT2":
-			case "SMALLINT": if (isUnsigned == true) return MySqlDbType.UInt16; else return MySqlDbType.Int16;
-			case "INT3":
-			case "MIDDLEINT":
-			case "MEDIUMINT": if (isUnsigned == true) return MySqlDbType.UInt24; else return MySqlDbType.Int24;
-			case "INT4":
-			case "INTEGER":
-			case "INT": if (isUnsigned == true) return MySqlDbType.UInt32; else return MySqlDbType.Int32;
-			case "INT8":
-			case "BIGINT": if (isUnsigned == true) return MySqlDbType.UInt64; else return MySqlDbType.Int64;
-			case "FIXED":
-			case "NUMERIC":
-			case "DECIMAL": return MySqlDbType.Decimal;
-			case "FLOAT4":
-			case "FLOAT": return MySqlDbType.Float;
-			case "DOUBLE PRECISION":
-			case "REAL":
-			case "FLOAT8":
-			case "DOUBLE": return MySqlDbType.Double;
-			case "BIT": return MySqlDbType.Bit;
-			case "DATE": return MySqlDbType.Date;
-			case "TIME": return MySqlDbType.Time;
-			case "DATETIME": return MySqlDbType.DateTime;
-			case "TIMESTAMP": return MySqlDbType.Timestamp;
-			case "YEAR": return MySqlDbType.Year;
-			case "CHAR": return MySqlDbType.VarChar;
-			case "CHARACTER VARYING":
-			case "VARCHAR": return MySqlDbType.VarChar;
-			case "BINARY": return MySqlDbType.Binary;
-			case "VARBINARY": return MySqlDbType.VarBinary;
-			case "BLOB": return MySqlDbType.Blob;
-			case "TEXT": return MySqlDbType.Text;
-			case "ENUM": return MySqlDbType.Enum;
-			case "SET": return MySqlDbType.Set;
-			case "GEOMETRY": return MySqlDbType.Geometry;
-			case "POINT": return MySqlDbType.Geometry;
-			case "LINESTRING": return MySqlDbType.Geometry;
-			case "POLYGON": return MySqlDbType.Geometry;
-			case "MULTIPOINT": return MySqlDbType.Geometry;
-			case "MULTILINESTRING": return MySqlDbType.Geometry;
-			case "MULTIPOLYGON": return MySqlDbType.Geometry;
-			case "GEOMETRYCOLLECTION": return MySqlDbType.Geometry;
-			case "JSON": return MySqlDbType.JSON;
-			case "TINYBLOB": return MySqlDbType.TinyBlob;
-			case "LONG VARBINARY":
-			case "MEDIUMBLOB": return MySqlDbType.MediumBlob;
-			case "LONGBLOB": return MySqlDbType.LongBlob;
-			case "TINYTEXT": return MySqlDbType.TinyText;
-			case "LONG VARCHAR":
-			case "MEDIUMTEXT": return MySqlDbType.MediumText;
-			case "LONGTEXT": return MySqlDbType.LongText;
-			default:
-				return null;
-		}
+			"INT1" or "BOOL" or "BOOLEAN" or "TINYINT" => (isUnsigned == true ? MySqlDbType.UByte : MySqlDbType.Byte),
+			"INT2" or "SMALLINT" => (isUnsigned == true ? MySqlDbType.UInt16 : MySqlDbType.Int16),
+			"INT3" or "MIDDLEINT" or "MEDIUMINT" => (isUnsigned == true ? MySqlDbType.UInt24 : MySqlDbType.Int24),
+			"INT4" or "INTEGER" or "INT" => (isUnsigned == true ? MySqlDbType.UInt32 : MySqlDbType.Int32),
+			"INT8" or "BIGINT" => (isUnsigned == true ? MySqlDbType.UInt64 : MySqlDbType.Int64),
+			"FIXED" or "NUMERIC" or "DECIMAL" => MySqlDbType.Decimal,
+			"FLOAT4" or "FLOAT" => MySqlDbType.Float,
+			"DOUBLE PRECISION" or "REAL" or "FLOAT8" or "DOUBLE" => (AbstractDbType?)MySqlDbType.Double,
+			"BIT" => MySqlDbType.Bit,
+			"DATE" => MySqlDbType.Date,
+			"TIME" => MySqlDbType.Time,
+			"DATETIME" => MySqlDbType.DateTime,
+			"TIMESTAMP" => MySqlDbType.Timestamp,
+			"YEAR" => MySqlDbType.Year,
+			"CHAR" => MySqlDbType.VarChar,
+			"CHARACTER VARYING" or "VARCHAR" => MySqlDbType.VarChar,
+			"BINARY" => MySqlDbType.Binary,
+			"VARBINARY" => MySqlDbType.VarBinary,
+			"BLOB" => MySqlDbType.Blob,
+			"TEXT" => MySqlDbType.Text,
+			"ENUM" => MySqlDbType.Enum,
+			"SET" => MySqlDbType.Set,
+			"GEOMETRY" => MySqlDbType.Geometry,
+			"POINT" => MySqlDbType.Geometry,
+			"LINESTRING" => MySqlDbType.Geometry,
+			"POLYGON" => MySqlDbType.Geometry,
+			"MULTIPOINT" => MySqlDbType.Geometry,
+			"MULTILINESTRING" => MySqlDbType.Geometry,
+			"MULTIPOLYGON" => MySqlDbType.Geometry,
+			"GEOMETRYCOLLECTION" => MySqlDbType.Geometry,
+			"JSON" => MySqlDbType.JSON,
+			"TINYBLOB" => MySqlDbType.TinyBlob,
+			"LONG VARBINARY" or "MEDIUMBLOB" => MySqlDbType.MediumBlob,
+			"LONGBLOB" => MySqlDbType.LongBlob,
+			"TINYTEXT" => MySqlDbType.TinyText,
+			"LONG VARCHAR" or "MEDIUMTEXT" => MySqlDbType.MediumText,
+			"LONGTEXT" => MySqlDbType.LongText,
+			_ => null,
+		};
 	}
 
 	/// <summary>
@@ -560,96 +539,33 @@ AND (
 	/// A CLR type or NULL if the type is unknown.
 	/// </returns>
 	/// <remarks>This does not take into consideration registered types.</remarks>
-	[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
 	protected override Type? ToClrType(MySqlDbType dbType, bool isNullable, int? maxLength)
 	{
-		switch (dbType)
+		return dbType switch
 		{
-			case MySqlDbType.Bit:
-			case MySqlDbType.Bool:
-				return isNullable ? typeof(bool?) : typeof(bool);
-
-			case MySqlDbType.Decimal:
-			case MySqlDbType.NewDecimal:
-				return isNullable ? typeof(decimal?) : typeof(decimal);
-
-			case MySqlDbType.Byte:
-				return isNullable ? typeof(sbyte?) : typeof(sbyte);
-
-			case MySqlDbType.Int16:
-				return isNullable ? typeof(short?) : typeof(short);
-
-			case MySqlDbType.Int32:
-				return isNullable ? typeof(int?) : typeof(int);
-
-			case MySqlDbType.Float:
-				return isNullable ? typeof(float?) : typeof(float);
-
-			case MySqlDbType.Double:
-				return isNullable ? typeof(double?) : typeof(double);
-
-			case MySqlDbType.Timestamp:
-			case MySqlDbType.Date:
-			case MySqlDbType.DateTime:
-			case MySqlDbType.Newdate:
-				return isNullable ? typeof(DateTime?) : typeof(DateTime);
-
-			case MySqlDbType.Int64:
-				return isNullable ? typeof(long?) : typeof(long);
-
-			case MySqlDbType.Int24:
-				return isNullable ? typeof(int?) : typeof(int);
-
-			case MySqlDbType.Time:
-				return isNullable ? typeof(TimeSpan?) : typeof(TimeSpan);
-
-			case MySqlDbType.Year:
-				return isNullable ? typeof(sbyte?) : typeof(sbyte);
-
-			case MySqlDbType.VarString:
-			case MySqlDbType.JSON:
-			case MySqlDbType.VarChar:
-			case MySqlDbType.TinyText:
-			case MySqlDbType.MediumText:
-			case MySqlDbType.LongText:
-			case MySqlDbType.Text:
-			case MySqlDbType.String:
-				return (maxLength == 1) ? (isNullable ? typeof(char?) : typeof(char)) : typeof(string);
-
-			case MySqlDbType.UByte:
-				return isNullable ? typeof(byte?) : typeof(byte);
-
-			case MySqlDbType.UInt16:
-				return isNullable ? typeof(ushort?) : typeof(ushort);
-
-			case MySqlDbType.UInt32:
-				return isNullable ? typeof(uint?) : typeof(uint);
-
-			case MySqlDbType.UInt64:
-				return isNullable ? typeof(ulong?) : typeof(ulong);
-
-			case MySqlDbType.UInt24:
-				return isNullable ? typeof(uint?) : typeof(uint);
-
-			case MySqlDbType.Binary:
-			case MySqlDbType.VarBinary:
-				return typeof(byte[]);
-
-			case MySqlDbType.Guid:
-				return isNullable ? typeof(Guid?) : typeof(Guid);
-
-			case MySqlDbType.Enum:
-			case MySqlDbType.Set:
-			case MySqlDbType.TinyBlob:
-			case MySqlDbType.MediumBlob:
-			case MySqlDbType.LongBlob:
-			case MySqlDbType.Blob:
-			case MySqlDbType.Geometry:
-			case MySqlDbType.Null:
-				return null;
-		}
-
-		return null;
+			MySqlDbType.Bit or MySqlDbType.Bool => isNullable ? typeof(bool?) : typeof(bool),
+			MySqlDbType.Decimal or MySqlDbType.NewDecimal => isNullable ? typeof(decimal?) : typeof(decimal),
+			MySqlDbType.Byte => isNullable ? typeof(sbyte?) : typeof(sbyte),
+			MySqlDbType.Int16 => isNullable ? typeof(short?) : typeof(short),
+			MySqlDbType.Int32 => isNullable ? typeof(int?) : typeof(int),
+			MySqlDbType.Float => isNullable ? typeof(float?) : typeof(float),
+			MySqlDbType.Double => isNullable ? typeof(double?) : typeof(double),
+			MySqlDbType.Timestamp or MySqlDbType.Date or MySqlDbType.DateTime or MySqlDbType.Newdate => isNullable ? typeof(DateTime?) : typeof(DateTime),
+			MySqlDbType.Int64 => isNullable ? typeof(long?) : typeof(long),
+			MySqlDbType.Int24 => isNullable ? typeof(int?) : typeof(int),
+			MySqlDbType.Time => isNullable ? typeof(TimeSpan?) : typeof(TimeSpan),
+			MySqlDbType.Year => isNullable ? typeof(sbyte?) : typeof(sbyte),
+			MySqlDbType.VarString or MySqlDbType.JSON or MySqlDbType.VarChar or MySqlDbType.TinyText or MySqlDbType.MediumText or MySqlDbType.LongText or MySqlDbType.Text or MySqlDbType.String => (maxLength == 1) ? (isNullable ? typeof(char?) : typeof(char)) : typeof(string),
+			MySqlDbType.UByte => isNullable ? typeof(byte?) : typeof(byte),
+			MySqlDbType.UInt16 => isNullable ? typeof(ushort?) : typeof(ushort),
+			MySqlDbType.UInt32 => isNullable ? typeof(uint?) : typeof(uint),
+			MySqlDbType.UInt64 => isNullable ? typeof(ulong?) : typeof(ulong),
+			MySqlDbType.UInt24 => isNullable ? typeof(uint?) : typeof(uint),
+			MySqlDbType.Binary or MySqlDbType.VarBinary => typeof(byte[]),
+			MySqlDbType.Guid => isNullable ? typeof(Guid?) : typeof(Guid),
+			MySqlDbType.Enum or MySqlDbType.Set or MySqlDbType.TinyBlob or MySqlDbType.MediumBlob or MySqlDbType.LongBlob or MySqlDbType.Blob or MySqlDbType.Geometry or MySqlDbType.Null => null,
+			_ => null,
+		};
 	}
 
 	/// <summary>
