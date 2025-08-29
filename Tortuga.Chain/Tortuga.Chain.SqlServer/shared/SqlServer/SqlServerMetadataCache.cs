@@ -93,6 +93,101 @@ public sealed partial class SqlServerMetadataCache
 	}
 
 	/// <summary>
+	/// Gets the foreign keys for a table.
+	/// </summary>
+	/// <param name="tableName">Name of the table.</param>
+	/// <returns>ForeignKeyConstraintCollection&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
+	/// <remarks>This should be read from a TableOrViewMetadata object. Do not call this method directly.</remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public override ForeignKeyConstraintCollection<SqlServerObjectName, SqlDbType> GetForeignKeysForTable(AbstractObjectName tableName)
+	{
+		var table = GetTableOrView(tableName);
+		var results = new List<ForeignKeyConstraint<SqlServerObjectName, SqlDbType>>();
+
+		var scratch = new List<FKTemp>();
+
+		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+		{
+			con.Open();
+			using (var cmd = new SqlCommand(@$"SELECT *
+FROM
+(
+    SELECT fk.name AS ConstraintName,
+           constrained_schema.name AS ConstrainedSchema,
+           constrained_table.name AS ConstrainedTable,
+           constrained_column.name AS ConstrainedColumn,
+           referenced_schema.name AS ReferencedSchema,
+           referenced_table.name AS ReferencedTable,
+           referenced_column.name AS ReferencedColumn,
+           fkc.constraint_column_id AS [Order]
+    FROM sys.foreign_keys fk
+        INNER JOIN sys.foreign_key_columns AS fkc
+            ON fk.object_id = fkc.constraint_object_id
+        INNER JOIN sys.tables AS constrained_table
+            ON fkc.parent_object_id = constrained_table.object_id
+        INNER JOIN sys.schemas AS constrained_schema
+            ON constrained_table.schema_id = constrained_schema.schema_id
+        INNER JOIN sys.columns AS constrained_column
+            ON fkc.parent_object_id = constrained_column.object_id
+               AND fkc.parent_column_id = constrained_column.column_id
+        INNER JOIN sys.tables AS referenced_table
+            ON fkc.referenced_object_id = referenced_table.object_id
+        INNER JOIN sys.schemas AS referenced_schema
+            ON referenced_table.schema_id = referenced_schema.schema_id
+        INNER JOIN sys.columns AS referenced_column
+            ON fkc.referenced_object_id = referenced_column.object_id
+               AND fkc.referenced_column_id = referenced_column.column_id
+) A
+WHERE
+	(ConstrainedSchema = '{tableName.Schema}' AND ConstrainedTable = '{tableName.Name}')
+		OR
+	(ReferencedSchema = '{tableName.Schema}' AND ReferencedTable = '{tableName.Name}')
+", con))
+			using (var reader = cmd.ExecuteReader())
+			{
+				while (reader.Read())
+				{
+					scratch.Add(new FKTemp()
+					{
+						ConstraintName = reader.GetString("ConstraintName"),
+						ConstrainedSchemaName = reader.GetString("ConstrainedSchema"),
+						ConstrainedTableName = reader.GetString("ConstrainedTable"),
+						ConstrainedColumnName = reader.GetString("ConstrainedColumn"),
+						ReferencedSchemaName = reader.GetString("ReferencedSchema"),
+						ReferencedTableName = reader.GetString("ReferencedTable"),
+						ReferencedColumnName = reader.GetString("ReferencedColumn"),
+						Order = reader.GetInt32("Order")
+					});
+				}
+			}
+		}
+
+		foreach (var fkName in scratch.GroupBy(x => (x.ConstraintName, x.ConstrainedSchemaName, x.ConstrainedTableName, x.ReferencedSchemaName, x.ReferencedTableName)))
+		{
+			TableOrViewMetadata<SqlServerObjectName, SqlDbType> constrainedTable;
+			TableOrViewMetadata<SqlServerObjectName, SqlDbType> referencedTable;
+
+			if (fkName.Key.ConstrainedSchemaName == table.Name.Schema && fkName.Key.ConstrainedTableName == table.Name.Name)
+			{
+				constrainedTable = table;
+				referencedTable = GetTableOrView(new SqlServerObjectName(fkName.Key.ReferencedSchemaName, fkName.Key.ReferencedTableName));
+			}
+			else
+			{
+				constrainedTable = GetTableOrView(new SqlServerObjectName(fkName.Key.ConstrainedSchemaName, fkName.Key.ConstrainedTableName));
+				referencedTable = table;
+			}
+			var columns = fkName.OrderBy(x => x.Order).ToList();
+			var constrainedColumns = new ColumnMetadataCollection<SqlDbType>(fkName.Key.ConstraintName, columns.Select(c => constrainedTable.Columns[c.ConstrainedColumnName]).ToList());
+			var referencedColumns = new ColumnMetadataCollection<SqlDbType>(fkName.Key.ConstraintName, columns.Select(c => referencedTable.Columns[c.ReferencedColumnName]).ToList());
+
+			results.Add(new(fkName.Key.ConstraintName, constrainedTable.Name, constrainedColumns, referencedTable.Name, referencedColumns));
+		}
+
+		return new ForeignKeyConstraintCollection<SqlServerObjectName, SqlDbType>(results);
+	}
+
+	/// <summary>
 	/// Gets the indexes for a table.
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
@@ -1153,6 +1248,18 @@ ORDER BY ic.key_ordinal;";
 		{
 			throw new MetadataException($"Error getting parameters for {procedureName}", ex);
 		}
+	}
+
+	sealed class FKTemp
+	{
+		public string ConstrainedColumnName { get; set; } = "";
+		public string ConstrainedSchemaName { get; set; } = "";
+		public string ConstrainedTableName { get; set; } = "";
+		public string ConstraintName { get; set; } = "";
+		public int Order { get; set; }
+		public string ReferencedColumnName { get; set; } = "";
+		public string ReferencedSchemaName { get; set; } = "";
+		public string ReferencedTableName { get; set; } = "";
 	}
 
 	sealed class SqlServerIndexColumnMetadata : IndexColumnMetadata<SqlDbType>

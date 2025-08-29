@@ -4,10 +4,12 @@
 
 **Foreign Key Constraints**
 
+* [#370 Implement GetForeignKeysForTable for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/370)
 * [#371 Implement GetForeignKeysForTable for PostgreSQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/371)
 * [#372 Implement GetForeignKeysForTable for MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/372)
 
-You can now call `table.GetForeignKeys()` on a MySql table.
+
+You can now call `table.GetForeignKeys()` on tables.
 
 [#521 Table.ToDataTable and TableSet.ToDataSet](https://github.com/TortugaResearch/Tortuga.Chain/issues/521)
 
