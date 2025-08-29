@@ -19,7 +19,7 @@ public class ForeignKeyConstraint<TObjectName, TDbType> : ForeignKeyConstraint
 	/// <param name="referencedColumns">The referenced columns.</param>
 	/// <exception cref="System.ArgumentException">constrainedColumns</exception>
 	/// <exception cref="System.ArgumentException">referencedColumns</exception>
-	public ForeignKeyConstraint(string name, TObjectName constrainedTableName, ColumnMetadataCollection<TDbType> constrainedColumns, TObjectName referencedTableName, ColumnMetadataCollection<TDbType> referencedColumns) : base(name, constrainedTableName.ToString()!, constrainedColumns?.GenericCollection!, referencedTableName.ToString()!, referencedColumns?.GenericCollection!)
+	public ForeignKeyConstraint(string? name, TObjectName constrainedTableName, ColumnMetadataCollection<TDbType> constrainedColumns, TObjectName referencedTableName, ColumnMetadataCollection<TDbType> referencedColumns) : base(name, constrainedTableName.ToString()!, constrainedColumns?.GenericCollection!, referencedTableName.ToString()!, referencedColumns?.GenericCollection!)
 	{
 		if (constrainedColumns == null || constrainedColumns.Count == 0)
 			throw new ArgumentException($"{nameof(constrainedColumns)} is null or empty.", nameof(constrainedColumns));

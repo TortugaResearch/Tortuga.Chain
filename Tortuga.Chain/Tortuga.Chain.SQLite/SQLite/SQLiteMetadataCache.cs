@@ -33,6 +33,72 @@ namespace Tortuga.Chain.SQLite
 		public override int? MaxParameters => 999;
 
 		/// <summary>
+		/// Gets the foreign keys for a table.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <returns>ForeignKeyConstraintCollection&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
+		/// <remarks>This should be read from a TableOrViewMetadata object. Do not call this method directly.</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public override ForeignKeyConstraintCollection<SQLiteObjectName, DbType> GetForeignKeysForTable(AbstractObjectName tableName)
+		{
+			var table = GetTableOrView(tableName);
+			var results = new List<ForeignKeyConstraint<SQLiteObjectName, DbType>>();
+
+			var scratch = new List<FKTemp>();
+
+			using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
+			{
+				con.Open();
+				using (var cmd = new SQLiteCommand(@$"SELECT
+    m.name AS constrained_table,
+    p.""from"" AS constrained_column,
+    p.""table"" AS referenced_table,
+    p.""to"" AS referenced_column
+FROM
+    sqlite_master m
+JOIN
+    pragma_foreign_key_list(m.name) p
+WHERE  (m.name = '{tableName.Name}') OR (p.""table"" = '{tableName.Name}')", con))
+				using (var reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						scratch.Add(new FKTemp()
+						{
+							ConstrainedTableName = reader.GetString("constrained_table"),
+							ConstrainedColumnName = reader.GetString("constrained_column"),
+							ReferencedTableName = reader.GetString("referenced_table"),
+							ReferencedColumnName = reader.GetString("referenced_column"),
+						});
+					}
+				}
+			}
+
+			foreach (var fkName in scratch)
+			{
+				TableOrViewMetadata<SQLiteObjectName, DbType> constrainedTable;
+				TableOrViewMetadata<SQLiteObjectName, DbType> referencedTable;
+
+				if (fkName.ConstrainedTableName == table.Name.Name)
+				{
+					constrainedTable = table;
+					referencedTable = GetTableOrView(new SQLiteObjectName(fkName.ReferencedTableName));
+				}
+				else
+				{
+					constrainedTable = GetTableOrView(new SQLiteObjectName(fkName.ConstrainedTableName));
+					referencedTable = table;
+				}
+				var constrainedColumns = new ColumnMetadataCollection<DbType>("<Constraint>", [constrainedTable.Columns[fkName.ConstrainedColumnName]]);
+				var referencedColumns = new ColumnMetadataCollection<DbType>("<Constraint>", [referencedTable.Columns[fkName.ReferencedColumnName]]);
+
+				results.Add(new(null, constrainedTable.Name, constrainedColumns, referencedTable.Name, referencedColumns));
+			}
+
+			return new ForeignKeyConstraintCollection<SQLiteObjectName, DbType>(results);
+		}
+
+		/// <summary>
 		/// Gets the indexes for a table.
 		/// </summary>
 		/// <param name="tableName">Name of the table.</param>
@@ -354,5 +420,13 @@ namespace Tortuga.Chain.SQLite
 			var columns = GetColumns(tableName, isTable);
 			return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
 		}
+	}
+
+	sealed class FKTemp
+	{
+		public string ConstrainedColumnName { get; set; } = "";
+		public string ConstrainedTableName { get; set; } = "";
+		public string ReferencedColumnName { get; set; } = "";
+		public string ReferencedTableName { get; set; } = "";
 	}
 }
