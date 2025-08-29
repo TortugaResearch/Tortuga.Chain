@@ -7,7 +7,7 @@
 * [#370 Implement GetForeignKeysForTable for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/370)
 * [#371 Implement GetForeignKeysForTable for PostgreSQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/371)
 * [#372 Implement GetForeignKeysForTable for MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/372)
-
+* [#374 Implement GetForeignKeysForTable for SQLite](https://github.com/TortugaResearch/Tortuga.Chain/issues/374)
 
 You can now call `table.GetForeignKeys()` on tables.
 

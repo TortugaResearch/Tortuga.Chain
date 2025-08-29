@@ -39,7 +39,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_MDS || POSTGRESQL || MYSQL
+#if SQL_SERVER_MDS || POSTGRESQL || MYSQL || SQLITE
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
 	public void TableForeignKeyConstraints(string dataSourceName, DataSourceType mode, string tableName)
@@ -51,7 +51,9 @@ public class MetadataTests : TestBase
 			var fKeys = table.GetForeignKeys();
 			foreach (var fKey in fKeys)
 			{
+#if SQL_SERVER_MDS || POSTGRESQL || MYSQL
 				Assert.IsFalse(string.IsNullOrWhiteSpace(fKey.Name), $"Constraints should have names. Table name {table.Name}");
+#endif
 			}
 		}
 		finally
