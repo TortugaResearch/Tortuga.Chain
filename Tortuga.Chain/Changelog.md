@@ -22,6 +22,9 @@ New functions:
 * `TableSet.DataSet` Copies a `TableSet` into a new `DataSet`.
 * `Table.DataTable` Copies a `Table` into a new `DataTable`.
 
+**MySQl Bug Fix**
+
+Table names are now quoted. Previously an error would be thrown if the table name included an embedded period.
 
 **Support for MySQL 8.4**
 
