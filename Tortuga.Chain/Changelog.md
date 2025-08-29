@@ -2,7 +2,10 @@
 
 ### Features
 
-[#372 Implement GetForeignKeysForTable for MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/372)
+**Foreign Key Constraints**
+
+* [#371 Implement GetForeignKeysForTable for PostgreSQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/371)
+* [#372 Implement GetForeignKeysForTable for MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/372)
 
 You can now call `table.GetForeignKeys()` on a MySql table.
 

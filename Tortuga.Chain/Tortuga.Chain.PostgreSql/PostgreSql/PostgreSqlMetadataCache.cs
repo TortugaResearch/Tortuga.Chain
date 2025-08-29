@@ -28,7 +28,7 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 	Version? m_ServerVersion;
 	string? m_ServerVersionName;
 
-	static Regex s_DecimalMatcher = new Regex(@"\d", RegexOptions.Compiled);
+	static Regex s_DecimalMatcher = new(@"\d", RegexOptions.Compiled);
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
@@ -227,18 +227,16 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 
 						//Task-284: Index size
 
-						IndexType indexType;
-						switch (reader.GetString("index_type"))
+						var indexType = reader.GetString("index_type") switch
 						{
-							case "btree": indexType = IndexType.BTree; break;
-							case "hash": indexType = IndexType.Hash; break;
-							case "gist": indexType = IndexType.Gist; break;
-							case "gin": indexType = IndexType.Gin; break;
-							case "spgist": indexType = IndexType.Spgist; break;
-							case "brin": indexType = IndexType.Brin; break;
-							default: indexType = IndexType.Unknown; break;
-						}
-
+							"btree" => IndexType.BTree,
+							"hash" => IndexType.Hash,
+							"gist" => IndexType.Gist,
+							"gin" => IndexType.Gin,
+							"spgist" => IndexType.Spgist,
+							"brin" => IndexType.Brin,
+							_ => IndexType.Unknown,
+						};
 						var columnIndices = reader.GetValue<short[]>("column_indices");
 						var descendingColumns = new Dictionary<int, bool?>();
 
@@ -275,6 +273,117 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 			}
 		}
 		return new IndexMetadataCollection<PostgreSqlObjectName, NpgsqlDbType>(results);
+	}
+
+	/// <summary>
+	/// Gets the foreign keys for a table.
+	/// </summary>
+	/// <param name="tableName">Name of the table.</param>
+	/// <returns>ForeignKeyConstraintCollection&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
+	/// <remarks>This should be read from a TableOrViewMetadata object. Do not call this method directly.</remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public override ForeignKeyConstraintCollection<PostgreSqlObjectName, NpgsqlDbType> GetForeignKeysForTable(AbstractObjectName tableName)
+	{
+		var table = GetTableOrView(tableName);
+		var results = new List<ForeignKeyConstraint<PostgreSqlObjectName, NpgsqlDbType>>();
+
+		var scratch = new List<FKTemp>();
+
+		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		{
+			con.Open();
+			using (var cmd = new NpgsqlCommand(@$"SELECT *
+FROM (
+	SELECT
+		conname AS ""constraint_name"",
+		con.constrained_schema,
+		con.constrained_table,
+		att1.attname AS ""constrained_column"",
+		ns2.nspname AS ""referenced_schema"",
+		cl2.relname AS ""referenced_table"",
+		att2.attname AS ""referenced_column""
+	FROM (
+		SELECT
+			unnest(con1.conkey) AS ""parent"",
+			unnest(con1.confkey) AS ""child"",
+			con1.confrelid,
+			con1.conrelid,
+			con1.conname,
+			cl.relname AS ""constrained_table"",
+			ns.nspname AS ""constrained_schema""
+		FROM pg_class cl
+		JOIN pg_namespace ns
+			ON cl.relnamespace = ns.oid
+		JOIN pg_constraint con1
+			ON con1.conrelid = cl.oid
+		WHERE con1.contype = 'f'
+	) con
+	JOIN pg_attribute att2
+		ON att2.attrelid = con.confrelid AND att2.attnum = con.child
+	JOIN pg_class cl2
+		ON cl2.oid = con.confrelid
+	JOIN pg_attribute att1
+		ON att1.attrelid = con.conrelid AND att1.attnum = con.parent
+	JOIN pg_namespace ns2
+		ON cl2.relnamespace = ns2.oid
+)
+WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{tableName.Name}')
+		OR
+	  (referenced_schema = '{tableName.Schema}' AND referenced_table = '{tableName.Name}')
+", con))
+			using (var reader = cmd.ExecuteReader())
+			{
+				while (reader.Read())
+				{
+					scratch.Add(new FKTemp()
+					{
+						ConstraintName = reader.GetString("constraint_name"),
+						ConstrainedSchemaName = reader.GetString("constrained_schema"),
+						ConstrainedTableName = reader.GetString("constrained_table"),
+						ConstrainedColumnName = reader.GetString("constrained_column"),
+						ReferencedSchemaName = reader.GetString("referenced_schema"),
+						ReferencedTableName = reader.GetString("referenced_table"),
+						ReferencedColumnName = reader.GetString("referenced_column")
+					});
+				}
+			}
+		}
+
+		foreach (var fkName in scratch.GroupBy(x => (x.ConstraintName, x.ConstrainedSchemaName, x.ConstrainedTableName, x.ReferencedSchemaName, x.ReferencedTableName)))
+		{
+			TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> constrainedTable;
+			TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> referencedTable;
+
+			if (fkName.Key.ConstrainedSchemaName == table.Name.Schema && fkName.Key.ConstrainedTableName == table.Name.Name)
+			{
+				constrainedTable = table;
+				referencedTable = GetTableOrView(new PostgreSqlObjectName(fkName.Key.ReferencedSchemaName, fkName.Key.ReferencedTableName));
+			}
+			else
+			{
+				constrainedTable = GetTableOrView(new PostgreSqlObjectName(fkName.Key.ConstrainedSchemaName, fkName.Key.ConstrainedTableName));
+				referencedTable = table;
+			}
+			var columns = fkName.OrderBy(x => x.Order).ToList();
+			var constrainedColumns = new ColumnMetadataCollection<NpgsqlDbType>(fkName.Key.ConstraintName, columns.Select(c => constrainedTable.Columns[c.ConstrainedColumnName]).ToList());
+			var referencedColumns = new ColumnMetadataCollection<NpgsqlDbType>(fkName.Key.ConstraintName, columns.Select(c => referencedTable.Columns[c.ReferencedColumnName]).ToList());
+
+			results.Add(new(fkName.Key.ConstraintName, constrainedTable.Name, constrainedColumns, referencedTable.Name, referencedColumns));
+		}
+
+		return new ForeignKeyConstraintCollection<PostgreSqlObjectName, NpgsqlDbType>(results);
+	}
+
+	sealed class FKTemp
+	{
+		public string ConstrainedColumnName { get; set; } = "";
+		public string ConstrainedSchemaName { get; set; } = "";
+		public string ConstrainedTableName { get; set; } = "";
+		public string ConstraintName { get; set; } = "";
+		public int Order { get; set; }
+		public string ReferencedColumnName { get; set; } = "";
+		public string ReferencedSchemaName { get; set; } = "";
+		public string ReferencedTableName { get; set; } = "";
 	}
 
 	/// <summary>
@@ -523,86 +632,83 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 	/// <param name="isUnsigned">NOT USED</param>
 	/// <returns></returns>
 	/// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
-	[SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
-	[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
 	protected override NpgsqlDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned = null)
 	{
 		if (string.IsNullOrEmpty(typeName))
 			throw new ArgumentException($"{nameof(typeName)} is null or empty.", nameof(typeName));
 
 #pragma warning disable CS0618 // Type or member is obsolete
-		switch (typeName.ToUpperInvariant().Replace("_", "", StringComparison.Ordinal).Replace("\"", "", StringComparison.Ordinal))
+		return typeName.ToUpperInvariant().Replace("_", "", StringComparison.Ordinal).Replace("\"", "", StringComparison.Ordinal) switch
 		{
-			case "ABSTIME": return NpgsqlDbType.Abstime;
-			case "ARRAY": return NpgsqlDbType.Array;
-			case "BIGINT": return NpgsqlDbType.Bigint;
-			case "BIT": return NpgsqlDbType.Bit;
-			case "BOOL": return NpgsqlDbType.Boolean;
-			case "BOOLEAN": return NpgsqlDbType.Boolean;
-			case "BOX": return NpgsqlDbType.Box;
-			case "BYTEA": return NpgsqlDbType.Bytea;
-			case "CHAR": return NpgsqlDbType.Char;
-			case "CHARACTER":
-			case "CID": return NpgsqlDbType.Cid;
-			case "CIDR": return NpgsqlDbType.Cidr;
-			case "CIRCLE": return NpgsqlDbType.Circle;
-			case "CITEXT": return NpgsqlDbType.Citext;
-			case "DATE": return NpgsqlDbType.Date;
-			case "DOUBLE": return NpgsqlDbType.Double;
-			case "DOUBLE PRECISION": return NpgsqlDbType.Double;
-			case "FLOAT4": return NpgsqlDbType.Real;
-			case "FLOAT8": return NpgsqlDbType.Double;
-			case "GEOGRAPHY": return NpgsqlDbType.Geography;
-			case "GEOMETRY": return NpgsqlDbType.Geometry;
-			case "HSTORE": return NpgsqlDbType.Hstore;
-			case "INET": return NpgsqlDbType.Inet;
-			case "INT2": return NpgsqlDbType.Smallint;
-			case "INT2VECTOR": return NpgsqlDbType.Int2Vector;
-			case "INT4": return NpgsqlDbType.Integer;
-			case "INT8": return NpgsqlDbType.Bigint;
-			case "INTEGER": return NpgsqlDbType.Integer;
-			case "INTERVAL": return NpgsqlDbType.Interval;
-			case "JSON": return NpgsqlDbType.Json;
-			case "JSONB": return NpgsqlDbType.Jsonb;
-			case "LINE": return NpgsqlDbType.Line;
-			case "LSEG": return NpgsqlDbType.LSeg;
-			case "MACADDR": return NpgsqlDbType.MacAddr;
-			case "MACADDR8": return NpgsqlDbType.MacAddr8;
-			case "MONEY": return NpgsqlDbType.Money;
-			case "NAME": return NpgsqlDbType.Name;
-			case "NUMERIC": return NpgsqlDbType.Numeric;
-			case "OID": return NpgsqlDbType.Oid;
-			case "OIDVECTOR": return NpgsqlDbType.Oidvector;
-			case "PATH": return NpgsqlDbType.Path;
-			case "POINT": return NpgsqlDbType.Point;
-			case "POLYGON": return NpgsqlDbType.Polygon;
-			case "RANGE": return NpgsqlDbType.Range;
-			case "REAL": return NpgsqlDbType.Real;
-			case "REFCURSOR": return NpgsqlDbType.Refcursor;
-			case "REGCONFIG": return NpgsqlDbType.Regconfig;
-			case "REGTYPE": return NpgsqlDbType.Regtype;
-			case "SMALLINT": return NpgsqlDbType.Smallint;
-			case "TEXT": return NpgsqlDbType.Text;
-			case "TID": return NpgsqlDbType.Tid;
-			case "TIME WITH TIME ZONE": return NpgsqlDbType.TimeTz;
-			case "TIMETZ": return NpgsqlDbType.TimeTz;
-			case "TIME": return NpgsqlDbType.Time;
-			case "TIME WITHOUT TIME ZONE": return NpgsqlDbType.Time;
-			case "TIMESTAMP WITH TIME ZONE": return NpgsqlDbType.TimestampTz;
-			case "TIMESTAMPTZ": return NpgsqlDbType.TimestampTz;
-			case "TIMESTAMP": return NpgsqlDbType.Timestamp;
-			case "TIMESTAMP WITHOUT TIME ZONE": return NpgsqlDbType.Timestamp;
-			case "TSQUERY": return NpgsqlDbType.TsQuery;
-			case "TSVECTOR": return NpgsqlDbType.TsVector;
-			case "UUID": return NpgsqlDbType.Uuid;
-			case "VARBIT": return NpgsqlDbType.Varbit;
-			case "BIT VARYING": return NpgsqlDbType.Varbit;
-			case "VARCHAR": return NpgsqlDbType.Varchar;
-			case "CHARACTER VARYING": return NpgsqlDbType.Varchar;
-			case "XID": return NpgsqlDbType.Xid;
-			case "XML": return NpgsqlDbType.Xml;
-			default: return null;
-		}
+			"ABSTIME" => NpgsqlDbType.Abstime,
+			"ARRAY" => NpgsqlDbType.Array,
+			"BIGINT" => NpgsqlDbType.Bigint,
+			"BIT" => NpgsqlDbType.Bit,
+			"BOOL" => NpgsqlDbType.Boolean,
+			"BOOLEAN" => NpgsqlDbType.Boolean,
+			"BOX" => NpgsqlDbType.Box,
+			"BYTEA" => NpgsqlDbType.Bytea,
+			"CHAR" => NpgsqlDbType.Char,
+			"CHARACTER" or "CID" => NpgsqlDbType.Cid,
+			"CIDR" => NpgsqlDbType.Cidr,
+			"CIRCLE" => NpgsqlDbType.Circle,
+			"CITEXT" => NpgsqlDbType.Citext,
+			"DATE" => NpgsqlDbType.Date,
+			"DOUBLE" => NpgsqlDbType.Double,
+			"DOUBLE PRECISION" => NpgsqlDbType.Double,
+			"FLOAT4" => NpgsqlDbType.Real,
+			"FLOAT8" => NpgsqlDbType.Double,
+			"GEOGRAPHY" => NpgsqlDbType.Geography,
+			"GEOMETRY" => NpgsqlDbType.Geometry,
+			"HSTORE" => NpgsqlDbType.Hstore,
+			"INET" => NpgsqlDbType.Inet,
+			"INT2" => NpgsqlDbType.Smallint,
+			"INT2VECTOR" => NpgsqlDbType.Int2Vector,
+			"INT4" => NpgsqlDbType.Integer,
+			"INT8" => NpgsqlDbType.Bigint,
+			"INTEGER" => NpgsqlDbType.Integer,
+			"INTERVAL" => NpgsqlDbType.Interval,
+			"JSON" => NpgsqlDbType.Json,
+			"JSONB" => NpgsqlDbType.Jsonb,
+			"LINE" => NpgsqlDbType.Line,
+			"LSEG" => NpgsqlDbType.LSeg,
+			"MACADDR" => NpgsqlDbType.MacAddr,
+			"MACADDR8" => NpgsqlDbType.MacAddr8,
+			"MONEY" => NpgsqlDbType.Money,
+			"NAME" => NpgsqlDbType.Name,
+			"NUMERIC" => NpgsqlDbType.Numeric,
+			"OID" => NpgsqlDbType.Oid,
+			"OIDVECTOR" => NpgsqlDbType.Oidvector,
+			"PATH" => NpgsqlDbType.Path,
+			"POINT" => NpgsqlDbType.Point,
+			"POLYGON" => NpgsqlDbType.Polygon,
+			"RANGE" => NpgsqlDbType.Range,
+			"REAL" => NpgsqlDbType.Real,
+			"REFCURSOR" => NpgsqlDbType.Refcursor,
+			"REGCONFIG" => NpgsqlDbType.Regconfig,
+			"REGTYPE" => NpgsqlDbType.Regtype,
+			"SMALLINT" => NpgsqlDbType.Smallint,
+			"TEXT" => NpgsqlDbType.Text,
+			"TID" => NpgsqlDbType.Tid,
+			"TIME WITH TIME ZONE" => NpgsqlDbType.TimeTz,
+			"TIMETZ" => NpgsqlDbType.TimeTz,
+			"TIME" => NpgsqlDbType.Time,
+			"TIME WITHOUT TIME ZONE" => NpgsqlDbType.Time,
+			"TIMESTAMP WITH TIME ZONE" => NpgsqlDbType.TimestampTz,
+			"TIMESTAMPTZ" => NpgsqlDbType.TimestampTz,
+			"TIMESTAMP" => NpgsqlDbType.Timestamp,
+			"TIMESTAMP WITHOUT TIME ZONE" => NpgsqlDbType.Timestamp,
+			"TSQUERY" => NpgsqlDbType.TsQuery,
+			"TSVECTOR" => NpgsqlDbType.TsVector,
+			"UUID" => NpgsqlDbType.Uuid,
+			"VARBIT" => NpgsqlDbType.Varbit,
+			"BIT VARYING" => NpgsqlDbType.Varbit,
+			"VARCHAR" => NpgsqlDbType.Varchar,
+			"CHARACTER VARYING" => NpgsqlDbType.Varchar,
+			"XID" => NpgsqlDbType.Xid,
+			"XML" => NpgsqlDbType.Xml,
+			_ => null,
+		};
 #pragma warning restore CS0618 // Type or member is obsolete
 	}
 
@@ -611,60 +717,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 	/// </summary>
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
-	public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, new[] { "trigger", "internal", "regclass", "bpchar", "pg_lsn", "void", "cstring", "reltime", "anyenum", "anyarray", "anyelement", "anyrange", "_regdictionary", "any", "regdictionary", "tstzrange" ,
-		"jsonpath","pg_mcv_list","table_am_handler",
-"ANYNONARRAY",
-"UNKNOWN",
-"PG_DDL_COMMAND",
-"TINTERVAL",
-"RECORD",
-"OPAQUE",
-"REGROLE",
-"_CSTRING",
-"REGOPERATOR",
-"_ACLITEM",
-"ACLITEM",
-"REGPROCEDURE",
-"\"ANY\"",
-"SMGR",
-"TXID_SNAPSHOT",
-"PG_NODE_TREE",
-"EVENT_TRIGGER",
-"INDEX_AM_HANDLER",
-"INT8RANGE",
-"REGPROC",
-"PG_ATTRIBUTE",
-"PG_TYPE",
-"REGOPER",
-"REGNAMESPACE",
-"INT4RANGE",
-"PG_DEPENDENCIES",
-"FDW_HANDLER",
-"TSM_HANDLER",
-"LANGUAGE_HANDLER",
-"DATERANGE",
-"GTSVECTOR",
-"NUMRANGE",
-"TSRANGE",
-"PG_NDISTINCT",
-"anycompatiblenonarray",
-"anymultirange",
-"pg_snapshot",
-"pg_brin_bloom_summary",
-"anycompatiblearray",
-"int8multirange",
-"regcollation",
-"anycompatiblemultirange",
-"tsmultirange",
-"anycompatible",
-"xid8",
-"datemultirange",
-"anycompatiblerange",
-"pg_brin_minmax_multi_summary",
-"int4multirange",
-"nummultirange",
-"tstzmultirange"
-	});
+	public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, ["trigger", "internal", "regclass", "bpchar", "pg_lsn", "void", "cstring", "reltime", "anyenum", "anyarray", "anyelement", "anyrange", "_regdictionary", "any", "regdictionary", "tstzrange", "jsonpath", "pg_mcv_list", "table_am_handler", "ANYNONARRAY", "UNKNOWN", "PG_DDL_COMMAND", "TINTERVAL", "RECORD", "OPAQUE", "REGROLE", "_CSTRING", "REGOPERATOR", "_ACLITEM", "ACLITEM", "REGPROCEDURE", "\"ANY\"", "SMGR", "TXID_SNAPSHOT", "PG_NODE_TREE", "EVENT_TRIGGER", "INDEX_AM_HANDLER", "INT8RANGE", "REGPROC", "PG_ATTRIBUTE", "PG_TYPE", "REGOPER", "REGNAMESPACE", "INT4RANGE", "PG_DEPENDENCIES", "FDW_HANDLER", "TSM_HANDLER", "LANGUAGE_HANDLER", "DATERANGE", "GTSVECTOR", "NUMRANGE", "TSRANGE", "PG_NDISTINCT", "anycompatiblenonarray", "anymultirange", "pg_snapshot", "pg_brin_bloom_summary", "anycompatiblearray", "int8multirange", "regcollation", "anycompatiblemultirange", "tsmultirange", "anycompatible", "xid8", "datemultirange", "anycompatiblerange", "pg_brin_minmax_multi_summary", "int4multirange", "nummultirange", "tstzmultirange"]);
 
 	/// <summary>
 	/// Parse a string and return the database specific representation of the object name.
@@ -698,11 +751,11 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 						var parameterName = reader.GetStringOrNull("parameter_name") ?? "Parameter" + reader.GetInt32("ordinal_position");
 
 						var typeName = reader.GetString("udt_name");
-						bool isNullable = true;
+						var isNullable = true;
 						int? maxLength = null;
 						int? precision = null;
 						int? scale = null;
-						string fullTypeName = ""; //Task-291: Add support for full name
+						var fullTypeName = ""; //Task-291: Add support for full name
 
 						//Task-120: Add support for length, precision, and scale
 						//Task-384: OUTPUT Parameters for PostgreSQL
@@ -714,13 +767,13 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 					{
 						var name = reader.GetString("parameter_name");
 						var typeName = reader.GetString("udt_name");
-						bool isPrimary = false;
-						bool isIdentity = false;
+						var isPrimary = false;
+						var isIdentity = false;
 						bool? isNullable = null;
 						int? maxLength = null;
 						int? precision = null;
 						int? scale = null;
-						string fullTypeName = ""; //Task-291: Add support for full name
+						var fullTypeName = ""; //Task-291: Add support for full name
 
 						//Task-120: Add support for length, precision, and scale
 
@@ -798,14 +851,14 @@ WHERE c.relname ILIKE @Name AND
 				{
 					var name = reader.GetString("column_name");
 					var typeName = reader.GetString("data_type");
-					bool isPrimary = !reader.IsDBNull("is_primary_key");
+					var isPrimary = !reader.IsDBNull("is_primary_key");
 
 					var identity_type = char.ToUpperInvariant(reader.GetCharOrNull("is_identity") ?? ' ');
 					var isIdentity = identity_type == 'A' || identity_type == 'D';
 					if (!isIdentity) //check if its attached to a sequence
 						isIdentity = sequenceColumns.Contains(name);
 
-					bool isNullable = !reader.GetBoolean("not_null");
+					var isNullable = !reader.GetBoolean("not_null");
 
 					var dbType = SqlTypeNameToDbType(typeName);
 					var fullTypeName = reader.GetString("data_type_full");
@@ -878,96 +931,27 @@ WHERE c.relname ILIKE @Name AND
 	[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
 	protected override Type? ToClrType(NpgsqlDbType dbType, bool isNullable, int? maxLength)
 	{
-		switch (dbType)
+		return dbType switch
 		{
-			case NpgsqlDbType.Bigint:
-				return isNullable ? typeof(long?) : typeof(long);
-
-			case NpgsqlDbType.Double:
-				return isNullable ? typeof(double?) : typeof(double);
-
-			case NpgsqlDbType.Integer:
-				return isNullable ? typeof(int?) : typeof(int);
-
-			case NpgsqlDbType.Numeric:
-			case NpgsqlDbType.Money:
-				return isNullable ? typeof(decimal?) : typeof(decimal);
-
-			case NpgsqlDbType.Real:
-				return isNullable ? typeof(float?) : typeof(float);
-
-			case NpgsqlDbType.Smallint:
-				return isNullable ? typeof(short?) : typeof(short);
-
-			case NpgsqlDbType.Boolean:
-				return isNullable ? typeof(bool?) : typeof(bool);
-
-			case NpgsqlDbType.Char:
-			case NpgsqlDbType.Varchar:
-				return (maxLength == 1) ? (isNullable ? typeof(char?) : typeof(char)) : typeof(string);
-
-			case NpgsqlDbType.Text:
-				return typeof(string);
-
-			case NpgsqlDbType.Bytea:
-				return typeof(byte[]);
-
-			case NpgsqlDbType.Date:
-			case NpgsqlDbType.Timestamp:
-				return isNullable ? typeof(DateTime?) : typeof(DateTime);
-
-			case NpgsqlDbType.Time:
-				return isNullable ? typeof(TimeSpan?) : typeof(TimeSpan);
-
-			case NpgsqlDbType.Interval:
-				return isNullable ? typeof(TimeSpan?) : typeof(TimeSpan);
-
-			case NpgsqlDbType.Bit:
-				return typeof(BitArray);
-
-			case NpgsqlDbType.Uuid:
-				return isNullable ? typeof(Guid?) : typeof(Guid);
-
-			case NpgsqlDbType.Xml:
-			case NpgsqlDbType.Json:
-			case NpgsqlDbType.Jsonb:
-				return typeof(string);
-
-			case NpgsqlDbType.Inet:
-			case NpgsqlDbType.Cidr:
-			case NpgsqlDbType.MacAddr:
-			case NpgsqlDbType.MacAddr8:
-			case NpgsqlDbType.Varbit:
-			case NpgsqlDbType.TsVector:
-			case NpgsqlDbType.TsQuery:
-			case NpgsqlDbType.Regconfig:
-			case NpgsqlDbType.Hstore:
-			case NpgsqlDbType.Array:
-			case NpgsqlDbType.Range:
-			case NpgsqlDbType.Refcursor:
-			case NpgsqlDbType.Oidvector:
-			case NpgsqlDbType.Int2Vector:
-			case NpgsqlDbType.Oid:
-			case NpgsqlDbType.Xid:
-			case NpgsqlDbType.Cid:
-			case NpgsqlDbType.Regtype:
-			case NpgsqlDbType.Tid:
-			case NpgsqlDbType.Unknown:
-			case NpgsqlDbType.Geometry:
-			case NpgsqlDbType.Geography:
-			case NpgsqlDbType.Box:
-			case NpgsqlDbType.Circle:
-			case NpgsqlDbType.Line:
-			case NpgsqlDbType.LSeg:
-			case NpgsqlDbType.Path:
-			case NpgsqlDbType.Point:
-			case NpgsqlDbType.Polygon:
-			case NpgsqlDbType.Name:
-			case NpgsqlDbType.Citext:
-			case NpgsqlDbType.InternalChar:
-				return null;
-		}
-		return null;
+			NpgsqlDbType.Bigint => isNullable ? typeof(long?) : typeof(long),
+			NpgsqlDbType.Double => isNullable ? typeof(double?) : typeof(double),
+			NpgsqlDbType.Integer => isNullable ? typeof(int?) : typeof(int),
+			NpgsqlDbType.Numeric or NpgsqlDbType.Money => isNullable ? typeof(decimal?) : typeof(decimal),
+			NpgsqlDbType.Real => isNullable ? typeof(float?) : typeof(float),
+			NpgsqlDbType.Smallint => isNullable ? typeof(short?) : typeof(short),
+			NpgsqlDbType.Boolean => isNullable ? typeof(bool?) : typeof(bool),
+			NpgsqlDbType.Char or NpgsqlDbType.Varchar => (maxLength == 1) ? (isNullable ? typeof(char?) : typeof(char)) : typeof(string),
+			NpgsqlDbType.Text => typeof(string),
+			NpgsqlDbType.Bytea => typeof(byte[]),
+			NpgsqlDbType.Date or NpgsqlDbType.Timestamp => isNullable ? typeof(DateTime?) : typeof(DateTime),
+			NpgsqlDbType.Time => isNullable ? typeof(TimeSpan?) : typeof(TimeSpan),
+			NpgsqlDbType.Interval => isNullable ? typeof(TimeSpan?) : typeof(TimeSpan),
+			NpgsqlDbType.Bit => typeof(BitArray),
+			NpgsqlDbType.Uuid => isNullable ? typeof(Guid?) : typeof(Guid),
+			NpgsqlDbType.Xml or NpgsqlDbType.Json or NpgsqlDbType.Jsonb => typeof(string),
+			NpgsqlDbType.Inet or NpgsqlDbType.Cidr or NpgsqlDbType.MacAddr or NpgsqlDbType.MacAddr8 or NpgsqlDbType.Varbit or NpgsqlDbType.TsVector or NpgsqlDbType.TsQuery or NpgsqlDbType.Regconfig or NpgsqlDbType.Hstore or NpgsqlDbType.Array or NpgsqlDbType.Range or NpgsqlDbType.Refcursor or NpgsqlDbType.Oidvector or NpgsqlDbType.Int2Vector or NpgsqlDbType.Oid or NpgsqlDbType.Xid or NpgsqlDbType.Cid or NpgsqlDbType.Regtype or NpgsqlDbType.Tid or NpgsqlDbType.Unknown or NpgsqlDbType.Geometry or NpgsqlDbType.Geography or NpgsqlDbType.Box or NpgsqlDbType.Circle or NpgsqlDbType.Line or NpgsqlDbType.LSeg or NpgsqlDbType.Path or NpgsqlDbType.Point or NpgsqlDbType.Polygon or NpgsqlDbType.Name or NpgsqlDbType.Citext or NpgsqlDbType.InternalChar => null,
+			_ => null,
+		};
 	}
 
 	ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetScalarFunctionInternal(PostgreSqlObjectName tableFunctionName)
@@ -1002,11 +986,11 @@ WHERE c.relname ILIKE @Name AND
 				}
 
 				var pAndC = GetParametersAndColumns(specificName, con);
-				bool isNullable = true;
+				var isNullable = true;
 				int? maxLength = null;
 				int? precision = null;
 				int? scale = null;
-				string fullTypeName = ""; //Task-291: Add support for full name
+				var fullTypeName = ""; //Task-291: Add support for full name
 
 				//Task-120: Add support for length, precision, and scale for return type
 

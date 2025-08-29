@@ -38,7 +38,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if MYSQL
+#if POSTGRESQL || MYSQL
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
 	public void TableForeignKeyConstraints(string dataSourceName, DataSourceType mode, string tableName)
