@@ -57,6 +57,47 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	}
 
 	/// <summary>
+	/// Gets the foreign keys for a table.
+	/// </summary>
+	/// <param name="tableName">Name of the table.</param>
+	/// <returns>ForeignKeyConstraintCollection&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
+	/// <remarks>This should be read from a TableOrViewMetadata object. Do not call this method directly.</remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public override ForeignKeyConstraintCollection<AccessObjectName, OleDbType> GetForeignKeysForTable(AbstractObjectName tableName)
+	{
+		var result = new List<IndexMetadata<AccessObjectName, OleDbType>>();
+		var fKeyDT = GetSchemaTable(OleDbSchemaGuid.Foreign_Keys);
+
+		var table = GetTableOrView(tableName);
+		var results = new List<ForeignKeyConstraint<AccessObjectName, OleDbType>>();
+
+		foreach (var fkName in fKeyDT.Rows
+			.OfType<DataRow>()
+			.Where(x => (string)x["PK_TABLE_NAME"] == table.Name.Name || (string)x["FK_TABLE_NAME"] == table.Name.Name))
+		{
+			TableOrViewMetadata<AccessObjectName, OleDbType> constrainedTable;
+			TableOrViewMetadata<AccessObjectName, OleDbType> referencedTable;
+
+			if ((string)fkName["FK_TABLE_NAME"] == table.Name.Name)
+			{
+				constrainedTable = table;
+				referencedTable = GetTableOrView(new AccessObjectName((string)fkName["PK_TABLE_NAME"]));
+			}
+			else
+			{
+				constrainedTable = GetTableOrView(new AccessObjectName((string)fkName["FK_TABLE_NAME"]));
+				referencedTable = table;
+			}
+			var constrainedColumns = new ColumnMetadataCollection<OleDbType>((string)fkName["FK_NAME"], [constrainedTable.Columns[(string)fkName["FK_COLUMN_NAME"]]]);
+			var referencedColumns = new ColumnMetadataCollection<OleDbType>((string)fkName["FK_NAME"], [referencedTable.Columns[(string)fkName["PK_COLUMN_NAME"]]]);
+
+			results.Add(new((string)fkName["FK_NAME"], constrainedTable.Name, constrainedColumns, referencedTable.Name, referencedColumns));
+		}
+
+		return new ForeignKeyConstraintCollection<AccessObjectName, OleDbType>(results);
+	}
+
+	/// <summary>
 	/// Gets the indexes for a table.
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>

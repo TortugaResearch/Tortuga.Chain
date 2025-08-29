@@ -39,7 +39,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-#if SQL_SERVER_MDS || POSTGRESQL || MYSQL || SQLITE
+#if SQL_SERVER_MDS || POSTGRESQL || MYSQL || SQLITE || ACCESS
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
 	public void TableForeignKeyConstraints(string dataSourceName, DataSourceType mode, string tableName)
