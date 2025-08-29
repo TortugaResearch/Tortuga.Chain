@@ -116,6 +116,9 @@
   </HelpKINode>
   <HelpKINode Title="AccessMetadataCache.AccessMetadataCache constructor" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.-ctor.htm" />
   <HelpKINode Title="AccessMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="AccessMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="AccessMetadataCache.GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="AccessMetadataCache.GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="AccessMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="AccessMetadataCache.GetIndexesForTable method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="AccessMetadataCache.GetTableOrView method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetTableOrView.htm" />
@@ -185,6 +188,7 @@
   <HelpKINode Title="AddChangeListener method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.AddChangeListener.htm" />
   <HelpKINode Title="AddConverter(Of TIn, TOut) method" Url="html/M-Tortuga.Chain.Metadata.MaterializerTypeConverter.AddConverter--2.htm" />
   <HelpKINode Title="AddConverter&lt;TIn, TOut&gt; method" Url="html/M-Tortuga.Chain.Metadata.MaterializerTypeConverter.AddConverter--2.htm" />
+  <HelpKINode Title="AddInfoMessageEventListener method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.AddInfoMessageEventListener.htm" />
   <HelpKINode Title="AggregateColumn class" Url="html/AllMembers.T-Tortuga.Chain.Aggregates.AggregateColumn.htm" />
   <HelpKINode Title="AggregateColumn class" Url="html/T-Tortuga.Chain.Aggregates.AggregateColumn.htm" />
   <HelpKINode Title="AggregateColumn class">
@@ -612,10 +616,6 @@
   <HelpKINode Title="CheckValue method" Url="html/M-Tortuga.Chain.AuditRules.ValidateWithNotifyDataErrorInfo.CheckValue.htm" />
   <HelpKINode Title="CheckValue method" Url="html/M-Tortuga.Chain.AuditRules.ValidateWithValidatable.CheckValue.htm" />
   <HelpKINode Title="CheckValue method" Url="html/M-Tortuga.Chain.AuditRules.ValidationRule.CheckValue.htm" />
-  <HelpKINode Title="ChildColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ChildColumns.htm" />
-  <HelpKINode Title="ChildColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ChildColumns.htm" />
-  <HelpKINode Title="ChildTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ChildTableName.htm" />
-  <HelpKINode Title="ChildTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ChildTableName.htm" />
   <HelpKINode Title="CleanupResources delegate" Url="html/T-Tortuga.Chain.Core.CleanupResources.htm" />
   <HelpKINode Title="CleanupResourcesAsync delegate" Url="html/T-Tortuga.Chain.Core.CleanupResourcesAsync.htm" />
   <HelpKINode Title="Clear method" Url="html/M-Tortuga.Chain.Core.ICacheAdapter.Clear.htm" />
@@ -1065,6 +1065,10 @@
   <HelpKINode Title="CompiledSingleRow&lt;TCommand, TParameter&gt;.ToObjectOrNull&lt;TObject&gt; method" Url="html/M-Tortuga.Chain.Materializers.CompiledSingleRow-2.ToObjectOrNull--1.htm" />
   <HelpKINode Title="ConcatNullYieldsNull property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerEffectiveSettings.ConcatNullYieldsNull.htm" />
   <HelpKINode Title="ConcatNullYieldsNull property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.ConcatNullYieldsNull.htm" />
+  <HelpKINode Title="ConstrainedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ConstrainedColumns.htm" />
+  <HelpKINode Title="ConstrainedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ConstrainedColumns.htm" />
+  <HelpKINode Title="ConstrainedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ConstrainedTableName.htm" />
+  <HelpKINode Title="ConstrainedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ConstrainedTableName.htm" />
   <HelpKINode Title="ConstructibleMaterializer(Of TCommand, TParameter, TResult, TObject) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ConstructibleMaterializer-4.htm" />
   <HelpKINode Title="ConstructibleMaterializer(Of TCommand, TParameter, TResult, TObject) class" Url="html/T-Tortuga.Chain.Materializers.ConstructibleMaterializer-4.htm" />
   <HelpKINode Title="ConstructibleMaterializer(Of TCommand, TParameter, TResult, TObject) class">
@@ -1821,15 +1825,16 @@
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" />
   </HelpKINode>
-  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ChildColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ChildColumns.htm" />
-  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ChildTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ChildTableName.htm" />
+  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ConstrainedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ConstrainedColumns.htm" />
+  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ConstrainedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ConstrainedTableName.htm" />
   <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ForeignKeyConstraint constructor" Url="html/M-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.-ctor.htm" />
-  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ParentColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ParentColumns.htm" />
-  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ParentTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ParentTableName.htm" />
-  <HelpKINode Title="ForeignKeyConstraint.ChildColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ChildColumns.htm" />
-  <HelpKINode Title="ForeignKeyConstraint.ChildTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ChildTableName.htm" />
-  <HelpKINode Title="ForeignKeyConstraint.ParentColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ParentColumns.htm" />
-  <HelpKINode Title="ForeignKeyConstraint.ParentTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ParentTableName.htm" />
+  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ReferencedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedColumns.htm" />
+  <HelpKINode Title="ForeignKeyConstraint(Of TObjectName, TDbType).ReferencedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedTableName.htm" />
+  <HelpKINode Title="ForeignKeyConstraint.ConstrainedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ConstrainedColumns.htm" />
+  <HelpKINode Title="ForeignKeyConstraint.ConstrainedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ConstrainedTableName.htm" />
+  <HelpKINode Title="ForeignKeyConstraint.Name property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.Name.htm" />
+  <HelpKINode Title="ForeignKeyConstraint.ReferencedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ReferencedColumns.htm" />
+  <HelpKINode Title="ForeignKeyConstraint.ReferencedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ReferencedTableName.htm" />
   <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" />
   <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt; class" Url="html/T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" />
   <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt; class">
@@ -1839,11 +1844,11 @@
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" />
   </HelpKINode>
-  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ChildColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ChildColumns.htm" />
-  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ChildTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ChildTableName.htm" />
+  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ConstrainedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ConstrainedColumns.htm" />
+  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ConstrainedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ConstrainedTableName.htm" />
   <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ForeignKeyConstraint constructor" Url="html/M-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.-ctor.htm" />
-  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ParentColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ParentColumns.htm" />
-  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ParentTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ParentTableName.htm" />
+  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ReferencedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedColumns.htm" />
+  <HelpKINode Title="ForeignKeyConstraint&lt;TObjectName, TDbType&gt;.ReferencedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedTableName.htm" />
   <HelpKINode Title="ForeignKeyConstraintCollection class" Url="html/AllMembers.T-Tortuga.Chain.Metadata.ForeignKeyConstraintCollection.htm" />
   <HelpKINode Title="ForeignKeyConstraintCollection class" Url="html/T-Tortuga.Chain.Metadata.ForeignKeyConstraintCollection.htm" />
   <HelpKINode Title="ForeignKeyConstraintCollection class">
@@ -1945,13 +1950,20 @@
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAsyncEnumerator method" Url="html/M-Tortuga.Chain.ObjectStream-1.GetAsyncEnumerator.htm" />
   <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBoolean.htm" />
   <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetBoolean.htm" />
   <HelpKINode Title="GetByColumn method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn-.htm" />
   <HelpKINode Title="GetByColumnList method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList-.htm" />
   <HelpKINode Title="GetByKey method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey-.htm" />
+  <HelpKINode Title="GetByKey(Of TObject) method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey--1.htm" />
+  <HelpKINode Title="GetByKey&lt;TObject&gt; method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey--1.htm" />
   <HelpKINode Title="GetByKeyList method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList-.htm" />
+  <HelpKINode Title="GetByKeyList(Of TObject) method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList--1.htm" />
+  <HelpKINode Title="GetByKeyList&lt;TObject&gt; method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList--1.htm" />
   <HelpKINode Title="GetByte method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetByte.htm" />
   <HelpKINode Title="GetByte method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetByte.htm" />
   <HelpKINode Title="GetBytes method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBytes.htm" />
@@ -1996,7 +2008,17 @@
   <HelpKINode Title="GetFloat method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetFloat.htm" />
   <HelpKINode Title="GetFloat method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetFloat.htm" />
   <HelpKINode Title="GetForeignKeys method" Url="html/M-Tortuga.Chain.Metadata.TableOrViewMetadata-2.GetForeignKeys.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.MySql.MySqlMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.MySql.MySqlMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="GetFormalParameters method" Url="html/M-Tortuga.Chain.CommandBuilders.SqlBuilder-1.GetFormalParameters.htm" />
   <HelpKINode Title="GetGuid method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetGuid.htm" />
   <HelpKINode Title="GetGuid method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetGuid.htm" />
@@ -3411,6 +3433,7 @@
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToTimeSpanList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToTimeSpanOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanOrNullList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToTimeSpanSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanSet.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToUInt64List method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToUInt64List.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToXmlList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToXmlList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToXmlOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToXmlOrNullList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter, TObject) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-3.htm" />
@@ -3520,6 +3543,7 @@
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToTimeSpanList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToTimeSpanOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanOrNullList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToTimeSpanSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanSet.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToUInt64List method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToUInt64List.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToXmlList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToXmlList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToXmlOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToXmlOrNullList.htm" />
   <HelpKINode Title="MultipleTableDbCommandBuilder(Of TCommand, TParameter) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.htm" />
@@ -3530,7 +3554,7 @@
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.htm" />
   </HelpKINode>
-  <HelpKINode Title="MultipleTableDbCommandBuilder(Of TCommand, TParameter).ToDataSet method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToDataSet.htm" />
+  <HelpKINode Title="MultipleTableDbCommandBuilder(Of TCommand, TParameter).ToDataSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToDataSet.htm" />
   <HelpKINode Title="MultipleTableDbCommandBuilder(Of TCommand, TParameter).ToTableSet method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToTableSet.htm" />
   <HelpKINode Title="MultipleTableDbCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.htm" />
   <HelpKINode Title="MultipleTableDbCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.htm" />
@@ -3540,7 +3564,7 @@
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.htm" />
   </HelpKINode>
-  <HelpKINode Title="MultipleTableDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDataSet method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToDataSet.htm" />
+  <HelpKINode Title="MultipleTableDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDataSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToDataSet.htm" />
   <HelpKINode Title="MultipleTableDbCommandBuilder&lt;TCommand, TParameter&gt;.ToTableSet method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToTableSet.htm" />
   <HelpKINode Title="MySqlCommandExecutionToken class" Url="html/AllMembers.T-Tortuga.Chain.MySql.MySqlCommandExecutionToken.htm" />
   <HelpKINode Title="MySqlCommandExecutionToken class" Url="html/T-Tortuga.Chain.MySql.MySqlCommandExecutionToken.htm" />
@@ -3580,6 +3604,10 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.MySql.MySqlDataSourceBase.htm" />
   </HelpKINode>
   <HelpKINode Title="MySqlDataSourceBase.DatabaseMetadata property" Url="html/P-Tortuga.Chain.MySql.MySqlDataSourceBase.DatabaseMetadata.htm" />
+  <HelpKINode Title="MySqlDataSourceBase.GetByKey(Of TObject) method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey--1.htm" />
+  <HelpKINode Title="MySqlDataSourceBase.GetByKey&lt;TObject&gt; method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey--1.htm" />
+  <HelpKINode Title="MySqlDataSourceBase.GetByKeyList(Of TObject) method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList--1.htm" />
+  <HelpKINode Title="MySqlDataSourceBase.GetByKeyList&lt;TObject&gt; method" Url="html/M-Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList--1.htm" />
   <HelpKINode Title="MySqlDataSourceSettings class" Url="html/AllMembers.T-Tortuga.Chain.MySql.MySqlDataSourceSettings.htm" />
   <HelpKINode Title="MySqlDataSourceSettings class" Url="html/T-Tortuga.Chain.MySql.MySqlDataSourceSettings.htm" />
   <HelpKINode Title="MySqlDataSourceSettings class">
@@ -3624,6 +3652,8 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.MySql.MySqlMetadataCache.htm" />
   </HelpKINode>
   <HelpKINode Title="MySqlMetadataCache.DefaultSchema property" Url="html/P-Tortuga.Chain.MySql.MySqlMetadataCache.DefaultSchema.htm" />
+  <HelpKINode Title="MySqlMetadataCache.GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.MySql.MySqlMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="MySqlMetadataCache.GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.MySql.MySqlMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="MySqlMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.MySql.MySqlMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="MySqlMetadataCache.GetIndexesForTable method" Url="html/Overload-Tortuga.Chain.MySql.MySqlMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="MySqlMetadataCache.GetScalarFunction method" Url="html/M-Tortuga.Chain.MySql.MySqlMetadataCache.GetScalarFunction.htm" />
@@ -3746,6 +3776,7 @@
   <HelpKINode Title="Name property" Url="html/P-Tortuga.Chain.DataSources.DataSource.Name.htm" />
   <HelpKINode Title="Name property" Url="html/P-Tortuga.Chain.DataSources.IDataSource.Name.htm" />
   <HelpKINode Title="Name property" Url="html/P-Tortuga.Chain.Metadata.DatabaseObject.Name.htm" />
+  <HelpKINode Title="Name property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.Name.htm" />
   <HelpKINode Title="Name property" Url="html/P-Tortuga.Chain.Metadata.IndexMetadata.Name.htm" />
   <HelpKINode Title="Name property" Url="html/P-Tortuga.Chain.Metadata.ScalarFunctionMetadata-2.Name.htm" />
   <HelpKINode Title="Name property" Url="html/P-Tortuga.Chain.Metadata.StoredProcedureMetadata-2.Name.htm" />
@@ -4164,6 +4195,7 @@
   <HelpKINode Title="OleDbSqlServerMetadataCache.DatabaseName property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.DatabaseName.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.DefaultSchema property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="OleDbSqlServerMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunctions method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunctions.htm" />
@@ -4391,10 +4423,6 @@
   <HelpKINode Title="Parameters property" Url="html/P-Tortuga.Chain.Metadata.TableFunctionMetadata-2.Parameters.htm" />
   <HelpKINode Title="Parameters property" Url="html/P-Tortuga.Chain.Metadata.TableFunctionMetadata.Parameters.htm" />
   <HelpKINode Title="ParameterValue property" Url="html/P-Tortuga.Chain.CommandBuilders.SqlBuilderEntry-1.ParameterValue.htm" />
-  <HelpKINode Title="ParentColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ParentColumns.htm" />
-  <HelpKINode Title="ParentColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ParentColumns.htm" />
-  <HelpKINode Title="ParentTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ParentTableName.htm" />
-  <HelpKINode Title="ParentTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ParentTableName.htm" />
   <HelpKINode Title="Percentage enumeration member" Url="html/T-Tortuga.Chain.LimitOptions.htm" />
   <HelpKINode Title="Percentage enumeration member" Url="html/T-Tortuga.Chain.SqlServerLimitOption.htm" />
   <HelpKINode Title="Percentage field" Url="html/F-Tortuga.Chain.LimitOptions.Percentage.htm" />
@@ -4489,6 +4517,8 @@
   </HelpKINode>
   <HelpKINode Title="PostgreSqlMetadataCache.DatabaseName property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.DatabaseName.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.DefaultSchemaList property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.DefaultSchemaList.htm" />
+  <HelpKINode Title="PostgreSqlMetadataCache.GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="PostgreSqlMetadataCache.GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.GetIndexesForTable method" Url="html/Overload-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.GetScalarFunction method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetScalarFunction.htm" />
@@ -4738,6 +4768,10 @@
   <HelpKINode Title="ReadOrCache&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.CommonAppenders.ReadOrCache--1.htm" />
   <HelpKINode Title="RecordsAffected property" Url="html/P-Tortuga.Chain.DictionaryDataReader.RecordsAffected.htm" />
   <HelpKINode Title="RecordsAffected property" Url="html/P-Tortuga.Chain.ObjectDataReader-1.RecordsAffected.htm" />
+  <HelpKINode Title="ReferencedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedColumns.htm" />
+  <HelpKINode Title="ReferencedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ReferencedColumns.htm" />
+  <HelpKINode Title="ReferencedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedTableName.htm" />
+  <HelpKINode Title="ReferencedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ReferencedTableName.htm" />
   <HelpKINode Title="RegisterType method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.RegisterType.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.Reset.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.Reset.htm" />
@@ -4858,6 +4892,7 @@
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToStringOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToStringOrNull.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToTimeSpan method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpan.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToTimeSpanOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpanOrNull.htm" />
+  <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToUInt64 method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToUInt64.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToXml method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToXml.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToXmlOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToXmlOrNull.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.htm" />
@@ -4898,6 +4933,7 @@
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToStringOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToStringOrNull.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToTimeSpan method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpan.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToTimeSpanOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpanOrNull.htm" />
+  <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToUInt64 method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToUInt64.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToXml method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToXml.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToXmlOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToXmlOrNull.htm" />
   <HelpKINode Title="ScalarFunction method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsScalarFunction.ScalarFunction.htm" />
@@ -5412,6 +5448,8 @@
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.SQLite.SQLiteMetadataCache.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.SQLite.SQLiteMetadataCache.htm" />
   </HelpKINode>
+  <HelpKINode Title="SQLiteMetadataCache.GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="SQLiteMetadataCache.GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="SQLiteMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="SQLiteMetadataCache.GetIndexesForTable method" Url="html/Overload-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="SQLiteMetadataCache.GetTableOrView method" Url="html/M-Tortuga.Chain.SQLite.SQLiteMetadataCache.GetTableOrView.htm" />
@@ -5498,6 +5536,8 @@
   <HelpKINode Title="SqlServerAppenders.AutoInvalidate&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.AutoInvalidate--1.htm" />
   <HelpKINode Title="SqlServerAppenders.WithChangeNotification(Of TResult) method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification--1.htm" />
   <HelpKINode Title="SqlServerAppenders.WithChangeNotification&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification--1.htm" />
+  <HelpKINode Title="SqlServerAppenders.WithInfoMessageNotification(Of TResult) method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
+  <HelpKINode Title="SqlServerAppenders.WithInfoMessageNotification&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
   <HelpKINode Title="SqlServerCommandExecutionToken class" Url="html/AllMembers.T-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.htm" />
   <HelpKINode Title="SqlServerCommandExecutionToken class" Url="html/T-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.htm" />
   <HelpKINode Title="SqlServerCommandExecutionToken class">
@@ -5509,6 +5549,7 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.htm" />
   </HelpKINode>
   <HelpKINode Title="SqlServerCommandExecutionToken.AddChangeListener method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.AddChangeListener.htm" />
+  <HelpKINode Title="SqlServerCommandExecutionToken.AddInfoMessageEventListener method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.AddInfoMessageEventListener.htm" />
   <HelpKINode Title="SqlServerCommandExecutionToken.SqlServerCommandExecutionToken constructor" Url="html/M-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.-ctor.htm" />
   <HelpKINode Title="SqlServerDataSource class" Url="html/AllMembers.T-Tortuga.Chain.SqlServerDataSource.htm" />
   <HelpKINode Title="SqlServerDataSource class" Url="html/T-Tortuga.Chain.SqlServerDataSource.htm" />
@@ -5636,6 +5677,9 @@
   <HelpKINode Title="SqlServerMetadataCache.DatabaseName property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerMetadataCache.DatabaseName.htm" />
   <HelpKINode Title="SqlServerMetadataCache.DefaultSchema property" Url="html/P-Tortuga.Chain.SqlServer.SqlServerMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="SqlServerMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
+  <HelpKINode Title="SqlServerMetadataCache.GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetForeignKeysForTable.htm" />
+  <HelpKINode Title="SqlServerMetadataCache.GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetIndexesForTable method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetIndexesForTable.htm" />
   <HelpKINode Title="SqlServerMetadataCache.GetScalarFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetScalarFunction.htm" />
@@ -5857,6 +5901,7 @@
   <HelpKINode Title="Table.Rows property" Url="html/P-Tortuga.Chain.Table.Rows.htm" />
   <HelpKINode Title="Table.Table constructor" Url="html/Overload-Tortuga.Chain.Table.-ctor.htm" />
   <HelpKINode Title="Table.TableName property" Url="html/P-Tortuga.Chain.Table.TableName.htm" />
+  <HelpKINode Title="Table.ToDataTable method" Url="html/M-Tortuga.Chain.Table.ToDataTable.htm" />
   <HelpKINode Title="Table.ToObjects method" Url="html/Overload-Tortuga.Chain.Table.ToObjects-.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit) class" Url="html/T-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.htm" />
@@ -6072,6 +6117,7 @@
   <HelpKINode Title="TableSet.Item property" Url="html/P-Tortuga.Chain.TableSet.Item-System.Int32-.htm" />
   <HelpKINode Title="TableSet.Item property" Url="html/P-Tortuga.Chain.TableSet.Item-System.String-.htm" />
   <HelpKINode Title="TableSet.TableSet constructor" Url="html/M-Tortuga.Chain.TableSet.-ctor.htm" />
+  <HelpKINode Title="TableSet.ToDataSet method" Url="html/M-Tortuga.Chain.TableSet.ToDataSet.htm" />
   <HelpKINode Title="TargetType property" Url="html/P-Tortuga.Chain.MaterializerCompilerEventArgs.TargetType.htm" />
   <HelpKINode Title="TestConnection method" Url="html/M-Tortuga.Chain.DataSources.DataSource.TestConnection.htm" />
   <HelpKINode Title="TestConnection method" Url="html/M-Tortuga.Chain.DataSources.IDataSource.TestConnection.htm" />
@@ -6115,9 +6161,11 @@
   <HelpKINode Title="ToDataRowOrNull method" Url="html/M-Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder.ToDataRowOrNull.htm" />
   <HelpKINode Title="ToDataRowOrNull method" Url="html/M-Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder-2.ToDataRowOrNull.htm" />
   <HelpKINode Title="ToDataSet method" Url="html/M-Tortuga.Chain.CommandBuilders.IMultipleTableDbCommandBuilder.ToDataSet.htm" />
-  <HelpKINode Title="ToDataSet method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToDataSet.htm" />
+  <HelpKINode Title="ToDataSet method" Url="html/M-Tortuga.Chain.TableSet.ToDataSet.htm" />
+  <HelpKINode Title="ToDataSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder-2.ToDataSet.htm" />
   <HelpKINode Title="ToDataTable method" Url="html/M-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDataTable.htm" />
   <HelpKINode Title="ToDataTable method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToDataTable.htm" />
+  <HelpKINode Title="ToDataTable method" Url="html/M-Tortuga.Chain.Table.ToDataTable.htm" />
   <HelpKINode Title="ToDateTime method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToDateTime.htm" />
   <HelpKINode Title="ToDateTime method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTime.htm" />
   <HelpKINode Title="ToDateTimeList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDateTimeList.htm" />
@@ -7094,6 +7142,8 @@
   <HelpKINode Title="ToTimeSpanOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanOrNullList.htm" />
   <HelpKINode Title="ToTimeSpanSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToTimeSpanSet.htm" />
   <HelpKINode Title="ToTimeSpanSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToTimeSpanSet.htm" />
+  <HelpKINode Title="ToUInt64 method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToUInt64.htm" />
+  <HelpKINode Title="ToUInt64List method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToUInt64List.htm" />
   <HelpKINode Title="ToXml method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToXml.htm" />
   <HelpKINode Title="ToXml method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToXml.htm" />
   <HelpKINode Title="ToXmlList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToXmlList.htm" />
@@ -7449,6 +7499,8 @@
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithFilter.htm" />
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithFilter.htm" />
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.UpdateSetDbCommandBuilder-2.WithFilter.htm" />
+  <HelpKINode Title="WithInfoMessageNotification(Of TResult) method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
+  <HelpKINode Title="WithInfoMessageNotification&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
   <HelpKINode Title="WithKeys method" Url="html/M-Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder-1.WithKeys.htm" />
   <HelpKINode Title="WithKeys method" Url="html/M-Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder-3.WithKeys.htm" />
   <HelpKINode Title="WithLimits method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder-1.WithLimits.htm" />
