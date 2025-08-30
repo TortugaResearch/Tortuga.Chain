@@ -1,6 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Appenders;
 using Tortuga.Chain.CommandBuilders;
@@ -283,6 +283,37 @@ public static class CommonAppenders
 	public static ILink<TResult> SetTimeout<TResult>(this ILink<TResult> previousLink, TimeSpan timeout)
 	{
 		return new TimeoutAppender<TResult>(previousLink, timeout);
+	}
+
+	/// <summary>
+	/// Prepends a comment to SQL statement. This is used mostly for logging.
+	/// </summary>
+	/// <typeparam name="TResult">The type of the t result.</typeparam>
+	/// <param name="previousLink">The previous link.</param>
+	/// <param name="message">The message to prepend to the SQL.</param>
+	/// <returns>ILink&lt;TResult&gt;.</returns>
+	/// <remarks>The message should be a constant to avoid execution plan cache issues.</remarks>
+	public static ILink<TResult> Tag<TResult>(this ILink<TResult> previousLink, string message)
+	{
+		return new TagAppender<TResult>(previousLink, message);
+	}
+
+	/// <summary>
+	/// Prepends a comment to SQL statement with the file name, member name, and line number. This is used mostly for logging.
+	/// </summary>
+	/// <typeparam name="TResult">The type of the t result.</typeparam>
+	/// <param name="previousLink">The previous link.</param>
+	/// <param name="callerFilePath">The caller file path.</param>
+	/// <param name="callerMemberName">Name of the caller member.</param>
+	/// <param name="callerLineNumber">The caller line number.</param>
+	/// <returns>ILink&lt;TResult&gt;.</returns>
+	/// <remarks>Tip: Use the same name for the file as your class.</remarks>>
+	public static ILink<TResult> Tag<TResult>(this ILink<TResult> previousLink, [CallerFilePath] string callerFilePath = null!, [CallerMemberName] string callerMemberName = null!, [CallerLineNumber] int callerLineNumber = default)
+	{
+		var callerTypeName = Path.GetFileNameWithoutExtension(callerFilePath);
+		var message = $"{callerTypeName}.{callerMemberName}:{callerLineNumber}";
+
+		return new TagAppender<TResult>(previousLink, message);
 	}
 
 	/// <summary>

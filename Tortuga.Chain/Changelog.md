@@ -28,6 +28,14 @@ New materializers
 * `.ToTimeOnlyOrNullList`
 
 
+**Tagged Queries**
+
+* [#401 Tag queries](https://github.com/TortugaResearch/Tortuga.Chain/issues/401)
+
+Use the `.Tag()` appender to tag a query. This will appear as a comment at the beginning of the SQL Statement.
+
+If you do not pass in a string as the message, the current filename, member name, and line number will be used.
+
 ### Bugs
 
 ### Technical Debt
