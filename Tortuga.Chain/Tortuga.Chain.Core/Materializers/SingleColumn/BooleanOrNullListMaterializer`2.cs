@@ -23,5 +23,5 @@ internal sealed class BooleanOrNullListMaterializer<TCommand, TParameter> : List
 	{
 	}
 
-	private protected override bool? ReadValue(DbDataReader reader, int ordinal) => reader.GetBoolean(ordinal);
+	private protected override bool? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetBoolean(ordinal);
 }

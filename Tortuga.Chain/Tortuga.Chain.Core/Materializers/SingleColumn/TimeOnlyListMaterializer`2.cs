@@ -24,5 +24,12 @@ internal sealed class TimeOnlyListMaterializer<TCommand, TParameter> : ListColum
 	{
 	}
 
-	private protected override TimeOnly ReadValue(DbDataReader reader, int ordinal) => Converters.ToTimeOnly(reader.GetValue(ordinal));
+	private protected override TimeOnly ReadValue(DbDataReader reader, int ordinal, string dataTypeName)
+	{
+		if (dataTypeName == "time")
+			return reader.GetFieldValue<TimeOnly>(ordinal);
+		else
+			return Converters.ToTimeOnly(reader.GetValue(ordinal));
+	}
+
 }

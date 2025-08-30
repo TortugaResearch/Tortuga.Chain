@@ -22,5 +22,5 @@ internal sealed class TimeSpanOrNullListMaterializer<TCommand, TParameter> : Lis
 	{
 	}
 
-	private protected override TimeSpan? ReadValue(DbDataReader reader, int ordinal) => (TimeSpan)reader.GetValue(ordinal);
+	private protected override TimeSpan? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => (TimeSpan)reader.GetValue(ordinal);
 }

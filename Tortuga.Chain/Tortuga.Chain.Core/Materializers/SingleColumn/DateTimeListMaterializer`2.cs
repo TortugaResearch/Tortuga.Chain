@@ -23,5 +23,5 @@ internal sealed class DateTimeListMaterializer<TCommand, TParameter> : ListColum
 	{
 	}
 
-	private protected override DateTime ReadValue(DbDataReader reader, int ordinal) => reader.GetDateTime(ordinal);
+	private protected override DateTime ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetDateTime(ordinal);
 }

@@ -25,5 +25,12 @@ internal sealed class DateOnlyOrNullListMaterializer<TCommand, TParameter> : Lis
 	{
 	}
 
-	private protected override DateOnly? ReadValue(DbDataReader reader, int ordinal) => Converters.ToDateOnly(reader.GetValue(ordinal));
+	private protected override DateOnly? ReadValue(DbDataReader reader, int ordinal, string dataTypeName)
+	{
+		if (dataTypeName == "date")
+			return reader.GetFieldValue<DateOnly>(ordinal);
+		else
+			return Converters.ToDateOnly(reader.GetValue(ordinal));
+	}
+
 }

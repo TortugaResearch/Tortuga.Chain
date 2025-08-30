@@ -21,7 +21,7 @@ namespace Tortuga.Chain.Materializers
 		{
 		}
 
-		private protected override char ReadValue(DbDataReader reader, int ordinal)
+		private protected override char ReadValue(DbDataReader reader, int ordinal, string dataTypeName)
 		{
 			if (reader.GetFieldType(ordinal) == typeof(string))
 			{

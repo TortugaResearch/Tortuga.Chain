@@ -22,5 +22,5 @@ internal sealed class StringOrNullListMaterializer<TCommand, TParameter> : ListC
 	{
 	}
 
-	private protected override string? ReadValue(DbDataReader reader, int ordinal) => reader.GetString(ordinal);
+	private protected override string? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetString(ordinal);
 }

@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Data.Common;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
@@ -45,6 +46,8 @@ where TCollection : ICollection<TResult>, new()
 				var rowCount = 0;
 				var matchingColumns = CalculateColumnsToRead(reader);
 				var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
+				var dataTypes = matchingColumns.Select(i => (i, reader.GetDataTypeName(i))).ToFrozenDictionary(x => x.i, x => x.Item2);
+
 
 				while (reader.Read())
 				{
@@ -52,7 +55,7 @@ where TCollection : ICollection<TResult>, new()
 					foreach (var ordinal in matchingColumns)
 					{
 						if (!reader.IsDBNull(ordinal))
-							result.Add(ReadValue(reader, ordinal));
+							result.Add(ReadValue(reader, ordinal, dataTypes[ordinal]));
 						else if (!discardNulls)
 						{
 							if (m_AllowNulls)
@@ -87,6 +90,7 @@ where TCollection : ICollection<TResult>, new()
 				var rowCount = 0;
 				var matchingColumns = CalculateColumnsToRead(reader);
 				var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
+				var dataTypes = matchingColumns.Select(i => (i, reader.GetDataTypeName(i))).ToFrozenDictionary(x => x.i, x => x.Item2);
 
 				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
 				{
@@ -94,7 +98,7 @@ where TCollection : ICollection<TResult>, new()
 					foreach (var ordinal in matchingColumns)
 					{
 						if (!await reader.IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
-							result.Add(ReadValue(reader, ordinal));
+							result.Add(ReadValue(reader, ordinal, dataTypes[ordinal]));
 						else if (!discardNulls)
 						{
 							if (m_AllowNulls)
@@ -116,8 +120,9 @@ where TCollection : ICollection<TResult>, new()
 	/// </summary>
 	/// <param name="reader">The active data reader.</param>
 	/// <param name="ordinal">The ordinal.</param>
+	/// <param name="dataTypeName">Name of the database specific data type.</param>
 	/// <returns>TResult.</returns>
-	private protected abstract TResult ReadValue(DbDataReader reader, int ordinal);
+	private protected abstract TResult ReadValue(DbDataReader reader, int ordinal, string dataTypeName);
 
 	List<int> CalculateColumnsToRead(DbDataReader reader)
 	{
