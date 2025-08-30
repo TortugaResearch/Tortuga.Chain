@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Immutable;
+using System.ComponentModel;
 using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.Metadata;
 
@@ -769,33 +770,55 @@ WHERE o.name = @Name
 	internal SqlServerTableOrViewMetadata<SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
 	{
 		const string TableSql =
-			@"SELECT
-				s.name AS SchemaName,
-				t.name AS Name,
-				t.object_id AS ObjectId,
-				CONVERT(BIT, 1) AS IsTable,
-				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
-				FROM SYS.tables t
-				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-				WHERE s.name = @Schema AND t.Name = @Name
+			@"
+SELECT
+	s.name AS SchemaName,
+	t.name AS Name,
+	t.object_id AS ObjectId,
+	CONVERT(BIT, 1) AS IsTable,
+	(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
+	p1.value AS Description
+FROM SYS.tables t
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+LEFT JOIN sys.extended_properties p1
+	ON p1.class_desc = 'OBJECT_OR_COLUMN'
+		AND p1.major_id = t.object_id
+		AND p1.minor_id = 0
+		AND p1.name = 'MS_Description'
+WHERE s.name = @Schema AND t.Name = @Name
 
-				UNION ALL
+UNION ALL
 
-				SELECT
-				s.name AS SchemaName,
-				t.name AS Name,
-				t.object_id AS ObjectId,
-				CONVERT(BIT, 0) AS IsTable,
-				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
-				FROM SYS.views t
-				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-				WHERE s.name = @Schema AND t.Name = @Name";
+SELECT
+	s.name AS SchemaName,
+	t.name AS Name,
+	t.object_id AS ObjectId,
+	CONVERT(BIT, 0) AS IsTable,
+	(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
+	p1.value AS Description
+FROM SYS.views t
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+LEFT JOIN sys.extended_properties p1
+	ON p1.class_desc = 'OBJECT_OR_COLUMN'
+		AND p1.major_id = t.object_id
+		AND p1.minor_id = 0
+		AND p1.name = 'MS_Description'
+WHERE s.name = @Schema AND t.Name = @Name";
+
+		const string propertySql = @"SELECT
+	p.name AS [Key],
+	p.value AS Value
+FROM sys.extended_properties p
+WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.minor_id = 0 AND p.major_id = @ObjectId;
+";
 
 		string actualSchema;
 		string actualName;
 		int objectId;
 		bool isTable;
 		bool hasTriggers;
+		string? description;
+		var properties = new List<PropertyTemp>();
 
 		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
 		{
@@ -813,13 +836,34 @@ WHERE o.name = @Name
 					objectId = reader.GetInt32("ObjectId");
 					isTable = reader.GetBoolean("IsTable");
 					hasTriggers = reader.GetInt32("Triggers") > 0;
+					description = reader.GetStringOrNull("Description");
+				}
+			}
+
+			using (var cmd = new SqlCommand(propertySql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						properties.Add(new()
+						{
+							Key = reader.GetString("Key"),
+							Value = reader.GetString("Value")
+						});
+					}
 				}
 			}
 		}
 
+		var tableProperties = properties.Count > 0
+			? properties.ToImmutableDictionary(x => x.Key, x => x.Value)
+			: ImmutableDictionary<string, string>.Empty;
+
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+		return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers) { Description = description, ExtendedProperties = tableProperties };
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTableTypeInternal(SqlServerObjectName typeName)
@@ -1063,37 +1107,72 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 	{
 		const string ColumnSql =
 			@"WITH    PKS
-						  AS ( SELECT   c.name ,
-										1 AS is_primary_key
-							   FROM     sys.indexes i
-										INNER JOIN sys.index_columns ic ON i.index_id = ic.index_id
-																		   AND ic.object_id = @ObjectId
-										INNER JOIN sys.columns c ON ic.column_id = c.column_id
-																	AND c.object_id = @ObjectId
-							   WHERE    i.is_primary_key = 1
-										AND ic.is_included_column = 0
-										AND i.object_id = @ObjectId
-							 )
-					SELECT  c.name AS ColumnName ,
-							c.is_computed ,
-							c.is_identity ,
-							c.column_id ,
-							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
-							COALESCE(t.name, t2.name) AS TypeName,
-							c.is_nullable,
-							CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length,
-							CONVERT(INT, COALESCE(c.precision, t.precision, t2.precision)) AS precision,
-							CONVERT(INT, COALESCE(c.scale, t.scale, t2.scale)) AS scale
-					FROM    sys.columns c
-							LEFT JOIN PKS ON c.name = PKS.name
-							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
-							LEFT JOIN sys.types t2 ON c.user_type_id = t2.user_type_id
-							WHERE   object_id = @ObjectId;";
+		AS ( SELECT   c.name ,
+					1 AS is_primary_key
+			FROM     sys.indexes i
+					INNER JOIN sys.index_columns ic ON i.index_id = ic.index_id
+														AND ic.object_id = @ObjectId
+					INNER JOIN sys.columns c ON ic.column_id = c.column_id
+												AND c.object_id = @ObjectId
+			WHERE    i.is_primary_key = 1
+					AND ic.is_included_column = 0
+					AND i.object_id = @ObjectId
+			)
+SELECT  c.name AS ColumnName ,
+		c.is_computed ,
+		c.is_identity ,
+		c.column_id ,
+		Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
+		COALESCE(t.name, t2.name) AS TypeName,
+		c.is_nullable,
+		CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length,
+		CONVERT(INT, COALESCE(c.precision, t.precision, t2.precision)) AS precision,
+		CONVERT(INT, COALESCE(c.scale, t.scale, t2.scale)) AS scale,
+		p1.value AS description
+FROM    sys.columns c
+		LEFT JOIN PKS ON c.name = PKS.name
+		LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
+		LEFT JOIN sys.types t2 ON c.user_type_id = t2.user_type_id
+LEFT JOIN sys.extended_properties p1
+	ON p1.class_desc = 'OBJECT_OR_COLUMN'
+		AND p1.major_id = @ObjectId
+		AND p1.minor_id = c.column_id
+		AND p1.name = 'MS_Description'
+WHERE   object_id = @ObjectId;";
+
+		const string propertySql = @"SELECT
+	c.name AS ColumnName,
+	p.name AS [Key],
+	p.value AS Value
+FROM sys.extended_properties p
+INNER JOIN sys.columns c ON p.major_id = c.object_id AND p.minor_id = c.column_id
+WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.major_id = @ObjectId;
+";
 
 		var columns = new List<ColumnMetadata<SqlDbType>>();
+		var properties = new List<PropertyTemp>();
+
 		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
+
+			using (var cmd = new SqlCommand(propertySql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						properties.Add(new()
+						{
+							ColumnName = reader.GetString("ColumnName"),
+							Key = reader.GetString("Key"),
+							Value = reader.GetString("Value")
+						});
+					}
+				}
+			}
+
 			using (var cmd = new SqlCommand(ColumnSql, con))
 			{
 				cmd.Parameters.AddWithValue("@ObjectId", objectId);
@@ -1107,13 +1186,17 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 						var isIdentity = reader.GetBoolean("is_identity");
 						var typeName = reader.GetString("TypeName");
 						var isNullable = reader.GetBoolean("is_nullable");
-						int? maxLength = reader.GetInt32OrNull("max_length");
-						int? precision = reader.GetInt32OrNull("precision");
-						int? scale = reader.GetInt32OrNull("scale");
-						string fullTypeName;
-						AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+						var maxLength = reader.GetInt32OrNull("max_length");
+						var precision = reader.GetInt32OrNull("precision");
+						var scale = reader.GetInt32OrNull("scale");
+						var description = reader.GetStringOrNull("description");
+						AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out var fullTypeName);
 
-						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
+						var columnProperties = properties.Any(p => p.ColumnName == name)
+							? properties.Where(p => p.ColumnName == name).ToImmutableDictionary(x => x.Key, x => x.Value)
+							: ImmutableDictionary<string, string>.Empty;
+
+						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)) { Description = description, ExtendedProperties = columnProperties });
 					}
 				}
 			}
@@ -1169,15 +1252,6 @@ ORDER BY ic.key_ordinal;";
 			}
 		}
 	}
-
-	//ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId)
-	//{
-	//    using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
-	//    {
-	//        con.Open();
-	//        return GetParameters(procedureName, objectId, con);
-	//    }
-	//}
 
 	ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId, SqlConnection con, bool useAllParameters = false)
 	{
@@ -1250,6 +1324,14 @@ ORDER BY ic.key_ordinal;";
 		}
 	}
 
+	//ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId)
+	//{
+	//    using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+	//    {
+	//        con.Open();
+	//        return GetParameters(procedureName, objectId, con);
+	//    }
+	//}
 	sealed class FKTemp
 	{
 		public string ConstrainedColumnName { get; set; } = "";
@@ -1260,6 +1342,13 @@ ORDER BY ic.key_ordinal;";
 		public string ReferencedColumnName { get; set; } = "";
 		public string ReferencedSchemaName { get; set; } = "";
 		public string ReferencedTableName { get; set; } = "";
+	}
+
+	sealed class PropertyTemp
+	{
+		public string? ColumnName { get; set; }
+		public required string Key { get; set; }
+		public required string Value { get; set; }
 	}
 
 	sealed class SqlServerIndexColumnMetadata : IndexColumnMetadata<SqlDbType>
