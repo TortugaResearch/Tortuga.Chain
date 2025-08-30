@@ -6,6 +6,11 @@
 
 * [#532 Add support for Table/Column Descriptions for PostgreSQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/532)
 * [#531 Add support for Table/Column Descriptions for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/531)
+* [#533 Add support for Table/Column Descriptions for MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/533)
+
+Use `.Description` on a table or column object. SQL Server populates `.ExtendedProperties` as well.
+
+This is not supported in SQLite and Access.
 
 
 ### Bugs

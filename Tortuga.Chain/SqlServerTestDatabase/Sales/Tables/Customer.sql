@@ -40,7 +40,7 @@ EXEC sp_addextendedproperty @name = N'Tech Details',
     @level2name = N'CustomerKey'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'Custtomer''s full name',
+    @value = N'Customer''s full name',
     @level0type = N'SCHEMA',
     @level0name = N'Sales',
     @level1type = N'TABLE',
