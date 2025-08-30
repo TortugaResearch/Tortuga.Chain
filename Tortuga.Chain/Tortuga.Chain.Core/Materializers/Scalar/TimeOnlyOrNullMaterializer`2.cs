@@ -33,7 +33,7 @@ internal sealed class TimeOnlyOrNullMaterializer<TCommand, TParameter> : ScalarM
 		if (temp == null || temp == DBNull.Value)
 			return null;
 
-		return ConvertValue(temp);
+		return Converters.ToTimeOnly(temp);
 	}
 
 	/// <summary>
@@ -49,18 +49,6 @@ internal sealed class TimeOnlyOrNullMaterializer<TCommand, TParameter> : ScalarM
 		if (temp == null || temp == DBNull.Value)
 			return null;
 
-		return ConvertValue(temp);
-	}
-
-	static TimeOnly ConvertValue(object temp)
-	{
-		return temp switch
-		{
-			TimeOnly timeOnly => timeOnly,
-			TimeSpan timeSpan => TimeOnly.FromTimeSpan(timeSpan),
-			DateTime dateTime => TimeOnly.FromDateTime(dateTime),
-			DateTimeOffset dateTimeOffset => TimeOnly.FromDateTime(dateTimeOffset.DateTime),
-			_ => (TimeOnly)temp,
-		};
+		return Converters.ToTimeOnly(temp);
 	}
 }

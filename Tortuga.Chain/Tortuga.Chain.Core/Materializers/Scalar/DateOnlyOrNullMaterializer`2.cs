@@ -33,7 +33,7 @@ internal sealed class DateOnlyOrNullMaterializer<TCommand, TParameter> : ScalarM
 		if (temp == null || temp == DBNull.Value)
 			return null;
 
-		return ConvertValue(temp);
+		return Converters.ToDateOnly(temp); ;
 	}
 
 	/// <summary>
@@ -49,17 +49,8 @@ internal sealed class DateOnlyOrNullMaterializer<TCommand, TParameter> : ScalarM
 		if (temp == null || temp == DBNull.Value)
 			return null;
 
-		return ConvertValue(temp);
+		return Converters.ToDateOnly(temp);
 	}
 
-	private static DateOnly ConvertValue(object temp)
-	{
-		return temp switch
-		{
-			DateOnly dateOnly => dateOnly,
-			DateTime dateTime => DateOnly.FromDateTime(dateTime),
-			DateTimeOffset dateTimeOffset => DateOnly.FromDateTime(dateTimeOffset.DateTime),
-			_ => (DateOnly)temp,
-		};
-	}
+
 }

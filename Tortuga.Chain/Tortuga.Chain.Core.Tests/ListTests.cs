@@ -386,4 +386,146 @@ public class ListTests : MaterializerTestBase
 		Assert.AreEqual(result1.Count, result1a.Count, "Results don't match");
 		Assert.AreEqual(3, result1.Count, "Count is wrong.");
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	[TestMethod]
+	public async Task DateNotNull_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("DateNotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DateNull_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("DateNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2NotNull_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("Datetime2NotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2Null_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("Datetime2Null", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNotNull_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("DatetimeNotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNull_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("DatetimeNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNotNull_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("SmalldatetimeNotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNull_DateOnly_ListTest()
+	{
+		await ListTestAsync<DateOnly>("SmalldatetimeNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	[TestMethod]
+	public async Task Datetime2NotNull_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("Datetime2NotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2Null_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("Datetime2Null", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNotNull_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("DatetimeNotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNull_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("DatetimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNotNull_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("SmalldatetimeNotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNull_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("SmalldatetimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+	[TestMethod]
+	public async Task TimeNotNull_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("TimeNotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task TimeNull_TimeOnly_ListTest()
+	{
+		await ListTestAsync<TimeOnly>("TimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
 }

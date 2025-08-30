@@ -32,7 +32,7 @@ internal sealed class TimeOnlyMaterializer<TCommand, TParameter> : ScalarMateria
 		if (temp == null || temp == DBNull.Value)
 			throw new MissingDataException("Unexpected null result");
 
-		return ConvertValue(temp);
+		return Converters.ToTimeOnly(temp);
 	}
 
 	/// <summary>
@@ -48,19 +48,9 @@ internal sealed class TimeOnlyMaterializer<TCommand, TParameter> : ScalarMateria
 		if (temp == null || temp == DBNull.Value)
 			throw new MissingDataException("Unexpected null result");
 
-		return ConvertValue(temp);
+		return Converters.ToTimeOnly(temp);
 	}
 
-	static TimeOnly ConvertValue(object temp)
-	{
-		return temp switch
-		{
-			TimeOnly timeOnly => timeOnly,
-			TimeSpan timeSpan => TimeOnly.FromTimeSpan(timeSpan),
-			DateTime dateTime => TimeOnly.FromDateTime(dateTime),
-			DateTimeOffset dateTimeOffset => TimeOnly.FromDateTime(dateTimeOffset.DateTime),
-			_ => (TimeOnly)temp,
-		};
-	}
+
 
 }
