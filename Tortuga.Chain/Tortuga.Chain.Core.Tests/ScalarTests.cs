@@ -70,9 +70,21 @@ public class ScalarTests : MaterializerTestBase
 	}
 
 	[TestMethod]
+	public async Task DateNotNull_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("DateNotNull", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task DateNotNull_DateTime_ScalarTest()
 	{
 		await ScalarTestAsync<DateTime>("DateNotNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DateNull_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("DateNull", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -82,9 +94,27 @@ public class ScalarTests : MaterializerTestBase
 	}
 
 	[TestMethod]
+	public async Task Datetime2NotNull_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("Datetime2NotNull", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task Datetime2NotNull_DateTime_ScalarTest()
 	{
 		await ScalarTestAsync<DateTime>("Datetime2NotNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2NotNull_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("Datetime2NotNull", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2Null_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("Datetime2Null", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -94,15 +124,45 @@ public class ScalarTests : MaterializerTestBase
 	}
 
 	[TestMethod]
+	public async Task Datetime2Null_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("Datetime2Null", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNotNull_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("DatetimeNotNull", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task DatetimeNotNull_DateTime_ScalarTest()
 	{
 		await ScalarTestAsync<DateTime>("DatetimeNotNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
+	public async Task DatetimeNotNull_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("DatetimeNotNull", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNull_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("DatetimeNull", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task DatetimeNull_DateTime_ScalarTest()
 	{
 		await ScalarTestAsync<DateTime>("DatetimeNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNull_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("DatetimeNull", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -226,15 +286,39 @@ public class ScalarTests : MaterializerTestBase
 	}
 
 	[TestMethod]
+	public async Task SmalldatetimeNotNull_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("SmalldatetimeNotNull", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task SmalldatetimeNotNull_DateTime_ScalarTest()
 	{
 		await ScalarTestAsync<DateTime>("SmalldatetimeNotNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
+	public async Task SmalldatetimeNotNull_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("SmalldatetimeNotNull", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNull_DateOnly_ScalarTest()
+	{
+		await ScalarTestAsync<DateOnly>("SmalldatetimeNull", typeof(DateOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task SmalldatetimeNull_DateTime_ScalarTest()
 	{
 		await ScalarTestAsync<DateTime>("SmalldatetimeNull", typeof(DateTimeMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNull_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("SmalldatetimeNull", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -274,9 +358,21 @@ public class ScalarTests : MaterializerTestBase
 	}
 
 	[TestMethod]
+	public async Task TimeNotNull_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("TimeNotNull", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
 	public async Task TimeNotNull_TimeSpan_ScalarTest()
 	{
 		await ScalarTestAsync<TimeSpan>("TimeNotNull", typeof(TimeSpanMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task TimeNull_TimeOnly_ScalarTest()
+	{
+		await ScalarTestAsync<TimeOnly>("TimeNull", typeof(TimeOnlyMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
 	}
 
 	[TestMethod]

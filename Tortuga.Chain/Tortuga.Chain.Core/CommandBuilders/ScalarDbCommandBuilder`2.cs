@@ -113,6 +113,28 @@ public abstract class ScalarDbCommandBuilder<TCommand, TParameter> : DbCommandBu
 	public ILink<char?> ToCharOrNull() => new CharOrNullMaterializer<TCommand, TParameter>(this);
 
 	/// <summary>
+	/// Indicates the results should be materialized as a DateOnly.
+	/// </summary>
+	public ILink<DateOnly> ToDateOnly() => new DateOnlyMaterializer<TCommand, TParameter>(this);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a DateOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	public ILink<DateOnly> ToDateOnly(string columnName) => new DateOnlyMaterializer<TCommand, TParameter>(this, columnName);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable DateOnly.
+	/// </summary>
+	public ILink<DateOnly?> ToDateOnlyOrNull() => new DateOnlyOrNullMaterializer<TCommand, TParameter>(this);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable DateOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	public ILink<DateOnly?> ToDateOnlyOrNull(string columnName) => new DateOnlyOrNullMaterializer<TCommand, TParameter>(this, columnName);
+
+	/// <summary>
 	/// Indicates the results should be materialized as a DateTime.
 	/// </summary>
 	public ILink<DateTime> ToDateTime() => new DateTimeMaterializer<TCommand, TParameter>(this);
@@ -122,6 +144,8 @@ public abstract class ScalarDbCommandBuilder<TCommand, TParameter> : DbCommandBu
 	/// </summary>
 	/// <param name="columnName">Name of the desired column.</param>
 	public ILink<DateTime> ToDateTime(string columnName) => new DateTimeMaterializer<TCommand, TParameter>(this, columnName);
+
+
 
 	/// <summary>
 	/// Indicates the results should be materialized as a DateTimeOffset.
@@ -333,6 +357,26 @@ public abstract class ScalarDbCommandBuilder<TCommand, TParameter> : DbCommandBu
 	/// <returns></returns>
 	public ILink<string?> ToStringOrNull() => new StringOrNullMaterializer<TCommand, TParameter>(this);
 
+	/// <summary>
+	/// Indicates the results should be materialized as a TimeOnly.
+	/// </summary>
+	public ILink<TimeOnly> ToTimeOnly() => new TimeOnlyMaterializer<TCommand, TParameter>(this);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a TimeOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	public ILink<TimeOnly> ToTimeOnly(string columnName) => new TimeOnlyMaterializer<TCommand, TParameter>(this, columnName);
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable TimeOnly.
+	/// </summary>
+	public ILink<TimeOnly?> ToTimeOnlyOrNull() => new TimeOnlyOrNullMaterializer<TCommand, TParameter>(this);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable TimeOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	public ILink<TimeOnly?> ToTimeOnlyOrNull(string columnName) => new TimeOnlyOrNullMaterializer<TCommand, TParameter>(this, columnName);
 	/// <summary>
 	/// Indicates the results should be materialized as a TimeSpan.
 	/// </summary>
