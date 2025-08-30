@@ -12,6 +12,21 @@ Use `.Description` on a table or column object. SQL Server populates `.ExtendedP
 
 This is not supported in SQLite and Access.
 
+**Scalar and List support for DateOnly and TimeOnly**
+
+* [ToDateOnly, ToTimeOnly #504](https://github.com/TortugaResearch/Tortuga.Chain/issues/504)
+
+New materializers
+
+* `.ToDateOnly`
+* `.ToDateOnlyOrNull`
+* `.ToTimeOnly`
+* `.ToTimeOnlyOrNull`
+* `.ToDateOnlyList`
+* `.ToDateOnlyOrNullList`
+* `.ToTimeOnlyList`
+* `.ToTimeOnlyOrNullList`
+
 
 ### Bugs
 
