@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Immutable;
+using System.ComponentModel;
 using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.Metadata;
 
@@ -804,12 +805,20 @@ LEFT JOIN sys.extended_properties p1
 		AND p1.name = 'MS_Description'
 WHERE s.name = @Schema AND t.Name = @Name";
 
+		const string propertySql = @"SELECT
+	p.name AS [Key],
+	p.value AS Value
+FROM sys.extended_properties p
+WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.minor_id = 0 AND p.major_id = @ObjectId;
+";
+
 		string actualSchema;
 		string actualName;
 		int objectId;
 		bool isTable;
 		bool hasTriggers;
 		string? description;
+		var properties = new List<PropertyTemp>();
 
 		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
 		{
@@ -830,11 +839,31 @@ WHERE s.name = @Schema AND t.Name = @Name";
 					description = reader.GetStringOrNull("Description");
 				}
 			}
+
+			using (var cmd = new SqlCommand(propertySql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						properties.Add(new()
+						{
+							Key = reader.GetString("Key"),
+							Value = reader.GetString("Value")
+						});
+					}
+				}
+			}
 		}
+
+		var tableProperties = properties.Count > 0
+			? properties.ToImmutableDictionary(x => x.Key, x => x.Value)
+			: ImmutableDictionary<string, string>.Empty;
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers) { Description = description };
+		return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers) { Description = description, ExtendedProperties = tableProperties };
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTableTypeInternal(SqlServerObjectName typeName)
@@ -1111,10 +1140,39 @@ LEFT JOIN sys.extended_properties p1
 		AND p1.name = 'MS_Description'
 WHERE   object_id = @ObjectId;";
 
+		const string propertySql = @"SELECT
+	c.name AS ColumnName,
+	p.name AS [Key],
+	p.value AS Value
+FROM sys.extended_properties p
+INNER JOIN sys.columns c ON p.major_id = c.object_id AND p.minor_id = c.column_id
+WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.major_id = @ObjectId;
+";
+
 		var columns = new List<ColumnMetadata<SqlDbType>>();
+		var properties = new List<PropertyTemp>();
+
 		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
 		{
 			con.Open();
+
+			using (var cmd = new SqlCommand(propertySql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						properties.Add(new()
+						{
+							ColumnName = reader.GetString("ColumnName"),
+							Key = reader.GetString("Key"),
+							Value = reader.GetString("Value")
+						});
+					}
+				}
+			}
+
 			using (var cmd = new SqlCommand(ColumnSql, con))
 			{
 				cmd.Parameters.AddWithValue("@ObjectId", objectId);
@@ -1132,10 +1190,13 @@ WHERE   object_id = @ObjectId;";
 						var precision = reader.GetInt32OrNull("precision");
 						var scale = reader.GetInt32OrNull("scale");
 						var description = reader.GetStringOrNull("description");
-						string fullTypeName;
-						AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+						AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out var fullTypeName);
 
-						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)) { Description = description });
+						var columnProperties = properties.Any(p => p.ColumnName == name)
+							? properties.Where(p => p.ColumnName == name).ToImmutableDictionary(x => x.Key, x => x.Value)
+							: ImmutableDictionary<string, string>.Empty;
+
+						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)) { Description = description, ExtendedProperties = columnProperties });
 					}
 				}
 			}
@@ -1191,15 +1252,6 @@ ORDER BY ic.key_ordinal;";
 			}
 		}
 	}
-
-	//ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId)
-	//{
-	//    using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
-	//    {
-	//        con.Open();
-	//        return GetParameters(procedureName, objectId, con);
-	//    }
-	//}
 
 	ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId, SqlConnection con, bool useAllParameters = false)
 	{
@@ -1272,6 +1324,14 @@ ORDER BY ic.key_ordinal;";
 		}
 	}
 
+	//ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId)
+	//{
+	//    using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+	//    {
+	//        con.Open();
+	//        return GetParameters(procedureName, objectId, con);
+	//    }
+	//}
 	sealed class FKTemp
 	{
 		public string ConstrainedColumnName { get; set; } = "";
@@ -1282,6 +1342,13 @@ ORDER BY ic.key_ordinal;";
 		public string ReferencedColumnName { get; set; } = "";
 		public string ReferencedSchemaName { get; set; } = "";
 		public string ReferencedTableName { get; set; } = "";
+	}
+
+	sealed class PropertyTemp
+	{
+		public string? ColumnName { get; set; }
+		public required string Key { get; set; }
+		public required string Value { get; set; }
 	}
 
 	sealed class SqlServerIndexColumnMetadata : IndexColumnMetadata<SqlDbType>
