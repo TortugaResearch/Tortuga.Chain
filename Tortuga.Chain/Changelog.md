@@ -2,7 +2,18 @@
 
 ### Features
 
+**Descriptions for Tables and Columns**
+
+* [#532 Add support for Table/Column Descriptions for PostgreSQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/532)
+* [#531 Add support for Table/Column Descriptions for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/531)
+
+
 ### Bugs
+
+
+### Breaking Change
+
+PostgreSQL v9 and eariler is no longer supported. 
 
 
 ## Version 5.2

@@ -102,7 +102,15 @@ CREATE TABLE sales.customer
 	DeletedByKey INTEGER NULL,
 	BirthDay DATE NULL,
 	PreferredCallTime TIME NULL
-)";
+);
+
+COMMENT ON TABLE sales.customer IS 'This table holds US customers';
+
+COMMENT ON COLUMN sales.customer.CustomerKey IS 'What if we run out of keys?';
+
+COMMENT ON COLUMN sales.customer.State IS 'Use NA for non-US customers.';
+
+";
 
 			string sql4 = @"
 CREATE TABLE sales.location
