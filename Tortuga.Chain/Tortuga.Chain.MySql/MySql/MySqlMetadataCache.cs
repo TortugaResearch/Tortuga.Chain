@@ -576,7 +576,7 @@ AND (
 	/// <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
 	private ColumnMetadataCollection<MySqlDbType> GetColumns(string schema, string tableName)
 	{
-		const string ColumnSql = @"SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, COLUMN_TYPE, COLUMN_KEY, EXTRA, COLUMN_COMMENT, COLLATION_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
+		const string ColumnSql = @"SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, COLUMN_TYPE, COLUMN_KEY, EXTRA, COLUMN_COMMENT, COLLATION_NAME, COLUMN_COMMENT FROM INFORMATION_SCHEMA.Columns WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
 
 		var columns = new List<ColumnMetadata<MySqlDbType>>();
 		using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
@@ -599,6 +599,7 @@ AND (
 						var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
 						var scale = reader.GetInt32OrNull("NUMERIC_SCALE");
 						var precisionB = reader.GetInt32OrNull("DATETIME_PRECISION");
+						var description = reader.GetStringOrNull("COLUMN_COMMENT");
 						var precision = precisionA ?? precisionB;
 						var fullTypeName = reader.GetString("COLUMN_TYPE");
 						var key = reader.GetString("COLUMN_KEY");
@@ -613,7 +614,7 @@ AND (
 
 						var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
-						columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, QuoteColumnName(name), isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, (int?)maxLength, isUnsigned)));
+						columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, QuoteColumnName(name), isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, (int?)maxLength, isUnsigned)) { Description = description });
 					}
 				}
 			}
@@ -757,11 +758,12 @@ AND (
 
 	private TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
 	{
-		const string TableSql = @"SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE, ENGINE FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
+		const string TableSql = @"SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE, ENGINE, TABLE_COMMENT FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
 
 		string actualSchemaName;
 		string actualTableName;
 		string? engine;
+		string? description;
 		bool isTable;
 
 		using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
@@ -779,13 +781,14 @@ AND (
 					actualTableName = reader.GetString("TABLE_NAME");
 					isTable = string.Equals(reader.GetString("TABLE_TYPE"), "BASE TABLE", StringComparison.Ordinal);
 					engine = reader.GetStringOrNull("ENGINE");
+					description = reader.GetStringOrNull("TABLE_COMMENT");
 				}
 			}
 		}
 
 		var columns = GetColumns(actualSchemaName, actualTableName);
 
-		return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
+		return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine) { Description = description };
 	}
 
 	sealed class FKTemp
