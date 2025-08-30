@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Metadata;
 
@@ -18,7 +18,7 @@ public class DictionaryDataReader : DbDataReader
 	record class ColumnKeyMap(string SqlName, string Key);
 
 	readonly ImmutableArray<ColumnKeyMap> m_PropertyList;
-	readonly ImmutableDictionary<string, int> m_PropertyLookup;
+	readonly FrozenDictionary<string, int> m_PropertyLookup;
 	readonly int? m_RecordCount;
 	readonly DataTable m_Schema;
 	IEnumerator<Dictionary<string, object?>>? m_Source;
@@ -472,12 +472,12 @@ public class DictionaryDataReader : DbDataReader
 		return new DictionaryDataReaderMetadata(
 			dtSchema,
 			realPropertyList.ToImmutableArray(),
-			realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.SqlName, px => px.Index, StringComparer.OrdinalIgnoreCase));
+			realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToFrozenDictionary(px => px.Property.SqlName, px => px.Index, StringComparer.OrdinalIgnoreCase));
 	}
 
 	class DictionaryDataReaderMetadata
 	{
-		public DictionaryDataReaderMetadata(DataTable schema, ImmutableArray<ColumnKeyMap> properties, ImmutableDictionary<string, int> propertyLookup)
+		public DictionaryDataReaderMetadata(DataTable schema, ImmutableArray<ColumnKeyMap> properties, FrozenDictionary<string, int> propertyLookup)
 		{
 			Schema = schema;
 			Properties = properties;
@@ -485,7 +485,7 @@ public class DictionaryDataReader : DbDataReader
 		}
 
 		public ImmutableArray<ColumnKeyMap> Properties { get; }
-		public ImmutableDictionary<string, int> PropertyLookup { get; }
+		public FrozenDictionary<string, int> PropertyLookup { get; }
 		public DataTable Schema { get; }
 	}
 }

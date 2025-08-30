@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Frozen;
 using System.ComponentModel;
 using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.Metadata;
@@ -858,8 +858,8 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 		}
 
 		var tableProperties = properties.Count > 0
-			? properties.ToImmutableDictionary(x => x.Key, x => x.Value)
-			: ImmutableDictionary<string, string>.Empty;
+			? properties.ToFrozenDictionary(x => x.Key, x => x.Value)
+			: FrozenDictionary<string, string>.Empty;
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
@@ -1193,8 +1193,8 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.ma
 						AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out var fullTypeName);
 
 						var columnProperties = properties.Any(p => p.ColumnName == name)
-							? properties.Where(p => p.ColumnName == name).ToImmutableDictionary(x => x.Key, x => x.Value)
-							: ImmutableDictionary<string, string>.Empty;
+							? properties.Where(p => p.ColumnName == name).ToFrozenDictionary(x => x.Key, x => x.Value)
+							: FrozenDictionary<string, string>.Empty;
 
 						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)) { Description = description, ExtendedProperties = columnProperties });
 					}

@@ -2,6 +2,7 @@
 using NpgsqlTypes;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
@@ -24,7 +25,7 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 	readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new();
 	string? m_DatabaseName;
 	ImmutableArray<string> m_DefaultSchemaList;
-	ImmutableDictionary<PostgreSqlObjectName, ImmutableHashSet<string>>? m_SequenceColumns;
+	FrozenDictionary<PostgreSqlObjectName, ImmutableHashSet<string>>? m_SequenceColumns;
 	Version? m_ServerVersion;
 	string? m_ServerVersionName;
 
@@ -1012,7 +1013,7 @@ where s.relkind='S' and d.deptype='a'";
 								result.Add(schemaTableName, identityColumns);
 							}
 						}
-						m_SequenceColumns = result.ToImmutableDictionary(x => x.Key, x => x.Value.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase));
+						m_SequenceColumns = result.ToFrozenDictionary(x => x.Key, x => x.Value.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase));
 					}
 				}
 			}

@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.Metadata;
@@ -69,7 +69,7 @@ public abstract class ColumnMetadata
 	/// <summary>
 	/// Gets the extended properties.
 	/// </summary>
-	public ImmutableDictionary<string, string> ExtendedProperties { get; init; } = ImmutableDictionary<string, string>.Empty;
+	public IReadOnlyDictionary<string, string> ExtendedProperties { get; init; } = FrozenDictionary<string, string>.Empty;
 
 	/// <summary>
 	/// Gets or sets the full name of the type including max length, precision, and/or scale.
