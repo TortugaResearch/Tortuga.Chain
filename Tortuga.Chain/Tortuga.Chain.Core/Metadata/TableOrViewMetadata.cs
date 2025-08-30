@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Immutable;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -23,6 +23,16 @@ public abstract class TableOrViewMetadata : DatabaseObject
 	/// The columns.
 	/// </value>
 	public ColumnMetadataCollection Columns { get; }
+
+	/// <summary>
+	/// Gets the description of the table or view.
+	/// </summary>
+	public string? Description { get; init; }
+
+	/// <summary>
+	/// Gets the extended properties.
+	/// </summary>
+	public ImmutableDictionary<string, string> ExtendedProperties { get; init; } = ImmutableDictionary<string, string>.Empty;
 
 	/// <summary>
 	/// Gets a value indicating whether this table or view has primary key.

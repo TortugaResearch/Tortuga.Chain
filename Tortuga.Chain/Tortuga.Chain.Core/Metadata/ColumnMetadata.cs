@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.Metadata;
@@ -59,6 +60,16 @@ public abstract class ColumnMetadata
 	/// Gets the type used by the database.
 	/// </summary>
 	public object? DbType { get; }
+
+	/// <summary>
+	/// Gets the description of the column.
+	/// </summary>
+	public string? Description { get; init; }
+
+	/// <summary>
+	/// Gets the extended properties.
+	/// </summary>
+	public ImmutableDictionary<string, string> ExtendedProperties { get; init; } = ImmutableDictionary<string, string>.Empty;
 
 	/// <summary>
 	/// Gets or sets the full name of the type including max length, precision, and/or scale.
