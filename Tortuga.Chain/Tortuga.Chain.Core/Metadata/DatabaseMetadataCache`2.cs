@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using System.ComponentModel;
 using System.Globalization;
 using Tortuga.Anchor;
@@ -57,7 +57,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// </summary>
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
-	public virtual ImmutableHashSet<string> UnsupportedSqlTypeNames => ImmutableHashSet<string>.Empty;
+	public virtual FrozenSet<string> UnsupportedSqlTypeNames => FrozenSet<string>.Empty;
 
 	/// <summary>
 	/// Gets an aggregate function.
