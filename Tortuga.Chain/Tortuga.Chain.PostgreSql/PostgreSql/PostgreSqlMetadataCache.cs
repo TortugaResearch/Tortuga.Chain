@@ -2,6 +2,7 @@
 using NpgsqlTypes;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
@@ -24,7 +25,7 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 	readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new();
 	string? m_DatabaseName;
 	ImmutableArray<string> m_DefaultSchemaList;
-	ImmutableDictionary<PostgreSqlObjectName, ImmutableHashSet<string>>? m_SequenceColumns;
+	FrozenDictionary<PostgreSqlObjectName, FrozenSet<string>>? m_SequenceColumns;
 	Version? m_ServerVersion;
 	string? m_ServerVersionName;
 
@@ -717,7 +718,7 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 	/// </summary>
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
-	public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, ["trigger", "internal", "regclass", "bpchar", "pg_lsn", "void", "cstring", "reltime", "anyenum", "anyarray", "anyelement", "anyrange", "_regdictionary", "any", "regdictionary", "tstzrange", "jsonpath", "pg_mcv_list", "table_am_handler", "ANYNONARRAY", "UNKNOWN", "PG_DDL_COMMAND", "TINTERVAL", "RECORD", "OPAQUE", "REGROLE", "_CSTRING", "REGOPERATOR", "_ACLITEM", "ACLITEM", "REGPROCEDURE", "\"ANY\"", "SMGR", "TXID_SNAPSHOT", "PG_NODE_TREE", "EVENT_TRIGGER", "INDEX_AM_HANDLER", "INT8RANGE", "REGPROC", "PG_ATTRIBUTE", "PG_TYPE", "REGOPER", "REGNAMESPACE", "INT4RANGE", "PG_DEPENDENCIES", "FDW_HANDLER", "TSM_HANDLER", "LANGUAGE_HANDLER", "DATERANGE", "GTSVECTOR", "NUMRANGE", "TSRANGE", "PG_NDISTINCT", "anycompatiblenonarray", "anymultirange", "pg_snapshot", "pg_brin_bloom_summary", "anycompatiblearray", "int8multirange", "regcollation", "anycompatiblemultirange", "tsmultirange", "anycompatible", "xid8", "datemultirange", "anycompatiblerange", "pg_brin_minmax_multi_summary", "int4multirange", "nummultirange", "tstzmultirange"]);
+	public override FrozenSet<string> UnsupportedSqlTypeNames { get; } = FrozenSet.Create(StringComparer.OrdinalIgnoreCase, ["trigger", "internal", "regclass", "bpchar", "pg_lsn", "void", "cstring", "reltime", "anyenum", "anyarray", "anyelement", "anyrange", "_regdictionary", "any", "regdictionary", "tstzrange", "jsonpath", "pg_mcv_list", "table_am_handler", "ANYNONARRAY", "UNKNOWN", "PG_DDL_COMMAND", "TINTERVAL", "RECORD", "OPAQUE", "REGROLE", "_CSTRING", "REGOPERATOR", "_ACLITEM", "ACLITEM", "REGPROCEDURE", "\"ANY\"", "SMGR", "TXID_SNAPSHOT", "PG_NODE_TREE", "EVENT_TRIGGER", "INDEX_AM_HANDLER", "INT8RANGE", "REGPROC", "PG_ATTRIBUTE", "PG_TYPE", "REGOPER", "REGNAMESPACE", "INT4RANGE", "PG_DEPENDENCIES", "FDW_HANDLER", "TSM_HANDLER", "LANGUAGE_HANDLER", "DATERANGE", "GTSVECTOR", "NUMRANGE", "TSRANGE", "PG_NDISTINCT", "anycompatiblenonarray", "anymultirange", "pg_snapshot", "pg_brin_bloom_summary", "anycompatiblearray", "int8multirange", "regcollation", "anycompatiblemultirange", "tsmultirange", "anycompatible", "xid8", "datemultirange", "anycompatiblerange", "pg_brin_minmax_multi_summary", "int4multirange", "nummultirange", "tstzmultirange"]);
 
 	/// <summary>
 	/// Parse a string and return the database specific representation of the object name.
@@ -976,7 +977,7 @@ WHERE c.relname ILIKE @Name AND
 
 	ImmutableArray<string> GetSchemasToCheck(PostgreSqlObjectName objectName) => objectName.Schema == null ? DefaultSchemaList : [objectName.Schema];
 
-	ImmutableHashSet<string> GetSequenceColumns(PostgreSqlObjectName tableName)
+	FrozenSet<string> GetSequenceColumns(PostgreSqlObjectName tableName)
 	{
 		const string sql = @"select s.relname as SequenceName, n.nspname as SchemaName, t.relname as TableName, a.attname as ColumnName
 from pg_class s
@@ -1012,12 +1013,12 @@ where s.relkind='S' and d.deptype='a'";
 								result.Add(schemaTableName, identityColumns);
 							}
 						}
-						m_SequenceColumns = result.ToImmutableDictionary(x => x.Key, x => x.Value.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase));
+						m_SequenceColumns = result.ToFrozenDictionary(x => x.Key, x => x.Value.ToFrozenSet(StringComparer.OrdinalIgnoreCase));
 					}
 				}
 			}
 		}
-		return m_SequenceColumns.GetValueOrDefault(tableName, ImmutableHashSet<string>.Empty);
+		return m_SequenceColumns.GetValueOrDefault(tableName, FrozenSet<string>.Empty);
 	}
 
 	StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInternal(PostgreSqlObjectName storedProcedureName)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using Tests.Models;
 using Tortuga.Chain;
@@ -57,14 +58,28 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("D", test4[4].FirstName);
 
 			var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, EmployeeLookup>("FirstName", DictionaryOptions.InferConstructor).Execute();
-			Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, EmployeeLookup>));
+			Assert.IsInstanceOfType(test5, typeof(ImmutableDictionary<string, EmployeeLookup>));
 			Assert.AreEqual("1", test5["A"].LastName);
 			Assert.AreEqual("2", test5["B"].LastName);
 			Assert.AreEqual("3", test5["C"].LastName);
 			Assert.AreEqual("4", test5["D"].LastName);
 
 			var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName), DictionaryOptions.InferConstructor).Execute();
-			Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, EmployeeLookup>));
+			Assert.IsInstanceOfType(test6, typeof(ImmutableDictionary<int, EmployeeLookup>));
+			Assert.AreEqual("A", test6[1].FirstName);
+			Assert.AreEqual("B", test6[2].FirstName);
+			Assert.AreEqual("C", test6[3].FirstName);
+			Assert.AreEqual("D", test6[4].FirstName);
+
+			var test7 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<string, EmployeeLookup>("FirstName", DictionaryOptions.InferConstructor).Execute();
+			Assert.IsInstanceOfType(test7, typeof(FrozenDictionary<string, EmployeeLookup>));
+			Assert.AreEqual("1", test5["A"].LastName);
+			Assert.AreEqual("2", test5["B"].LastName);
+			Assert.AreEqual("3", test5["C"].LastName);
+			Assert.AreEqual("4", test5["D"].LastName);
+
+			var test8 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName), DictionaryOptions.InferConstructor).Execute();
+			Assert.IsInstanceOfType(test8, typeof(FrozenDictionary<int, EmployeeLookup>));
 			Assert.AreEqual("A", test6[1].FirstName);
 			Assert.AreEqual("B", test6[2].FirstName);
 			Assert.AreEqual("C", test6[3].FirstName);
@@ -135,6 +150,20 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("B", test6[2].FirstName);
 			Assert.AreEqual("C", test6[3].FirstName);
 			Assert.AreEqual("D", test6[4].FirstName);
+
+			var test7 = dataSource.From<Employee>(new { Title = uniqueKey }).ToFrozenDictionary<string>("FirstName").Execute();
+			Assert.IsInstanceOfType(test7, typeof(FrozenDictionary<string, Employee>));
+			Assert.AreEqual("1", test7["A"].LastName);
+			Assert.AreEqual("2", test7["B"].LastName);
+			Assert.AreEqual("3", test7["C"].LastName);
+			Assert.AreEqual("4", test7["D"].LastName);
+
+			var test8 = dataSource.From<Employee>(new { Title = uniqueKey }).ToFrozenDictionary(e => int.Parse(e.LastName)).Execute();
+			Assert.IsInstanceOfType(test8, typeof(FrozenDictionary<int, Employee>));
+			Assert.AreEqual("A", test8[1].FirstName);
+			Assert.AreEqual("B", test8[2].FirstName);
+			Assert.AreEqual("C", test8[3].FirstName);
+			Assert.AreEqual("D", test8[4].FirstName);
 		}
 		finally
 		{
@@ -201,6 +230,20 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("B", test6[2].FirstName);
 			Assert.AreEqual("C", test6[3].FirstName);
 			Assert.AreEqual("D", test6[4].FirstName);
+
+			var test7 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<string, Employee>("FirstName").Execute();
+			Assert.IsInstanceOfType(test7, typeof(FrozenDictionary<string, Employee>));
+			Assert.AreEqual("1", test7["A"].LastName);
+			Assert.AreEqual("2", test7["B"].LastName);
+			Assert.AreEqual("3", test7["C"].LastName);
+			Assert.AreEqual("4", test7["D"].LastName);
+
+			var test8 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<int, Employee>(e => int.Parse(e.LastName)).Execute();
+			Assert.IsInstanceOfType(test8, typeof(FrozenDictionary<int, Employee>));
+			Assert.AreEqual("A", test8[1].FirstName);
+			Assert.AreEqual("B", test8[2].FirstName);
+			Assert.AreEqual("C", test8[3].FirstName);
+			Assert.AreEqual("D", test8[4].FirstName);
 		}
 		finally
 		{
@@ -257,18 +300,33 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("D", test4[4].FirstName);
 
 			var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, EmployeeLookup>("FirstName").WithConstructor<long, string, string>().Execute();
-			Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, EmployeeLookup>));
+			Assert.IsInstanceOfType(test5, typeof(ImmutableDictionary<string, EmployeeLookup>));
 			Assert.AreEqual("1", test5["A"].LastName);
 			Assert.AreEqual("2", test5["B"].LastName);
 			Assert.AreEqual("3", test5["C"].LastName);
 			Assert.AreEqual("4", test5["D"].LastName);
 
 			var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<long, string, string>().Execute();
-			Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, EmployeeLookup>));
+			Assert.IsInstanceOfType(test6, typeof(ImmutableDictionary<int, EmployeeLookup>));
 			Assert.AreEqual("A", test6[1].FirstName);
 			Assert.AreEqual("B", test6[2].FirstName);
 			Assert.AreEqual("C", test6[3].FirstName);
 			Assert.AreEqual("D", test6[4].FirstName);
+
+			
+			var test7 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<string, EmployeeLookup>("FirstName").WithConstructor<long, string, string>().Execute();
+			Assert.IsInstanceOfType(test7, typeof(FrozenDictionary<string, EmployeeLookup>));
+			Assert.AreEqual("1", test7["A"].LastName);
+			Assert.AreEqual("2", test7["B"].LastName);
+			Assert.AreEqual("3", test7["C"].LastName);
+			Assert.AreEqual("4", test7["D"].LastName);
+
+			var test8 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<long, string, string>().Execute();
+			Assert.IsInstanceOfType(test8, typeof(FrozenDictionary<int, EmployeeLookup>));
+			Assert.AreEqual("A", test8[1].FirstName);
+			Assert.AreEqual("B", test8[2].FirstName);
+			Assert.AreEqual("C", test8[3].FirstName);
+			Assert.AreEqual("D", test8[4].FirstName);
 		}
 		finally
 		{
@@ -325,18 +383,32 @@ public class FromTests_ToDictionary : TestBase
 				Assert.AreEqual("D", test4[4].FirstName);
 
 				var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, EmployeeLookup>("FirstName").WithConstructor<ulong, string, string>().Execute();
-				Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, EmployeeLookup>));
+				Assert.IsInstanceOfType(test5, typeof(ImmutableDictionary<string, EmployeeLookup>));
 				Assert.AreEqual("1", test5["A"].LastName);
 				Assert.AreEqual("2", test5["B"].LastName);
 				Assert.AreEqual("3", test5["C"].LastName);
 				Assert.AreEqual("4", test5["D"].LastName);
 
 				var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<ulong, string, string>().Execute();
-				Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, EmployeeLookup>));
+				Assert.IsInstanceOfType(test6, typeof(ImmutableDictionary<int, EmployeeLookup>));
 				Assert.AreEqual("A", test6[1].FirstName);
 				Assert.AreEqual("B", test6[2].FirstName);
 				Assert.AreEqual("C", test6[3].FirstName);
 				Assert.AreEqual("D", test6[4].FirstName);
+
+				var test7 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<string, EmployeeLookup>("FirstName").WithConstructor<ulong, string, string>().Execute();
+				Assert.IsInstanceOfType(test7, typeof(FrozenDictionary<string, EmployeeLookup>));
+				Assert.AreEqual("1", test7["A"].LastName);
+				Assert.AreEqual("2", test7["B"].LastName);
+				Assert.AreEqual("3", test7["C"].LastName);
+				Assert.AreEqual("4", test7["D"].LastName);
+
+				var test8 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<ulong, string, string>().Execute();
+				Assert.IsInstanceOfType(test8, typeof(FrozenDictionary<int, EmployeeLookup>));
+				Assert.AreEqual("A", test8[1].FirstName);
+				Assert.AreEqual("B", test8[2].FirstName);
+				Assert.AreEqual("C", test8[3].FirstName);
+				Assert.AreEqual("D", test8[4].FirstName);
 			}
 			finally
 			{
@@ -393,18 +465,32 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("D", test4[4].FirstName);
 
 			var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, EmployeeLookup>("FirstName").WithConstructor<int, string, string>().Execute();
-			Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, EmployeeLookup>));
+			Assert.IsInstanceOfType(test5, typeof(ImmutableDictionary<string, EmployeeLookup>));
 			Assert.AreEqual("1", test5["A"].LastName);
 			Assert.AreEqual("2", test5["B"].LastName);
 			Assert.AreEqual("3", test5["C"].LastName);
 			Assert.AreEqual("4", test5["D"].LastName);
 
 			var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<int, string, string>().Execute();
-			Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, EmployeeLookup>));
+			Assert.IsInstanceOfType(test6, typeof(ImmutableDictionary<int, EmployeeLookup>));
 			Assert.AreEqual("A", test6[1].FirstName);
 			Assert.AreEqual("B", test6[2].FirstName);
 			Assert.AreEqual("C", test6[3].FirstName);
 			Assert.AreEqual("D", test6[4].FirstName);
+
+			var test7 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<string, EmployeeLookup>("FirstName").WithConstructor<int, string, string>().Execute();
+			Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, EmployeeLookup>));
+			Assert.AreEqual("1", test7["A"].LastName);
+			Assert.AreEqual("2", test7["B"].LastName);
+			Assert.AreEqual("3", test7["C"].LastName);
+			Assert.AreEqual("4", test7["D"].LastName);
+
+			var test8 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<int, string, string>().Execute();
+			Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, EmployeeLookup>));
+			Assert.AreEqual("A", test8[1].FirstName);
+			Assert.AreEqual("B", test8[2].FirstName);
+			Assert.AreEqual("C", test8[3].FirstName);
+			Assert.AreEqual("D", test8[4].FirstName);
 		}
 		finally
 		{
@@ -502,5 +588,42 @@ public class FromTests_ToDictionary : TestBase
 			Release(dataSource);
 		}
 	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToFrozenDictionary_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+			var emp3 = new Employee() { FirstName = "C", LastName = "3", Title = uniqueKey };
+			var emp4 = new Employee() { FirstName = "D", LastName = "4", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+			emp2 = dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+			emp3 = dataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
+			emp4 = dataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
+
+			var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<string, EmployeeLookup>("FirstName").Execute();
+			Assert.AreEqual("1", test5["A"].LastName);
+			Assert.AreEqual("2", test5["B"].LastName);
+			Assert.AreEqual("3", test5["C"].LastName);
+			Assert.AreEqual("4", test5["D"].LastName);
+
+			var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).Execute();
+			Assert.AreEqual("A", test6[1].FirstName);
+			Assert.AreEqual("B", test6[2].FirstName);
+			Assert.AreEqual("C", test6[3].FirstName);
+			Assert.AreEqual("D", test6[4].FirstName);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 
 }

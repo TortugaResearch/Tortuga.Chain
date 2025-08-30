@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using System.Data.Common;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
@@ -36,7 +36,7 @@ public abstract class ObjectDbCommandBuilder<TCommand, TParameter, TArgument> : 
 	/// <summary>
 	/// Gets the set of key column(s) to use instead of the primary key(s).
 	/// </summary>
-	protected ImmutableHashSet<string> KeyColumns { get; private set; } = [];
+	protected FrozenSet<string> KeyColumns { get; private set; } = [];
 
 	/// <summary>
 	/// Materializes the result as a new instance of the same type as the argumentValue

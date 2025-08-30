@@ -30,6 +30,10 @@ New materializers
 
 ### Bugs
 
+### Technical Debt
+
+* [#508 Upgrade to Frozen Collections](https://github.com/TortugaResearch/Tortuga.Chain/issues/508)
+
 
 ### Breaking Change
 

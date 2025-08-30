@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using System.Data.OleDb;
 using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.Metadata;
@@ -71,7 +71,7 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// </summary>
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
-	public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, new[] { "datetimeoffset", "geography", "geometry", "hierarchyid", "image", "sql_variant", "sysname", "xml" });
+	public override FrozenSet<string> UnsupportedSqlTypeNames { get; } = FrozenSet.Create<string>(StringComparer.OrdinalIgnoreCase, new[] { "datetimeoffset", "geography", "geometry", "hierarchyid", "image", "sql_variant", "sysname", "xml" });
 
 	/// <summary>
 	/// Gets an aggregate function.

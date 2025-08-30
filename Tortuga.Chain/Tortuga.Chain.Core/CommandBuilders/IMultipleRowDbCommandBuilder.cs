@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Xml.Linq;
 
@@ -333,6 +334,30 @@ public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
 	IColumnSelectingMaterializer<List<dynamic>> ToDynamicCollection();
 
 	/// <summary>
+	/// Materializes the result as a immutable dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <typeparam name="TObject">The type of the model.</typeparam>
+	/// <param name="keyFunction">The key function.</param>
+	/// <param name="dictionaryOptions">The dictionary options.</param>
+	/// <returns></returns>
+	IConstructibleMaterializer<FrozenDictionary<TKey, TObject>> ToFrozenDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull
+		where TObject : class;
+
+	/// <summary>
+	/// Materializes the result as a immutable dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <typeparam name="TObject">The type of the model.</typeparam>
+	/// <param name="keyColumn">The key column.</param>
+	/// <param name="dictionaryOptions">The dictionary options.</param>
+	/// <returns></returns>
+	IConstructibleMaterializer<FrozenDictionary<TKey, TObject>> ToFrozenDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull
+		where TObject : class;
+
+	/// <summary>
 	/// Indicates the results should be materialized as a list of Guids.
 	/// </summary>
 	/// <param name="listOptions">The list options.</param>
@@ -388,7 +413,7 @@ public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
 	IConstructibleMaterializer<ImmutableArray<TObject>> ToImmutableArray<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
    where TObject : class;
 
-	/// <summary>
+	/// <summary>	
 	/// Materializes the result as a immutable dictionary of objects.
 	/// </summary>
 	/// <typeparam name="TKey">The type of the key.</typeparam>

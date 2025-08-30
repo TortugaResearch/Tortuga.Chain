@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -32,7 +32,7 @@ public abstract class TableOrViewMetadata : DatabaseObject
 	/// <summary>
 	/// Gets the extended properties.
 	/// </summary>
-	public ImmutableDictionary<string, string> ExtendedProperties { get; init; } = ImmutableDictionary<string, string>.Empty;
+	public IReadOnlyDictionary<string, string> ExtendedProperties { get; init; } = FrozenDictionary<string, string>.Empty;
 
 	/// <summary>
 	/// Gets a value indicating whether this table or view has primary key.
