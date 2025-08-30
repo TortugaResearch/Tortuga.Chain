@@ -30,6 +30,10 @@ internal sealed class TagAppender<TResult> : Appender<TResult>
 	{
 		if (e == null)
 			throw new ArgumentNullException(nameof(e), $"{nameof(e)} is null.");
-		e.Command.CommandText = "-- " + m_Message + "\r\n" + e.Command.CommandText;
+
+		var commentString = DataSource.DatabaseMetadata.CommentString;
+
+		if (commentString != null)
+			e.Command.CommandText = $"{commentString} {m_Message}\r\n{e.Command.CommandText}";
 	}
 }

@@ -3,7 +3,7 @@ using Tortuga.Chain;
 
 namespace Tests.Appenders;
 
-#if !ACCESS
+
 
 [TestClass]
 public class TagTests : TestBase
@@ -37,4 +37,3 @@ public class TagTests : TestBase
 	}
 }
 
-#endif
