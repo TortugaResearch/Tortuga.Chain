@@ -15,6 +15,10 @@ This is not supported in SQLite and Access.
 
 ### Bugs
 
+### Technical Debt
+
+* [#508 Upgrade to Frozen Collections](https://github.com/TortugaResearch/Tortuga.Chain/issues/508)
+
 
 ### Breaking Change
 
