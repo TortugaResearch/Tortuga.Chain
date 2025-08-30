@@ -1,3 +1,10 @@
+## Version 5.3
+
+### Features
+
+### Bugs
+
+
 ## Version 5.2
 
 ### Features
@@ -23,10 +30,6 @@ New functions:
 * `TableSet.DataSet` Copies a `TableSet` into a new `DataSet`.
 * `Table.DataTable` Copies a `Table` into a new `DataTable`.
 
-**MySQl Bug Fix**
-
-Table names are now quoted. Previously an error would be thrown if the table name included an embedded period.
-
 **Support for MySQL 8.4**
 
 Updated the database creation script.
@@ -45,6 +48,11 @@ When SQL Server prints messages (e.g. during a stored proc call), .NET gets a `S
 
 	var result = dataSource.Procedure("HR.EmployeeList").ToTable().WithInfoMessageNotification(handler).Execute();
 
+### Bugs
+
+**MySQl Bug Fix**
+
+Table names are now quoted. Previously an error would be thrown if the table name included an embedded period.
 
 ## Version 5.1
 
