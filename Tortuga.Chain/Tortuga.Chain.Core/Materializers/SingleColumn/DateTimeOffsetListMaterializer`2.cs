@@ -23,5 +23,5 @@ internal sealed class DateTimeOffsetListMaterializer<TCommand, TParameter> : Lis
 	{
 	}
 
-	private protected override DateTimeOffset ReadValue(DbDataReader reader, int ordinal) => (DateTimeOffset)reader.GetValue(ordinal);
+	private protected override DateTimeOffset ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => (DateTimeOffset)reader.GetValue(ordinal);
 }

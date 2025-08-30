@@ -89,6 +89,28 @@ public interface IScalarDbCommandBuilder : IDbCommandBuilder
 	ILink<char?> ToCharOrNull();
 
 	/// <summary>
+	/// Indicates the results should be materialized as a DateOnly.
+	/// </summary>
+	ILink<DateOnly> ToDateOnly();
+
+	/// <summary>
+	/// Indicates the results should be materialized as a DateOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	ILink<DateOnly> ToDateOnly(string columnName);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable DateOnly.
+	/// </summary>
+	ILink<DateOnly?> ToDateOnlyOrNull();
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable DateOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	ILink<DateOnly?> ToDateOnlyOrNull(string columnName);
+
+	/// <summary>
 	/// Indicates the results should be materialized as a DateTime.
 	/// </summary>
 	ILink<DateTime> ToDateTime();
@@ -297,6 +319,26 @@ public interface IScalarDbCommandBuilder : IDbCommandBuilder
 	/// <param name="columnName">Name of the desired column.</param>
 	ILink<string> ToString(string columnName);
 
+	/// <summary>
+	/// Indicates the results should be materialized as a TimeOnly.
+	/// </summary>
+	ILink<TimeOnly> ToTimeOnly();
+
+	/// <summary>
+	/// Indicates the results should be materialized as a TimeOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	ILink<TimeOnly> ToTimeOnly(string columnName);
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable TimeOnly.
+	/// </summary>
+	ILink<TimeOnly?> ToTimeOnlyOrNull();
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable TimeOnly.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	ILink<TimeOnly?> ToTimeOnlyOrNull(string columnName);
 	/// <summary>
 	/// Indicates the results should be materialized as a TimeSpan.
 	/// </summary>

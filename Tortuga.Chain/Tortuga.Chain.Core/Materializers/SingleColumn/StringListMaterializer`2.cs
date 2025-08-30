@@ -22,5 +22,5 @@ internal sealed class StringListMaterializer<TCommand, TParameter> : ListColumnM
 	{
 	}
 
-	private protected override string ReadValue(DbDataReader reader, int ordinal) => reader.GetString(ordinal);
+	private protected override string ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetString(ordinal);
 }

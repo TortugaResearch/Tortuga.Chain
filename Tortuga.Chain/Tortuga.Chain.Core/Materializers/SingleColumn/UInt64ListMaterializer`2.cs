@@ -22,5 +22,5 @@ internal sealed class UInt64ListMaterializer<TCommand, TParameter> : ListColumnM
 	{
 	}
 
-	private protected override ulong ReadValue(DbDataReader reader, int ordinal) => reader.GetFieldValue<ulong>(ordinal);
+	private protected override ulong ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetFieldValue<ulong>(ordinal);
 }

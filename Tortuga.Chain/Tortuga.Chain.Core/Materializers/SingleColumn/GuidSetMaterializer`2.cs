@@ -21,5 +21,5 @@ internal sealed class GuidSetMaterializer<TCommand, TParameter> : SetColumnMater
 	{
 	}
 
-	private protected override Guid ReadValue(DbDataReader reader, int ordinal) => reader.GetGuid(ordinal);
+	private protected override Guid ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetGuid(ordinal);
 }

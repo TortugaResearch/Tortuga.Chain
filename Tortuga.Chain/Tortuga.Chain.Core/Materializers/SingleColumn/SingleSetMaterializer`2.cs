@@ -22,5 +22,5 @@ internal sealed class SingleSetMaterializer<TCommand, TParameter> : SetColumnMat
 	{
 	}
 
-	private protected override float ReadValue(DbDataReader reader, int ordinal) => reader.GetFloat(ordinal);
+	private protected override float ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetFloat(ordinal);
 }

@@ -22,5 +22,5 @@ internal sealed class Int32OrNullListMaterializer<TCommand, TParameter> : ListCo
 	{
 	}
 
-	private protected override int? ReadValue(DbDataReader reader, int ordinal) => reader.GetInt32(ordinal);
+	private protected override int? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetInt32(ordinal);
 }

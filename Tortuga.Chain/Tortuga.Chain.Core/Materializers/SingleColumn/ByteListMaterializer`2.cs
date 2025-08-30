@@ -23,5 +23,5 @@ internal sealed class ByteListMaterializer<TCommand, TParameter> : ListColumnMat
 	{
 	}
 
-	private protected override byte ReadValue(DbDataReader reader, int ordinal) => reader.GetByte(ordinal);
+	private protected override byte ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetByte(ordinal);
 }
