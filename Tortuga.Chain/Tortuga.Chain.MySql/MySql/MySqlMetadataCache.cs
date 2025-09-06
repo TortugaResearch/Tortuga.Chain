@@ -180,7 +180,7 @@ AND (
 			var isPrimaryKey = (indexName == "PRIMARY");
 			var indexColumns = scratch.Where(x => x.IndexName == indexName).OrderBy(x => x.Order).Select(x => new IndexColumnMetadata<MySqlDbType>(table.Columns[x.ColumnName], x.Collation == "D", x.Collation == null)).ToList();
 
-			var isUnique = scratch.First(x => x.IndexName == indexName).NonUnique;
+			var isUnique = !scratch.First(x => x.IndexName == indexName).NonUnique;
 			var indexTypeName = scratch.First(x => x.IndexName == indexName).IndexType;
 			var indexType = indexTypeName switch
 			{

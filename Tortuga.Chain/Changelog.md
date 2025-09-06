@@ -38,6 +38,9 @@ If you do not pass in a string as the message, the current filename, member name
 
 ### Bugs
 
+* MySQL unique indexes were marked as non-unique. 
+* MySQL non-unique indexes were marked as unique. 
+
 ### Technical Debt
 
 * [#508 Upgrade to Frozen Collections](https://github.com/TortugaResearch/Tortuga.Chain/issues/508)
