@@ -363,4 +363,12 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	/// <returns></returns>
 	TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject> OnWithSortingTyped(IEnumerable<SortExpression> sortExpressions)
 		=> (TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject>)OnWithSorting(sortExpressions);
+
+	/// <summary>
+	/// Applies a distinct operator to the command builder.
+	/// </summary>
+	/// <returns></returns>
+	new public TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject> WithDistinct()
+		=> (TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject>)OnWithDistinct();
+
 }

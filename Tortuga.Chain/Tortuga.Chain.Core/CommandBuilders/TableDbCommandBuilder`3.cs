@@ -267,6 +267,13 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 		=> OnWithSorting(sortExpressions);
 
 	/// <summary>
+	/// Applies a distinct operator to the command builder.
+	/// </summary>
+	/// <returns></returns>
+	public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithDistinct()
+		=> OnWithDistinct();
+
+	/// <summary>
 	/// Adds sorting to the command builder
 	/// </summary>
 	/// <param name="sortExpressions">The sort expressions.</param>
@@ -325,4 +332,12 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// <param name="sortExpressions">The sort expressions.</param>
 	/// <returns></returns>
 	protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithSorting(IEnumerable<SortExpression> sortExpressions);
+
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns></returns>
+	protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithDistinct();
+
 }
