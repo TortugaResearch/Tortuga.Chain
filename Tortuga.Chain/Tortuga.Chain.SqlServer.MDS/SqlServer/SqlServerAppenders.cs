@@ -88,6 +88,19 @@ public static class SqlServerAppenders
 	/// Overrides which index will be used for a query.
 	/// </summary>
 	/// <param name="tableDbCommand">The table database command.</param>
+	/// <param name="indexName">The name of the index.</param>
+	/// <remarks>This method does not protect against SQL injection attacks.</remarks>
+	public static TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> WithIndex<TObject>(this TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> tableDbCommand, string indexName)
+	where TObject : class
+	{
+		WithIndex((TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>)tableDbCommand, indexName);
+		return tableDbCommand;
+	}
+
+	/// <summary>
+	/// Overrides which index will be used for a query.
+	/// </summary>
+	/// <param name="tableDbCommand">The table database command.</param>
 	/// <param name="index">The index to use.</param>
 	public static TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithIndex(this TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> tableDbCommand, IndexMetadata<AbstractObjectName, AbstractDbType> index)
 	{
@@ -103,6 +116,18 @@ public static class SqlServerAppenders
 
 		command.AddTableHint($"INDEX ([{index.Name}])");
 
+		return tableDbCommand;
+	}
+
+	/// <summary>
+	/// Overrides which index will be used for a query.
+	/// </summary>
+	/// <param name="tableDbCommand">The table database command.</param>
+	/// <param name="index">The index to use.</param>
+	public static TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> WithIndex<TObject>(this TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> tableDbCommand, IndexMetadata<AbstractObjectName, AbstractDbType> index)
+	where TObject : class
+	{
+		WithIndex((TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>)tableDbCommand, index);
 		return tableDbCommand;
 	}
 
@@ -148,4 +173,17 @@ public static class SqlServerAppenders
 
 		return tableDbCommand;
 	}
+
+	/// <summary>
+	/// Sets the isolation level on the query using a table hint.
+	/// </summary>
+	/// <param name="tableDbCommand">The table database command.</param>
+	/// <param name="isolationLevel">The isolation level.</param>
+	public static TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> WithIsolationLevel<TObject>(this TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> tableDbCommand, SqlServerIsolationLevel isolationLevel)
+	where TObject : class
+	{
+		WithIsolationLevel((TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>)tableDbCommand, isolationLevel);
+		return tableDbCommand;
+	}
+
 }
