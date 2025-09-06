@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Metadata;
@@ -17,7 +17,7 @@ namespace Tortuga.Chain;
 public class ObjectDataReader<TObject> : DbDataReader
 {
 	readonly ImmutableArray<PropertyMetadata> m_PropertyList;
-	readonly ImmutableDictionary<string, int> m_PropertyLookup;
+	readonly FrozenDictionary<string, int> m_PropertyLookup;
 	readonly int? m_RecordCount;
 	readonly DataTable m_Schema;
 	IEnumerator<TObject>? m_Source;
@@ -479,12 +479,12 @@ public class ObjectDataReader<TObject> : DbDataReader
 			dtSchema.Rows.Add(row);
 		}
 
-		return new ObjectDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
+		return new ObjectDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToFrozenDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
 	}
 
 	class ObjectDataReaderMetadata
 	{
-		public ObjectDataReaderMetadata(DataTable schema, ImmutableArray<PropertyMetadata> properties, ImmutableDictionary<string, int> propertyLookup)
+		public ObjectDataReaderMetadata(DataTable schema, ImmutableArray<PropertyMetadata> properties, FrozenDictionary<string, int> propertyLookup)
 		{
 			Schema = schema;
 			Properties = properties;
@@ -492,7 +492,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 		}
 
 		public ImmutableArray<PropertyMetadata> Properties { get; }
-		public ImmutableDictionary<string, int> PropertyLookup { get; }
+		public FrozenDictionary<string, int> PropertyLookup { get; }
 		public DataTable Schema { get; }
 	}
 }

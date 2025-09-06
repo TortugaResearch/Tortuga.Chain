@@ -22,7 +22,7 @@ internal sealed class CharOrNullListMaterializer<TCommand, TParameter> : ListCol
 	{
 	}
 
-	private protected override char? ReadValue(DbDataReader reader, int ordinal)
+	private protected override char? ReadValue(DbDataReader reader, int ordinal, string dataTypeName)
 	{
 		if (reader.GetFieldType(ordinal) == typeof(string))
 		{

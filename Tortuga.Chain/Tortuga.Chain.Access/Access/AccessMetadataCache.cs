@@ -30,6 +30,12 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	}
 
 	/// <summary>
+	/// Gets the comment string. For Access this is null.
+	/// </summary>
+	/// <value>Null.</value>
+	public override string? CommentString => null;
+
+	/// <summary>
 	/// Gets the maximum number of parameters in a single SQL batch.
 	/// </summary>
 	/// <value>The maximum number of parameters.</value>

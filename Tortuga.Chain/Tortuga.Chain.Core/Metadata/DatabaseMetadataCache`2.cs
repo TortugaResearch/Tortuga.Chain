@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using System.ComponentModel;
 using System.Globalization;
 using Tortuga.Anchor;
@@ -57,7 +57,14 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// </summary>
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
-	public virtual ImmutableHashSet<string> UnsupportedSqlTypeNames => ImmutableHashSet<string>.Empty;
+	public virtual FrozenSet<string> UnsupportedSqlTypeNames => FrozenSet<string>.Empty;
+
+
+	/// <summary>
+	/// Gets the comment string. For most databases this is "--".
+	/// </summary>
+	/// <remarks>This will return null if the database doesn't support comments.</remarks>
+	public virtual string? CommentString => "--";
 
 	/// <summary>
 	/// Gets an aggregate function.
@@ -126,16 +133,6 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	{
 		throw new NotSupportedException("Indexes are not supported by this data source");
 	}
-
-	///// <summary>
-	///// Gets the parameters from a SQL Builder.
-	///// </summary>
-	///// <param name="sqlBuilder">The SQL builder.</param>
-	///// <returns></returns>
-	//public List<TParameter> GetParameters(SqlBuilder<TDbType> sqlBuilder)
-	//{
-	//	return sqlBuilder.GetParameters(ParameterBuilderCallback);
-	//}
 
 	/// <summary>
 	/// Gets the metadata for a scalar function.
@@ -689,4 +686,6 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	{
 		return m_RegisteredTypes.TryGetValue(databaseTypeName, out registeredType!);
 	}
+
+
 }

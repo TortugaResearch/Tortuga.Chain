@@ -22,5 +22,5 @@ internal sealed class DoubleOrNullListMaterializer<TCommand, TParameter> : ListC
 	{
 	}
 
-	private protected override double? ReadValue(DbDataReader reader, int ordinal) => reader.GetDouble(ordinal);
+	private protected override double? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetDouble(ordinal);
 }

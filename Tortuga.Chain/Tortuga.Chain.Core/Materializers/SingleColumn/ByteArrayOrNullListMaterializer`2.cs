@@ -23,5 +23,5 @@ internal sealed class ByteArrayOrNullListMaterializer<TCommand, TParameter> : Li
 	{
 	}
 
-	private protected override byte[] ReadValue(DbDataReader reader, int ordinal) => (byte[])reader.GetValue(ordinal);
+	private protected override byte[] ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => (byte[])reader.GetValue(ordinal);
 }

@@ -21,7 +21,7 @@ internal sealed class CharListMaterializer<TCommand, TParameter> : ListColumnMat
 	{
 	}
 
-	private protected override char ReadValue(DbDataReader reader, int ordinal)
+	private protected override char ReadValue(DbDataReader reader, int ordinal, string dataTypeName)
 	{
 		if (reader.GetFieldType(ordinal) == typeof(string))
 		{

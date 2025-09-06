@@ -22,5 +22,5 @@ internal sealed class Int16OrNullListMaterializer<TCommand, TParameter> : ListCo
 	{
 	}
 
-	private protected override short? ReadValue(DbDataReader reader, int ordinal) => reader.GetInt16(ordinal);
+	private protected override short? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetInt16(ordinal);
 }

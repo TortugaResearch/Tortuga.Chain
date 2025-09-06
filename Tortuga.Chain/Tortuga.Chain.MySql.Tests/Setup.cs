@@ -65,8 +65,8 @@ public static class Setup
 				CREATE SCHEMA sales;
 				CREATE TABLE sales.customer
 				(
-					CustomerKey SERIAL PRIMARY KEY,
-					FullName VARCHAR(150) NULL,
+					CustomerKey SERIAL PRIMARY KEY COMMENT 'This is an auto-generated column.',
+					FullName VARCHAR(150) NULL COMMENT 'Customer''s full name',
 					State CHAR(2) NOT NULL,
 
 					CreatedByKey INTEGER NULL,
@@ -80,7 +80,8 @@ public static class Setup
 					DeletedByKey INTEGER NULL,
 					BirthDay DATE NULL,
 					PreferredCallTime TIME NULL
-				);
+				) COMMENT='All of the US customers are stored here.';
+
 				CREATE TABLE sales.location
 				(
 					LocationKey SERIAL PRIMARY KEY,

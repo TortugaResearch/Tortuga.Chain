@@ -23,5 +23,5 @@ internal sealed class XElementListMaterializer<TCommand, TParameter> : ListColum
 	{
 	}
 
-	private protected override XElement ReadValue(DbDataReader reader, int ordinal) => XElement.Parse(reader.GetString(ordinal));
+	private protected override XElement ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => XElement.Parse(reader.GetString(ordinal));
 }

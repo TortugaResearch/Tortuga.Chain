@@ -359,4 +359,113 @@ public class ListDiscardNullTests : MaterializerTestBase
 		Assert.AreEqual(result1.Count, result1a.Count, "Results don't match");
 		Assert.IsTrue(result1.All(x => x != null));
 	}
+
+
+
+
+
+
+
+	[TestMethod]
+	public async Task Datetime2NotNull_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("Datetime2NotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2Null_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("Datetime2Null", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNotNull_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("DatetimeNotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNull_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("DatetimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNotNull_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("SmalldatetimeNotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNull_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("SmalldatetimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task TimeNotNull_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("TimeNotNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task TimeNull_TimeOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<TimeOnly>("TimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+
+
+
+	[TestMethod]
+	public async Task DateNotNull_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("DateNotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DateNull_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("DateNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2NotNull_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("Datetime2NotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task Datetime2Null_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("Datetime2Null", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNotNull_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("DatetimeNotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task DatetimeNull_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("DatetimeNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNotNull_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("SmalldatetimeNotNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+	[TestMethod]
+	public async Task SmalldatetimeNull_DateOnly_ListDiscardNullTest()
+	{
+		await ListDiscardNullTestAsync<DateOnly>("SmalldatetimeNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+	}
+
+
+
+
 }

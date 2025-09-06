@@ -206,5 +206,58 @@ namespace Tortuga.Chain.Core.Tests
 				//Expected
 			}
 		}
+
+
+
+
+		[TestMethod]
+		public async Task DateNull_DateOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<DateOnly>("DateNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+
+		[TestMethod]
+		public async Task Datetime2Null_DateOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<DateOnly>("Datetime2Null", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+
+		[TestMethod]
+		public async Task DatetimeNull_DateOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<DateOnly>("DatetimeNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+		[TestMethod]
+		public async Task SmalldatetimeNull_DateOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<DateOnly>("SmalldatetimeNull", typeof(DateOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+
+
+
+
+		[TestMethod]
+		public async Task Datetime2Null_TimeOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<TimeOnly>("Datetime2Null", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+
+		[TestMethod]
+		public async Task DatetimeNull_TimeOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<TimeOnly>("DatetimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+		[TestMethod]
+		public async Task SmalldatetimeNull_TimeOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<TimeOnly>("SmalldatetimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+		[TestMethod]
+		public async Task TimeNull_TimeOnly_ListWithNullsTest()
+		{
+			await FailedListWithNullsTestAsync<TimeOnly>("TimeNull", typeof(TimeOnlyListMaterializer<DbCommand, DbParameter>)).ConfigureAwait(false);
+		}
+
+
 	}
 }

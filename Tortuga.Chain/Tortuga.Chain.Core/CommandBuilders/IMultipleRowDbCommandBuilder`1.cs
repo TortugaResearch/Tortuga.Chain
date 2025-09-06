@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Frozen;
+using System.Collections.Immutable;
 
 namespace Tortuga.Chain.CommandBuilders;
 
@@ -34,6 +35,26 @@ public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBu
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns></returns>
 	IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull;
+
+	/// <summary>
+	/// Materializes the result as a immutable dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <param name="keyFunction">The key function.</param>
+	/// <param name="dictionaryOptions">The dictionary options.</param>
+	/// <returns></returns>
+	IConstructibleMaterializer<FrozenDictionary<TKey, TObject>> ToFrozenDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull;
+
+	/// <summary>
+	/// Materializes the result as a immutable dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <param name="keyColumn">The key column.</param>
+	/// <param name="dictionaryOptions">The dictionary options.</param>
+	/// <returns></returns>
+	IConstructibleMaterializer<FrozenDictionary<TKey, TObject>> ToFrozenDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull;
 
 	/// <summary>

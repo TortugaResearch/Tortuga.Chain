@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 
 #if MYSQL
 
@@ -14,19 +13,7 @@ namespace Tortuga.Chain.Metadata;
 /// </summary>
 internal static class DataReaderExtensions
 {
-#if !NET5_0_OR_GREATER
-	/// <summary>
-	/// Gets the boolean.
-	/// </summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static bool GetBoolean(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.GetBoolean(dataReader.GetOrdinal(columnName));
-	}
-#endif
+
 
 	/// <summary>
 	/// Gets the boolean or null.
@@ -43,20 +30,6 @@ internal static class DataReaderExtensions
 		else
 			return dataReader.GetBoolean(ordinal);
 	}
-
-#if !NET5_0_OR_GREATER
-	/// <summary>
-	/// Gets the int16.
-	/// </summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns>System.Int16.</returns>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static short GetInt16(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.GetInt16(dataReader.GetOrdinal(columnName));
-	}
-#endif
 
 	/// <summary>
 	/// Gets the int16 or null.
@@ -75,20 +48,6 @@ internal static class DataReaderExtensions
 			return dataReader.GetInt16(ordinal);
 	}
 
-#if !NET5_0_OR_GREATER
-	/// <summary>
-	/// Gets the int32.
-	/// </summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns>System.Int32.</returns>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static int GetInt32(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.GetInt32(dataReader.GetOrdinal(columnName));
-	}
-#endif
-
 	/// <summary>
 	/// Gets the int32 or null.
 	/// </summary>
@@ -104,34 +63,6 @@ internal static class DataReaderExtensions
 		else
 			return dataReader.GetInt32(ordinal);
 	}
-
-#if !NET5_0_OR_GREATER
-	/// <summary>
-	/// Gets the int64.
-	/// </summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns>System.Int64.</returns>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static long GetInt64(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.GetInt64(dataReader.GetOrdinal(columnName));
-	}
-#endif
-
-#if !NET5_0_OR_GREATER
-	/// <summary>Gets the byte.</summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns>System.Int64.</returns>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static long GetByte(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.GetByte(dataReader.GetOrdinal(columnName));
-	}
-#endif
 
 	/// <summary>
 	/// Gets the int64 or null.
@@ -150,32 +81,6 @@ internal static class DataReaderExtensions
 			return dataReader.GetInt64(ordinal);
 	}
 
-#if !NET5_0_OR_GREATER
-	/// <summary>
-	/// Gets the string.
-	/// </summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns>System.String.</returns>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static string GetString(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.GetString(dataReader.GetOrdinal(columnName));
-	}
-#endif
-
-#if !NET5_0_OR_GREATER
-	/// <summary>
-	/// Gets the char.
-	/// </summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static char GetChar(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.GetChar(dataReader.GetOrdinal(columnName));
-	}
-#endif
 
 	/// <summary>
 	/// Gets the string or null.
@@ -286,19 +191,6 @@ internal static class DataReaderExtensions
 		return (T)dataReader.GetValue(ordinal);
 	}
 
-#if !NET5_0_OR_GREATER
-	/// <summary>
-	/// Determines whether [is database null] [the specified column name].
-	/// </summary>
-	/// <param name="dataReader">The data reader.</param>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns><c>true</c> if [is database null] [the specified column name]; otherwise, <c>false</c>.</returns>
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static bool IsDBNull(this DbDataReader dataReader, string columnName)
-	{
-		return dataReader.IsDBNull(dataReader.GetOrdinal(columnName));
-	}
-#endif
 
 #if MYSQL
 

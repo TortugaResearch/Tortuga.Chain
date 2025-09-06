@@ -23,5 +23,5 @@ internal sealed class ByteOrNullListMaterializer<TCommand, TParameter> : ListCol
 	{
 	}
 
-	private protected override byte? ReadValue(DbDataReader reader, int ordinal) => reader.GetByte(ordinal);
+	private protected override byte? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetByte(ordinal);
 }

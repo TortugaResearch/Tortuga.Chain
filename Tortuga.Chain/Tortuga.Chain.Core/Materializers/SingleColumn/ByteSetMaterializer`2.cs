@@ -24,6 +24,6 @@ namespace Tortuga.Chain.Materializers
 		{
 		}
 
-		private protected override byte ReadValue(DbDataReader reader, int ordinal) => reader.GetByte(ordinal);
+		private protected override byte ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetByte(ordinal);
 	}
 }

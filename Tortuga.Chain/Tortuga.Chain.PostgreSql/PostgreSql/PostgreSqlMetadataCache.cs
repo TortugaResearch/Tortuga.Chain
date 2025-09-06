@@ -2,6 +2,7 @@
 using NpgsqlTypes;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
@@ -24,7 +25,7 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 	readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new();
 	string? m_DatabaseName;
 	ImmutableArray<string> m_DefaultSchemaList;
-	ImmutableDictionary<PostgreSqlObjectName, ImmutableHashSet<string>>? m_SequenceColumns;
+	FrozenDictionary<PostgreSqlObjectName, FrozenSet<string>>? m_SequenceColumns;
 	Version? m_ServerVersion;
 	string? m_ServerVersionName;
 
@@ -717,7 +718,7 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 	/// </summary>
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
-	public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, ["trigger", "internal", "regclass", "bpchar", "pg_lsn", "void", "cstring", "reltime", "anyenum", "anyarray", "anyelement", "anyrange", "_regdictionary", "any", "regdictionary", "tstzrange", "jsonpath", "pg_mcv_list", "table_am_handler", "ANYNONARRAY", "UNKNOWN", "PG_DDL_COMMAND", "TINTERVAL", "RECORD", "OPAQUE", "REGROLE", "_CSTRING", "REGOPERATOR", "_ACLITEM", "ACLITEM", "REGPROCEDURE", "\"ANY\"", "SMGR", "TXID_SNAPSHOT", "PG_NODE_TREE", "EVENT_TRIGGER", "INDEX_AM_HANDLER", "INT8RANGE", "REGPROC", "PG_ATTRIBUTE", "PG_TYPE", "REGOPER", "REGNAMESPACE", "INT4RANGE", "PG_DEPENDENCIES", "FDW_HANDLER", "TSM_HANDLER", "LANGUAGE_HANDLER", "DATERANGE", "GTSVECTOR", "NUMRANGE", "TSRANGE", "PG_NDISTINCT", "anycompatiblenonarray", "anymultirange", "pg_snapshot", "pg_brin_bloom_summary", "anycompatiblearray", "int8multirange", "regcollation", "anycompatiblemultirange", "tsmultirange", "anycompatible", "xid8", "datemultirange", "anycompatiblerange", "pg_brin_minmax_multi_summary", "int4multirange", "nummultirange", "tstzmultirange"]);
+	public override FrozenSet<string> UnsupportedSqlTypeNames { get; } = FrozenSet.Create(StringComparer.OrdinalIgnoreCase, ["trigger", "internal", "regclass", "bpchar", "pg_lsn", "void", "cstring", "reltime", "anyenum", "anyarray", "anyelement", "anyrange", "_regdictionary", "any", "regdictionary", "tstzrange", "jsonpath", "pg_mcv_list", "table_am_handler", "ANYNONARRAY", "UNKNOWN", "PG_DDL_COMMAND", "TINTERVAL", "RECORD", "OPAQUE", "REGROLE", "_CSTRING", "REGOPERATOR", "_ACLITEM", "ACLITEM", "REGPROCEDURE", "\"ANY\"", "SMGR", "TXID_SNAPSHOT", "PG_NODE_TREE", "EVENT_TRIGGER", "INDEX_AM_HANDLER", "INT8RANGE", "REGPROC", "PG_ATTRIBUTE", "PG_TYPE", "REGOPER", "REGNAMESPACE", "INT4RANGE", "PG_DEPENDENCIES", "FDW_HANDLER", "TSM_HANDLER", "LANGUAGE_HANDLER", "DATERANGE", "GTSVECTOR", "NUMRANGE", "TSRANGE", "PG_NDISTINCT", "anycompatiblenonarray", "anymultirange", "pg_snapshot", "pg_brin_bloom_summary", "anycompatiblearray", "int8multirange", "regcollation", "anycompatiblemultirange", "tsmultirange", "anycompatible", "xid8", "datemultirange", "anycompatiblerange", "pg_brin_minmax_multi_summary", "int4multirange", "nummultirange", "tstzmultirange"]);
 
 	/// <summary>
 	/// Parse a string and return the database specific representation of the object name.
@@ -787,42 +788,15 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 
 	ColumnMetadataCollection<NpgsqlDbType> GetColumns(PostgreSqlObjectName tableName, NpgsqlConnection connection)
 	{
-		string columnSql;
-
-		if (ServerVersion.Major < 10) //no attidentity
-		{
-			columnSql =
-			@"
-SELECT att.attname as column_name,
-	   t.typname as data_type,
-	   pk.contype as is_primary_key,
-	   att.attnotnull as not_null,
-	   null as is_identity,
-	   format_type(att.atttypid, att.atttypmod) as data_type_full
-FROM pg_class as c
-JOIN pg_namespace as ns on ns.oid=c.relnamespace
-JOIN pg_attribute as att on c.oid=att.attrelid AND
-							att.attnum>0
-JOIN pg_type as t on t.oid=att.atttypid
-LEFT JOIN (SELECT cnst.conrelid,
-				  cnst.conkey,
-				  cnst.contype
-		   FROM pg_constraint as cnst
-		   WHERE cnst.contype='p') pk ON att.attnum=ANY(pk.conkey) AND
-										 pk.conrelid=c.oid
-WHERE c.relname ILIKE @Name AND
-	  ns.nspname ILIKE @Schema;";
-		}
-		else
-		{
-			columnSql =
+		const string columnSql =
 @"
 SELECT att.attname as column_name,
 	   t.typname as data_type,
 	   pk.contype as is_primary_key,
 	   att.attnotnull as not_null,
 	   att.attidentity as is_identity,
-	   format_type(att.atttypid, att.atttypmod) as data_type_full
+	   format_type(att.atttypid, att.atttypmod) as data_type_full,
+	   COL_DESCRIPTION(CONCAT(ns.nspname, '.', c.relname)::regclass, att.attnum) as description
 FROM pg_class as c
 JOIN pg_namespace as ns on ns.oid=c.relnamespace
 JOIN pg_attribute as att on c.oid=att.attrelid AND
@@ -836,7 +810,6 @@ LEFT JOIN (SELECT cnst.conrelid,
 										 pk.conrelid=c.oid
 WHERE c.relname ILIKE @Name AND
 	  ns.nspname ILIKE @Schema;";
-		}
 
 		var columns = new List<ColumnMetadata<NpgsqlDbType>>();
 		var sequenceColumns = GetSequenceColumns(tableName);
@@ -851,6 +824,7 @@ WHERE c.relname ILIKE @Name AND
 				{
 					var name = reader.GetString("column_name");
 					var typeName = reader.GetString("data_type");
+					var description = reader.GetStringOrNull("description");
 					var isPrimary = !reader.IsDBNull("is_primary_key");
 
 					var identity_type = char.ToUpperInvariant(reader.GetCharOrNull("is_identity") ?? ' ');
@@ -896,7 +870,7 @@ WHERE c.relname ILIKE @Name AND
 							break;
 					}
 
-					columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, dbType, QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
+					columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, dbType, QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)) { Description = description });
 				}
 			}
 		}
@@ -1003,7 +977,7 @@ WHERE c.relname ILIKE @Name AND
 
 	ImmutableArray<string> GetSchemasToCheck(PostgreSqlObjectName objectName) => objectName.Schema == null ? DefaultSchemaList : [objectName.Schema];
 
-	ImmutableHashSet<string> GetSequenceColumns(PostgreSqlObjectName tableName)
+	FrozenSet<string> GetSequenceColumns(PostgreSqlObjectName tableName)
 	{
 		const string sql = @"select s.relname as SequenceName, n.nspname as SchemaName, t.relname as TableName, a.attname as ColumnName
 from pg_class s
@@ -1039,12 +1013,12 @@ where s.relkind='S' and d.deptype='a'";
 								result.Add(schemaTableName, identityColumns);
 							}
 						}
-						m_SequenceColumns = result.ToImmutableDictionary(x => x.Key, x => x.Value.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase));
+						m_SequenceColumns = result.ToFrozenDictionary(x => x.Key, x => x.Value.ToFrozenSet(StringComparer.OrdinalIgnoreCase));
 					}
 				}
 			}
 		}
-		return m_SequenceColumns.GetValueOrDefault(tableName, ImmutableHashSet<string>.Empty);
+		return m_SequenceColumns.GetValueOrDefault(tableName, FrozenSet<string>.Empty);
 	}
 
 	StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInternal(PostgreSqlObjectName storedProcedureName)
@@ -1139,15 +1113,16 @@ where s.relkind='S' and d.deptype='a'";
 	public TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewInternal(PostgreSqlObjectName tableName)
 	{
 		const string TableSql =
-			@"SELECT
-				table_schema as schemaname,
-				table_name as tablename,
-				table_type as type
-				FROM information_schema.tables
-				WHERE table_schema ILIKE @Schema AND
-					  table_name ILIKE @Name AND
-					  (table_type='BASE TABLE' OR
-					   table_type='VIEW');";
+@"SELECT
+	table_schema as schemaname,
+	table_name as tablename,
+	table_type as type,
+	OBJ_DESCRIPTION(CONCAT(table_schema, '.', table_name)::regclass) as description
+FROM information_schema.tables
+WHERE table_schema ILIKE @Schema AND
+		table_name ILIKE @Name AND
+		(table_type='BASE TABLE' OR
+		table_type='VIEW');";
 
 		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
 		{
@@ -1158,6 +1133,7 @@ where s.relkind='S' and d.deptype='a'";
 				string actualSchema;
 				string actualTableName;
 				bool isTable;
+				string? description;
 
 				using (var cmd = new NpgsqlCommand(TableSql, con))
 				{
@@ -1171,12 +1147,13 @@ where s.relkind='S' and d.deptype='a'";
 						actualTableName = reader.GetString("tablename");
 						var type = reader.GetString("type");
 						isTable = type.Equals("BASE TABLE", StringComparison.Ordinal);
+						description = reader.GetStringOrNull("description");
 					}
 				}
 
 				var actualName = new PostgreSqlObjectName(actualSchema, actualTableName);
 				var columns = GetColumns(actualName, con);
-				return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(this, actualName, isTable, columns);
+				return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(this, actualName, isTable, columns) { Description = description };
 			}
 		}
 

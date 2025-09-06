@@ -23,5 +23,5 @@ internal sealed class DecimalListMaterializer<TCommand, TParameter> : ListColumn
 	{
 	}
 
-	private protected override decimal ReadValue(DbDataReader reader, int ordinal) => reader.GetDecimal(ordinal);
+	private protected override decimal ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetDecimal(ordinal);
 }

@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Data.Common;
 using System.Xml.Linq;
@@ -565,6 +566,36 @@ public abstract class MultipleRowDbCommandBuilder<TCommand, TParameter> : Single
 	public IColumnSelectingMaterializer<List<dynamic>> ToDynamicCollection()
 	{
 		return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
+	}
+
+	/// <summary>
+	/// Materializes the result as a immutable dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <typeparam name="TObject">The type of the model.</typeparam>
+	/// <param name="keyFunction">The key function.</param>
+	/// <param name="dictionaryOptions">The dictionary options.</param>
+	/// <returns></returns>
+	public IConstructibleMaterializer<FrozenDictionary<TKey, TObject>> ToFrozenDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull
+		where TObject : class
+	{
+		return new FrozenDictionaryMaterializer<TCommand, TParameter, TKey, TObject>(this, keyFunction, dictionaryOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a immutable dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <typeparam name="TObject">The type of the model.</typeparam>
+	/// <param name="keyColumn">The key column.</param>
+	/// <param name="dictionaryOptions">The dictionary options.</param>
+	/// <returns></returns>
+	public IConstructibleMaterializer<FrozenDictionary<TKey, TObject>> ToFrozenDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull
+		where TObject : class
+	{
+		return new FrozenDictionaryMaterializer<TCommand, TParameter, TKey, TObject>(this, keyColumn, dictionaryOptions);
 	}
 
 	/// <summary>

@@ -1,3 +1,56 @@
+## Version 5.3
+
+### Features
+
+**Descriptions for Tables and Columns**
+
+* [#532 Add support for Table/Column Descriptions for PostgreSQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/532)
+* [#531 Add support for Table/Column Descriptions for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/531)
+* [#533 Add support for Table/Column Descriptions for MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/533)
+
+Use `.Description` on a table or column object. SQL Server populates `.ExtendedProperties` as well.
+
+This is not supported in SQLite and Access.
+
+**Scalar and List support for DateOnly and TimeOnly**
+
+* [ToDateOnly, ToTimeOnly #504](https://github.com/TortugaResearch/Tortuga.Chain/issues/504)
+
+New materializers
+
+* `.ToDateOnly`
+* `.ToDateOnlyOrNull`
+* `.ToTimeOnly`
+* `.ToTimeOnlyOrNull`
+* `.ToDateOnlyList`
+* `.ToDateOnlyOrNullList`
+* `.ToTimeOnlyList`
+* `.ToTimeOnlyOrNullList`
+
+
+**Tagged Queries**
+
+* [#401 Tag queries](https://github.com/TortugaResearch/Tortuga.Chain/issues/401)
+
+Use the `.Tag()` appender to tag a query. This will appear as a comment at the beginning of the SQL Statement.
+
+If you do not pass in a string as the message, the current filename, member name, and line number will be used.
+
+### Bugs
+
+* MySQL unique indexes were marked as non-unique. 
+* MySQL non-unique indexes were marked as unique. 
+
+### Technical Debt
+
+* [#508 Upgrade to Frozen Collections](https://github.com/TortugaResearch/Tortuga.Chain/issues/508)
+
+
+### Breaking Change
+
+PostgreSQL v9 and eariler is no longer supported. 
+
+
 ## Version 5.2
 
 ### Features
@@ -23,10 +76,6 @@ New functions:
 * `TableSet.DataSet` Copies a `TableSet` into a new `DataSet`.
 * `Table.DataTable` Copies a `Table` into a new `DataTable`.
 
-**MySQl Bug Fix**
-
-Table names are now quoted. Previously an error would be thrown if the table name included an embedded period.
-
 **Support for MySQL 8.4**
 
 Updated the database creation script.
@@ -45,6 +94,11 @@ When SQL Server prints messages (e.g. during a stored proc call), .NET gets a `S
 
 	var result = dataSource.Procedure("HR.EmployeeList").ToTable().WithInfoMessageNotification(handler).Execute();
 
+### Bugs
+
+**MySQl Bug Fix**
+
+Table names are now quoted. Previously an error would be thrown if the table name included an embedded period.
 
 ## Version 5.1
 

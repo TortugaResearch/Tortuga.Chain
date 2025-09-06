@@ -22,5 +22,5 @@ internal sealed class Int64OrNullListMaterializer<TCommand, TParameter> : ListCo
 	{
 	}
 
-	private protected override long? ReadValue(DbDataReader reader, int ordinal) => reader.GetInt64(ordinal);
+	private protected override long? ReadValue(DbDataReader reader, int ordinal, string dataTypeName) => reader.GetInt64(ordinal);
 }

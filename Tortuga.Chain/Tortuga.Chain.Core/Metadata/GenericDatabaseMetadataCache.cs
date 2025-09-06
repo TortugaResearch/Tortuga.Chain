@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.Aggregates;
+﻿using Tortuga.Chain.Aggregates;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -19,6 +18,8 @@ sealed class GenericDatabaseMetadataCache : IDatabaseMetadataCache
 	public MaterializerTypeConverter Converter { get; } = new();
 
 	int? IDatabaseMetadataCache.MaxParameters => null;
+
+	public string? CommentString => null;
 
 	string IDatabaseMetadataCache.GetAggregateFunction(AggregateType aggregateType, string columnName)
 	{
