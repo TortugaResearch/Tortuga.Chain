@@ -70,4 +70,35 @@ public static class SqlServerAppenders
 	{
 		return new InfoMessageNotificationAppender<TResult>(previousLink, eventHandler);
 	}
+
+
+
+	/// <summary>
+	/// Sets the isolation level on the query using a table hint.
+	/// </summary>
+	/// <param name="tableDbCommand">The table database command.</param>
+	/// <param name="isolationLevel">The isolation level.</param>
+	public static TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithIsolationLevel(this TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> tableDbCommand, SqlServerIsolationLevel isolationLevel)
+	{
+		if (tableDbCommand == null)
+			throw new ArgumentNullException(nameof(tableDbCommand), $"{nameof(tableDbCommand)} is null.");
+
+		var command = tableDbCommand as ISupportsTableHints;
+		if (command == null)
+			throw new ArgumentException($"The command {tableDbCommand.GetType().FullName} does not support table hints.", nameof(tableDbCommand));
+
+		var queryHint = isolationLevel switch
+		{
+			SqlServerIsolationLevel.Serializable => "SERIALIZABLE",
+			SqlServerIsolationLevel.ReadUncommitted => "READUNCOMMITTED",
+			SqlServerIsolationLevel.ReadCommitted => "READCOMMITTED",
+			SqlServerIsolationLevel.RepeatableRead => "REPEATABLEREAD",
+			SqlServerIsolationLevel.Snapshot => "SNAPSHOT",
+			_ => throw new ArgumentOutOfRangeException(nameof(isolationLevel), isolationLevel, $"Isolation level {isolationLevel} is not supported.")
+		};
+
+		command.AddTableHint(queryHint);
+
+		return tableDbCommand;
+	}
 }

@@ -12,6 +12,10 @@ This change is to deal with mal-formed stored procedures found in the wild.
 
 This will allow code generators to produce nicer looking code.
 
+* [#126 Add NOLOCK support for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/126)
+
+Use `.WithIsolationLevel(SqlServerIsolationLevel.ReadUncommitted)` to get NOLOCK behavior. Other isolation levels are also supported. See [SET TRANSACTION ISOLATION LEVEL](https://learn.microsoft.com/en-us/sql/t-sql/statements/set-transaction-isolation-level-transact-sql?view=sql-server-ver17) for details.
+
 ### Breaking Change
 
 Change #541 may break code that is using stored procedures with a single unnamed column that also expect the unnamed column to be named `String.Empty`.
