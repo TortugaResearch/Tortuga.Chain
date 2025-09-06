@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// Use for table-valued functions.
 /// </summary>
 /// <seealso cref="TableDbCommandBuilder{SqlCommand, SqlParameter, SqlServerLimitOption}" />
-sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsApproximateCount
+sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsApproximateCount, ISupportsQueryHints
 {
 	readonly object? m_FunctionArgumentValue;
 	readonly TableFunctionMetadata<SqlServerObjectName, SqlDbType> m_Table;
@@ -25,6 +25,7 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
 	string? m_WhereClause;
+	List<string>? m_QueryHints;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerTableFunction" /> class.
@@ -210,6 +211,9 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 				break;
 		}
 
+		if (m_QueryHints != null)
+			sql.Append($" OPTION ({string.Join(", ", m_QueryHints)})");
+
 		sql.Append(';');
 
 		return new SqlServerCommandExecutionToken(DataSource, "Query Function " + m_Table.Name, sql.ToString(), parameters);
@@ -322,5 +326,12 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 
 		m_SortExpressions = sortExpressions;
 		return this;
+	}
+
+	void ISupportsQueryHints.AddQueryHint(string hint)
+	{
+		if (m_QueryHints == null)
+			m_QueryHints = new List<string>();
+		m_QueryHints.Add(hint);
 	}
 }

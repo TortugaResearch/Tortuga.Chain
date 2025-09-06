@@ -3,14 +3,8 @@
 #if SQL_SERVER_MDS
 
 using Microsoft.Data.SqlClient;
-
-using Tests.Models;
-using Tortuga.Chain;
 using Tortuga.Chain.SqlServer;
 
-#endif
-
-#if (SQL_SERVER_MDS)
 
 [TestClass]
 public class SqlInfoMessageEventTests : TestBase

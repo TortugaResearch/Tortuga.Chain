@@ -14,7 +14,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// SqlServerTableOrView supports queries against tables and views.
 /// </summary>
 [UseTrait(typeof(SupportsCount64Trait<SqlCommand, SqlParameter, SqlServerLimitOption>))]
-internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount, ISupportsChangeListener
+internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount, ISupportsChangeListener, ISupportsTableHints, ISupportsQueryHints
 	where TObject : class
 {
 	readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
@@ -28,6 +28,8 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
 	string? m_WhereClause;
+	List<string>? m_TableHints;
+	List<string>? m_QueryHints;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerTableOrView{TObject}" /> class.
@@ -177,6 +179,9 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 
 		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
+		if (m_TableHints != null)
+			sql.Append($" WITH ({string.Join(", ", m_TableHints)})");
+
 		switch (m_LimitOptions)
 		{
 			case SqlServerLimitOption.TableSampleSystemRows:
@@ -256,6 +261,9 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 
 				break;
 		}
+
+		if (m_QueryHints != null)
+			sql.Append($" OPTION ({string.Join(", ", m_QueryHints)})");
 
 		sql.Append(';');
 
@@ -361,4 +369,20 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 		m_SortExpressions = sortExpressions;
 		return this;
 	}
+
+	void ISupportsTableHints.AddTableHint(string hint)
+	{
+		if (m_TableHints == null)
+			m_TableHints = new List<string>();
+		m_TableHints.Add(hint);
+	}
+
+	void ISupportsQueryHints.AddQueryHint(string hint)
+	{
+		if (m_QueryHints == null)
+			m_QueryHints = new List<string>();
+		m_QueryHints.Add(hint);
+	}
 }
+
+
