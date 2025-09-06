@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using System.Text.RegularExpressions;
 using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.Metadata;
@@ -196,12 +197,35 @@ public abstract class ColumnMetadata
 		else
 			fullTypeName = ClrType.Name;
 
+
 		//Make the data type nullable if necessary
-		if (options.HasFlag(NameGenerationOptions.CSharp) && options.HasFlag(NameGenerationOptions.NullableReferenceTypes))
+		if (options.HasFlag(NameGenerationOptions.CSharp)
+			&& (ClrType.IsValueType || options.HasFlag(NameGenerationOptions.NullableReferenceTypes))
+			&& effectivelyNullable)
 		{
-			//value types are handled upstream
-			if (!ClrType.IsValueType && effectivelyNullable)
+			//value types are normally handled upstream unless we're using ForceNullable on a non-nullable column
+			if (ClrType.IsValueType && !(IsNullable == true))
 				fullTypeName += "?";
+			else if (!ClrType.IsValueType)
+				fullTypeName += "?";
+		}
+
+		if (options.HasFlag(NameGenerationOptions.CSharp))
+		{
+			//fullTypeName = Regex.Replace(fullTypeName, @"\bSystem\.String\b", "string"); //This is a needless complication
+			fullTypeName = Regex.Replace(fullTypeName, @"System\.Nullable<([^>]+)>", "$1?");
+			fullTypeName = fullTypeName.Replace("System.String", "string", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.UInt32", "uint", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.UInt64", "ulong", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.UInt16", "ushort", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.Int32", "int", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.Int64", "long", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.Int16", "short", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.Byte", "byte", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.Boolean", "bool", StringComparison.Ordinal);
+			fullTypeName = fullTypeName.Replace("System.Char", "char", StringComparison.Ordinal);
+			if (fullTypeName.Count(c => c == '.') == 1)
+				fullTypeName = fullTypeName.Replace("System.", "", StringComparison.Ordinal);
 		}
 
 		return fullTypeName;

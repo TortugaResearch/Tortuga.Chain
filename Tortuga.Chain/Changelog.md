@@ -4,6 +4,17 @@
 
 * [#541 `.ToTable` doesn't work when columns don't have names.](https://github.com/TortugaResearch/Tortuga.Chain/issues/541)
 
+This change is to deal with mal-formed stored procedures found in the wild.
+
+### Features
+
+* [#542 Use C# native types with ColumnMetadata.ClrTypeName](https://github.com/TortugaResearch/Tortuga.Chain/issues/542)
+
+This will allow code generators to produce nicer looking code.
+
+### Breaking Change
+
+Change #541 may break code that is using stored procedures with a single unnamed column that also expect the unnamed column to be named `String.Empty`.
 
 ## Version 5.3
 
@@ -44,6 +55,8 @@ Use the `.Tag()` appender to tag a query. This will appear as a comment at the b
 If you do not pass in a string as the message, the current filename, member name, and line number will be used.
 
 ### Bugs
+
+Fixed in 5.3.1
 
 * MySQL unique indexes were marked as non-unique. 
 * MySQL non-unique indexes were marked as unique. 
@@ -138,7 +151,7 @@ Changing from Tortuga.Chain.SqlServer to Tortuga.Chain.SqlServer.MDS should not 
 
 [#514 Make Count() return Int32. Add Count64() as a separate function.](https://github.com/TortugaResearch/Tortuga.Chain/issues/514)
 
-`AsCount` now returns an Int32. If you want a long, then you need to use `AsCount64`. 
+`.AsCount` now returns an Int32. If you want a long, then you need to use `.AsCount64`. 
 
 This will allow for better support for databases that only only 32-bit row counts.
 
@@ -148,7 +161,7 @@ Add timeouts to bulk insert.
 
 * `.WithNoTimeout()`
 * `.WithTimeout(TimeSpan timeout)`
-* 
+ 
 ## Version 4.4
 
 
