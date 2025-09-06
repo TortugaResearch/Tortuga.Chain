@@ -1,3 +1,10 @@
+## Version 5.4
+
+### Bugs
+
+* [#541 `.ToTable` doesn't work when columns don't have names.](https://github.com/TortugaResearch/Tortuga.Chain/issues/541)
+
+
 ## Version 5.3
 
 ### Features
