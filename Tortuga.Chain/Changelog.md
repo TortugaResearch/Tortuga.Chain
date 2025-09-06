@@ -23,6 +23,14 @@ Pass an index or index name to `.WithIndex` to force SQL Server to use the speci
 * `.WithIndex(index)`
 * `.WithIndex(indexName)`
 
+
+* [#335 Add SortDirection.Expression](https://github.com/TortugaResearch/Tortuga.Chain/issues/335)
+
+You can now use an arbitray expression to sort a query rather than just a list of columns.
+
+* `.WithSorting(new SortExpression(expression, SortDirection.Expression)`
+* `.WithSortExpression(expression)`
+
 ### Breaking Change
 
 Change #541 may break code that is using stored procedures with a single unnamed column that also expect the unnamed column to be named `String.Empty`.

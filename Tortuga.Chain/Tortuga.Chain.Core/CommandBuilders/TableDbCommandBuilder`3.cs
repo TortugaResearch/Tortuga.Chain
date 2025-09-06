@@ -273,6 +273,13 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// <returns></returns>
 	public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSorting(params SortExpression[] sortExpressions) => WithSorting((IEnumerable<SortExpression>)sortExpressions);
 
+	/// <summary>
+	/// Adds sorting to the command builder using a raw SQL sort expression.
+	/// </summary>
+	/// <param name="sortExpression">The sort expression as raw SQL.</param>
+	/// <returns></returns>
+	public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSortExpression(string sortExpression) => WithSorting(new SortExpression(sortExpression, SortDirection.Expression));
+
 	ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(IEnumerable<SortExpression> sortExpressions) => WithSorting(sortExpressions);
 
 	ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(params SortExpression[] sortExpressions) => WithSorting((IEnumerable<SortExpression>)sortExpressions);

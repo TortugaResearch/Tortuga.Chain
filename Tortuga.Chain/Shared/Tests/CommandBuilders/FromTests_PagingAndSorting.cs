@@ -283,6 +283,28 @@ public class FromTests_PagingAndSorting : TestBase
 			Assert.AreEqual(emp2.EmployeeKey, test6[1].EmployeeKey);
 			Assert.AreEqual(emp3.EmployeeKey, test6[2].EmployeeKey);
 			Assert.AreEqual(emp4.EmployeeKey, test6[3].EmployeeKey);
+
+
+#if MYSQL || SQLITE
+			const string expression = "CONCAT(FirstName, LastName)";
+#elif POSTGRESQL
+
+			const string expression = "FirstName || LastName";
+#else
+			const string expression = "FirstName + LastName";
+#endif
+
+			var test7 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting(new SortExpression(expression, SortDirection.Expression)).ToCollection<Employee>().Execute();
+			Assert.AreEqual(emp1.EmployeeKey, test7[0].EmployeeKey);
+			Assert.AreEqual(emp2.EmployeeKey, test7[1].EmployeeKey);
+			Assert.AreEqual(emp3.EmployeeKey, test7[2].EmployeeKey);
+			Assert.AreEqual(emp4.EmployeeKey, test7[3].EmployeeKey);
+
+			var test8 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSortExpression(expression).ToCollection<Employee>().Execute();
+			Assert.AreEqual(emp1.EmployeeKey, test8[0].EmployeeKey);
+			Assert.AreEqual(emp2.EmployeeKey, test8[1].EmployeeKey);
+			Assert.AreEqual(emp3.EmployeeKey, test8[2].EmployeeKey);
+			Assert.AreEqual(emp4.EmployeeKey, test8[3].EmployeeKey);
 		}
 		finally
 		{
@@ -361,47 +383,47 @@ public class FromTests_PagingAndSorting : TestBase
 
 #elif MYSQL
 
-		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-		public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
 		{
-			var dataSource = DataSource(dataSourceName, mode);
-			try
-			{
-				var uniqueKey = Guid.NewGuid().ToString();
+			var uniqueKey = Guid.NewGuid().ToString();
 
-				var emp1 = new Employee() { FirstName = "A", LastName = "2", Title = uniqueKey };
-				var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
-				var emp3 = new Employee() { FirstName = "C", LastName = "1", Title = uniqueKey };
-				var emp4 = new Employee() { FirstName = "D", LastName = "1", Title = uniqueKey };
+			var emp1 = new Employee() { FirstName = "A", LastName = "2", Title = uniqueKey };
+			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+			var emp3 = new Employee() { FirstName = "C", LastName = "1", Title = uniqueKey };
+			var emp4 = new Employee() { FirstName = "D", LastName = "1", Title = uniqueKey };
 
-				emp1 = dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
-				emp2 = dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
-				emp3 = dataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
-				emp4 = dataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
+			emp1 = dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+			emp2 = dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+			emp3 = dataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
+			emp4 = dataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
 
-				var test1 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName").ToCollection<EmployeeLookup>().WithConstructor<ulong, string, string>().Execute();
-				Assert.AreEqual(emp1.EmployeeKey, test1[0].EmployeeKey);
-				Assert.AreEqual(emp2.EmployeeKey, test1[1].EmployeeKey);
-				Assert.AreEqual(emp3.EmployeeKey, test1[2].EmployeeKey);
-				Assert.AreEqual(emp4.EmployeeKey, test1[3].EmployeeKey);
+			var test1 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName").ToCollection<EmployeeLookup>().WithConstructor<ulong, string, string>().Execute();
+			Assert.AreEqual(emp1.EmployeeKey, test1[0].EmployeeKey);
+			Assert.AreEqual(emp2.EmployeeKey, test1[1].EmployeeKey);
+			Assert.AreEqual(emp3.EmployeeKey, test1[2].EmployeeKey);
+			Assert.AreEqual(emp4.EmployeeKey, test1[3].EmployeeKey);
 
-				var test2 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting(new SortExpression("FirstName", SortDirection.Descending)).ToCollection<EmployeeLookup>().WithConstructor<ulong, string, string>().Execute();
-				Assert.AreEqual(emp4.EmployeeKey, test2[0].EmployeeKey);
-				Assert.AreEqual(emp3.EmployeeKey, test2[1].EmployeeKey);
-				Assert.AreEqual(emp2.EmployeeKey, test2[2].EmployeeKey);
-				Assert.AreEqual(emp1.EmployeeKey, test2[3].EmployeeKey);
+			var test2 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting(new SortExpression("FirstName", SortDirection.Descending)).ToCollection<EmployeeLookup>().WithConstructor<ulong, string, string>().Execute();
+			Assert.AreEqual(emp4.EmployeeKey, test2[0].EmployeeKey);
+			Assert.AreEqual(emp3.EmployeeKey, test2[1].EmployeeKey);
+			Assert.AreEqual(emp2.EmployeeKey, test2[2].EmployeeKey);
+			Assert.AreEqual(emp1.EmployeeKey, test2[3].EmployeeKey);
 
-				var test3 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("LastName", "FirstName").ToCollection<EmployeeLookup>().WithConstructor<ulong, string, string>().Execute();
-				Assert.AreEqual(emp3.EmployeeKey, test3[0].EmployeeKey);
-				Assert.AreEqual(emp4.EmployeeKey, test3[1].EmployeeKey);
-				Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
-				Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
-			}
-			finally
-			{
-				Release(dataSource);
-			}
+			var test3 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("LastName", "FirstName").ToCollection<EmployeeLookup>().WithConstructor<ulong, string, string>().Execute();
+			Assert.AreEqual(emp3.EmployeeKey, test3[0].EmployeeKey);
+			Assert.AreEqual(emp4.EmployeeKey, test3[1].EmployeeKey);
+			Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
+			Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
 		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
 
 #else
 
