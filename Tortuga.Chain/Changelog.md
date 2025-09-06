@@ -16,6 +16,13 @@ This will allow code generators to produce nicer looking code.
 
 Use `.WithIsolationLevel(SqlServerIsolationLevel.ReadUncommitted)` to get NOLOCK behavior. Other isolation levels are also supported. See [SET TRANSACTION ISOLATION LEVEL](https://learn.microsoft.com/en-us/sql/t-sql/statements/set-transaction-isolation-level-transact-sql?view=sql-server-ver17) for details.
 
+* [#131 Add index hinting to SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/131)
+
+Pass an index or index name to `.WithIndex` to force SQL Server to use the specificed index.
+
+* `.WithIndex(index)`
+* `.WithIndex(indexName)`
+
 ### Breaking Change
 
 Change #541 may break code that is using stored procedures with a single unnamed column that also expect the unnamed column to be named `String.Empty`.

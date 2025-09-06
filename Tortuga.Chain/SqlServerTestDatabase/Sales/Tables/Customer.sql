@@ -18,7 +18,9 @@
 	PreferredCallTime Time NULL
 
 )
+GO
 
+CREATE NONCLUSTERED INDEX IX_Customer_State ON Sales.Customer(State);
 
 GO
 EXEC sp_addextendedproperty @name = N'Known Issues',
