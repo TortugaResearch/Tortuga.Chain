@@ -5,6 +5,7 @@ namespace Tests.Appenders;
 
 using Microsoft.Data.SqlClient;
 using System.Runtime.InteropServices;
+using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.SqlServer;
 
@@ -27,6 +28,25 @@ public class SqlServerHintTests : TestBase
 			var result3 = dataSource.From(IndexedTableName).WithIsolationLevel(SqlServerIsolationLevel.ReadUncommitted).AsCount().Execute();
 			var result4 = dataSource.From(IndexedTableName).WithIsolationLevel(SqlServerIsolationLevel.ReadCommitted).AsCount().Execute();
 			var result5 = dataSource.From(IndexedTableName).WithIsolationLevel(SqlServerIsolationLevel.RepeatableRead).AsCount().Execute();
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	public void SqlServerHintTests_IsolationLevels_Object(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName);
+		try
+		{
+			var result1 = dataSource.From<Employee>().WithIsolationLevel(SqlServerIsolationLevel.Serializable).ToCollection().Execute();
+			//Snapshot is only supported by memory-optimzed tables
+			//var result2 = dataSource.From<Employee>().WithIsolationLevel(SqlServerIsolationLevel.Snapshot).ToCollection().Execute();
+			var result3 = dataSource.From<Employee>().WithIsolationLevel(SqlServerIsolationLevel.ReadUncommitted).ToCollection().Execute();
+			var result4 = dataSource.From<Employee>().WithIsolationLevel(SqlServerIsolationLevel.ReadCommitted).ToCollection().Execute();
+			var result5 = dataSource.From<Employee>().WithIsolationLevel(SqlServerIsolationLevel.RepeatableRead).ToCollection().Execute();
 		}
 		finally
 		{
