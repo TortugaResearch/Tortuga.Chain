@@ -9,6 +9,27 @@ using Tortuga.Chain.SqlServer;
 
 namespace Tests.Aggregate;
 
+
+[TestClass]
+public class DistinctTests : TestBase
+{
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToStringList_WithDistinct_WithTopAndSort(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		//WriteLine($"Table {tableName}");
+		try
+		{
+			var topNames = dataSource.From<Employee>().WithDistinct().WithLimits(10).WithSorting("LastName").ToStringList("LastName").Execute();
+			Assert.IsTrue(topNames.Count <= 10);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+}
+
 [TestClass]
 public class CountTests : TestBase
 {
