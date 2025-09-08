@@ -1,0 +1,7 @@
+﻿CREATE PROCEDURE dbo.NoColumnName
+AS
+
+BEGIN
+	SELECT (1+1)
+END
+GO

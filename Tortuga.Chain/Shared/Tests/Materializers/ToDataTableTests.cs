@@ -195,11 +195,33 @@ public class ToDataTableTests : TestBase
 		{
 			var table = dataSource.Procedure("dbo.NoColumnNames").ToTable().Execute();
 			Assert.AreEqual(1, table.Rows.Count);
-			Assert.AreEqual(6, table.ColumnNames.Count);
+			Assert.AreEqual(7, table.ColumnNames.Count);
 
 			var dataTable = table.ToDataTable();
 			Assert.AreEqual(1, dataTable.Rows.Count);
-			Assert.AreEqual(6, dataTable.Columns.Count);
+			Assert.AreEqual(7, dataTable.Columns.Count);
+
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToTable_NoColumnName(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.Procedure("dbo.NoColumnName").ToTable().Execute();
+			Assert.AreEqual(1, table.Rows.Count);
+			Assert.AreEqual(1, table.ColumnNames.Count);
+
+			var dataTable = table.ToDataTable();
+			Assert.AreEqual(1, dataTable.Rows.Count);
+			Assert.AreEqual(1, dataTable.Columns.Count);
 
 
 		}
