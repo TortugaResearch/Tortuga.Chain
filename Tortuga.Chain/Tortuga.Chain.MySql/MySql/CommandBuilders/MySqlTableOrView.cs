@@ -16,16 +16,17 @@ namespace Tortuga.Chain.MySql.CommandBuilders;
 public partial class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject>
 	where TObject : class
 {
-	private readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
-	private object? m_ArgumentValue;
-	private FilterOptions m_FilterOptions;
-	private object? m_FilterValue;
-	private MySqlLimitOption m_LimitOptions;
-	private int? m_Seed;
-	private int? m_Skip;
-	private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-	private int? m_Take;
-	private string? m_WhereClause;
+	readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
+	object? m_ArgumentValue;
+	FilterOptions m_FilterOptions;
+	object? m_FilterValue;
+	MySqlLimitOption m_LimitOptions;
+	int? m_Seed;
+	int? m_Skip;
+	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+	int? m_Take;
+	string? m_WhereClause;
+	bool m_Distinct;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MySqlTableOrView{TObject}" /> class.
@@ -132,10 +133,12 @@ public partial class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlComm
 		List<MySqlParameter> parameters;
 		var sql = new StringBuilder();
 
+		var distinctClause = m_Distinct ? "DISTINCT " : "";
+
 		if (AggregateColumns.IsEmpty)
-			sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+			sqlBuilder.BuildSelectClause(sql, "SELECT " + distinctClause, null, null);
 		else
-			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
+			AggregateColumns.BuildSelectClause(sql, "SELECT " + distinctClause, DataSource, null);
 
 		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
@@ -217,6 +220,16 @@ public partial class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlComm
 	/// </summary>
 	/// <returns>TableOrViewMetadata.</returns>
 	protected override TableOrViewMetadata OnGetTable() => m_Table;
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption&gt;.</returns>
+	protected override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> OnWithDistinct()
+	{
+		m_Distinct = true;
+		return this;
+	}
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.

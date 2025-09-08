@@ -23,6 +23,7 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 
 	int? m_Take;
 	string? m_WhereClause;
+	bool m_Distinct;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AccessTableOrView{TObject}" /> class.
@@ -107,10 +108,12 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 				break;
 		}
 
+		var distinctClause = m_Distinct ? "DISTINCT " : "";
+
 		if (AggregateColumns.IsEmpty)
-			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+			sqlBuilder.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, null, null);
 		else
-			AggregateColumns.BuildSelectClause(sql, "SELECT " + topClause, DataSource, null);
+			AggregateColumns.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, DataSource, null);
 
 		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
@@ -238,6 +241,16 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 	protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
 	{
 		m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+		return this;
+	}
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption&gt;.</returns>
+	protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnWithDistinct()
+	{
+		m_Distinct = true;
 		return this;
 	}
 }

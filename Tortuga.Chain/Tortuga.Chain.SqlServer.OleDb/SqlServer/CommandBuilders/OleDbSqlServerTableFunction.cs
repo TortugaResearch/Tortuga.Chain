@@ -25,6 +25,7 @@ internal sealed class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbC
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
 	string? m_WhereClause;
+	bool m_Distinct;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="OleDbSqlServerTableFunction" /> class.
@@ -126,10 +127,12 @@ internal sealed class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbC
 				break;
 		}
 
+		var distinctClause = m_Distinct ? "DISTINCT " : "";
+
 		if (AggregateColumns.IsEmpty)
-			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+			sqlBuilder.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, null, null);
 		else
-			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
+			AggregateColumns.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, DataSource, null);
 
 		sqlBuilder.BuildAnonymousFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -300,6 +303,16 @@ internal sealed class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbC
 			throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
 
 		m_SortExpressions = sortExpressions;
+		return this;
+	}
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption&gt;.</returns>
+	protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithDistinct()
+	{
+		m_Distinct = true;
 		return this;
 	}
 }

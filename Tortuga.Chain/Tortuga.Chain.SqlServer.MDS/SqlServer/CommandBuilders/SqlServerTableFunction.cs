@@ -26,6 +26,7 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 	int? m_Take;
 	string? m_WhereClause;
 	List<string>? m_QueryHints;
+	bool m_Distinct;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerTableFunction" /> class.
@@ -147,10 +148,12 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 				break;
 		}
 
+		var distinctClause = m_Distinct ? "DISTINCT " : "";
+
 		if (AggregateColumns.IsEmpty)
-			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+			sqlBuilder.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, null, null);
 		else
-			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
+			AggregateColumns.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, DataSource, null);
 
 		sqlBuilder.BuildFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -333,5 +336,15 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 		if (m_QueryHints == null)
 			m_QueryHints = new List<string>();
 		m_QueryHints.Add(hint);
+	}
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption&gt;.</returns>
+	protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnWithDistinct()
+	{
+		m_Distinct = true;
+		return this;
 	}
 }
