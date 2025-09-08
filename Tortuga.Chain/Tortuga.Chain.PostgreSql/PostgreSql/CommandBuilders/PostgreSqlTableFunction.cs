@@ -24,6 +24,7 @@ public class PostgreSqlTableFunction : TableDbCommandBuilder<NpgsqlCommand, Npgs
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
 	string? m_WhereClause;
+	bool m_Distinct;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PostgreSqlTableFunction" /> class.
@@ -96,10 +97,12 @@ public class PostgreSqlTableFunction : TableDbCommandBuilder<NpgsqlCommand, Npgs
 		List<NpgsqlParameter> parameters;
 		var sql = new StringBuilder();
 
+		var distinctClause = m_Distinct ? "DISTINCT " : "";
+
 		if (AggregateColumns.IsEmpty)
-			sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+			sqlBuilder.BuildSelectClause(sql, "SELECT " + distinctClause, null, null);
 		else
-			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
+			AggregateColumns.BuildSelectClause(sql, "SELECT " + distinctClause, DataSource, null);
 
 		sqlBuilder.BuildFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -254,6 +257,16 @@ public class PostgreSqlTableFunction : TableDbCommandBuilder<NpgsqlCommand, Npgs
 			throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
 
 		m_SortExpressions = sortExpressions;
+		return this;
+	}
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption&gt;.</returns>
+	protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithDistinct()
+	{
+		m_Distinct = true;
 		return this;
 	}
 }

@@ -5,7 +5,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// This is applied to command builders that support SqlDependency operations.
 /// </summary>
-internal interface ISupportsChangeListener
+interface ISupportsChangeListener
 {
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.

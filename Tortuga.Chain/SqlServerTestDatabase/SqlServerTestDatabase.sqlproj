@@ -105,6 +105,7 @@
     <Build Include="dbo\Tables\MaxTest.sql" />
     <Build Include="dbo\Programability\UploadToMaxTest.sql" />
     <Build Include="HR\Programability\EmployeeList.sql" />
+    <Build Include="dbo\Programability\NoColumnNames.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />

@@ -13,7 +13,7 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<AnalysisLevel>latest</AnalysisLevel>
 		
-		<Version>5.3.0</Version>
+		<Version>5.4.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -48,11 +48,11 @@
 
 	<ItemGroup>
 		<Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
-		<Compile Include="..\Tortuga.Chain.SqlServer\shared\SqlServer\AbstractSqlServerMetadataCache.cs" Link="referenced\AbstractSqlServerMetadataCache.cs" />
-		<Compile Include="..\Tortuga.Chain.SqlServer\shared\SqlServer\SqlServerDataSourceSettings.cs" Link="referenced\SqlServerDataSourceSettings.cs" />
-		<Compile Include="..\Tortuga.Chain.SqlServer\shared\SqlServer\SqlServerObjectName.cs" Link="referenced\SqlServerObjectName.cs" />
-		<Compile Include="..\Tortuga.Chain.SqlServer\shared\SqlServerLimitOption.cs" Link="referenced\SqlServerLimitOption.cs" />
-		<Compile Include="..\Tortuga.Chain.SqlServer\shared\SqlServer\SqlServerTableOrViewMetadata.cs" Link="referenced\SqlServerTableOrViewMetadata.cs" />
+		<Compile Include="..\Tortuga.Chain.SqlServer.MDS\SqlServer\AbstractSqlServerMetadataCache.cs" Link="referenced\AbstractSqlServerMetadataCache.cs" />
+		<Compile Include="..\Tortuga.Chain.SqlServer.MDS\SqlServer\SqlServerDataSourceSettings.cs" Link="referenced\SqlServerDataSourceSettings.cs" />
+		<Compile Include="..\Tortuga.Chain.SqlServer.MDS\SqlServer\SqlServerObjectName.cs" Link="referenced\SqlServerObjectName.cs" />
+		<Compile Include="..\Tortuga.Chain.SqlServer.MDS\SqlServerLimitOption.cs" Link="referenced\SqlServerLimitOption.cs" />
+		<Compile Include="..\Tortuga.Chain.SqlServer.MDS\SqlServer\SqlServerTableOrViewMetadata.cs" Link="referenced\SqlServerTableOrViewMetadata.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
@@ -61,7 +61,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core.OleDb" Version="5.3.0" />
+		<PackageReference Include="Tortuga.Chain.Core.OleDb" Version="5.4.0" />
 	</ItemGroup>
 
 	<!-- Code Generator -->

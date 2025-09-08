@@ -1808,6 +1808,8 @@
   </HelpKINode>
   <HelpKINode Title="ExecutionTokenPreparingEventArgs.CommandBuilder property" Url="html/P-Tortuga.Chain.Core.ExecutionTokenPreparingEventArgs.CommandBuilder.htm" />
   <HelpKINode Title="ExecutionTokenPreparingEventArgs.ExecutionTokenPreparingEventArgs constructor" Url="html/M-Tortuga.Chain.Core.ExecutionTokenPreparingEventArgs.-ctor.htm" />
+  <HelpKINode Title="Expression enumeration member" Url="html/T-Tortuga.Chain.SortDirection.htm" />
+  <HelpKINode Title="Expression field" Url="html/F-Tortuga.Chain.SortDirection.Expression.htm" />
   <HelpKINode Title="ExtendedProperties property" Url="html/P-Tortuga.Chain.Metadata.ColumnMetadata.ExtendedProperties.htm" />
   <HelpKINode Title="ExtendedProperties property" Url="html/P-Tortuga.Chain.Metadata.TableOrViewMetadata.ExtendedProperties.htm" />
   <HelpKINode Title="FieldCount property" Url="html/P-Tortuga.Chain.DictionaryDataReader.FieldCount.htm" />
@@ -4785,8 +4787,12 @@
   <HelpKINode Title="Read field" Url="html/F-Tortuga.Chain.SQLite.LockType.Read.htm" />
   <HelpKINode Title="Read method" Url="html/M-Tortuga.Chain.DictionaryDataReader.Read.htm" />
   <HelpKINode Title="Read method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.Read.htm" />
+  <HelpKINode Title="ReadCommitted enumeration member" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
+  <HelpKINode Title="ReadCommitted field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.ReadCommitted.htm" />
   <HelpKINode Title="ReadOrCache(Of TResult) method" Url="html/M-Tortuga.Chain.CommonAppenders.ReadOrCache--1.htm" />
   <HelpKINode Title="ReadOrCache&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.CommonAppenders.ReadOrCache--1.htm" />
+  <HelpKINode Title="ReadUncommitted enumeration member" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
+  <HelpKINode Title="ReadUncommitted field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.ReadUncommitted.htm" />
   <HelpKINode Title="RecordsAffected property" Url="html/P-Tortuga.Chain.DictionaryDataReader.RecordsAffected.htm" />
   <HelpKINode Title="RecordsAffected property" Url="html/P-Tortuga.Chain.ObjectDataReader-1.RecordsAffected.htm" />
   <HelpKINode Title="ReferencedColumns property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedColumns.htm" />
@@ -4794,6 +4800,8 @@
   <HelpKINode Title="ReferencedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.ReferencedTableName.htm" />
   <HelpKINode Title="ReferencedTableName property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraint.ReferencedTableName.htm" />
   <HelpKINode Title="RegisterType method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.RegisterType.htm" />
+  <HelpKINode Title="RepeatableRead enumeration member" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
+  <HelpKINode Title="RepeatableRead field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.RepeatableRead.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.Reset.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.Reset.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.Reset.htm" />
@@ -5070,6 +5078,8 @@
   <HelpKINode Title="SequentialAccessMode property" Url="html/P-Tortuga.Chain.DataSources.DataSource.SequentialAccessMode.htm" />
   <HelpKINode Title="SequentialAccessMode property" Url="html/P-Tortuga.Chain.DataSources.DataSourceSettings.SequentialAccessMode.htm" />
   <HelpKINode Title="SequentialAccessMode property" Url="html/P-Tortuga.Chain.DataSources.IDataSource.SequentialAccessMode.htm" />
+  <HelpKINode Title="Serializable enumeration member" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
+  <HelpKINode Title="Serializable field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.Serializable.htm" />
   <HelpKINode Title="ServerVersion property" Url="html/P-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.ServerVersion.htm" />
   <HelpKINode Title="ServerVersion property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.ServerVersion.htm" />
   <HelpKINode Title="ServerVersionName property" Url="html/P-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.ServerVersionName.htm" />
@@ -5191,6 +5201,8 @@
   <HelpKINode Title="SingleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToRow method" Url="html/M-Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder-2.ToRow.htm" />
   <HelpKINode Title="SingleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToRowOrNull method" Url="html/M-Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder-2.ToRowOrNull.htm" />
   <HelpKINode Title="SlidingExpiration property" Url="html/P-Tortuga.Chain.CachePolicy.SlidingExpiration.htm" />
+  <HelpKINode Title="Snapshot enumeration member" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
+  <HelpKINode Title="Snapshot field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.Snapshot.htm" />
   <HelpKINode Title="SoftDelete enumeration member" Url="html/T-Tortuga.Chain.UpdateOptions.htm" />
   <HelpKINode Title="SoftDelete field" Url="html/F-Tortuga.Chain.UpdateOptions.SoftDelete.htm" />
   <HelpKINode Title="SoftDeleteRule class" Url="html/AllMembers.T-Tortuga.Chain.AuditRules.SoftDeleteRule.htm" />
@@ -5208,6 +5220,7 @@
   <HelpKINode Title="SortDirection enumeration" Url="html/T-Tortuga.Chain.SortDirection.htm" />
   <HelpKINode Title="SortDirection.Ascending field" Url="html/F-Tortuga.Chain.SortDirection.Ascending.htm" />
   <HelpKINode Title="SortDirection.Descending field" Url="html/F-Tortuga.Chain.SortDirection.Descending.htm" />
+  <HelpKINode Title="SortDirection.Expression field" Url="html/F-Tortuga.Chain.SortDirection.Expression.htm" />
   <HelpKINode Title="SortExpression structure" Url="html/AllMembers.T-Tortuga.Chain.SortExpression.htm" />
   <HelpKINode Title="SortExpression structure" Url="html/T-Tortuga.Chain.SortExpression.htm" />
   <HelpKINode Title="SortExpression structure">
@@ -5565,6 +5578,7 @@
   <HelpKINode Title="SqlServerAppenders.AutoInvalidate&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.AutoInvalidate--1.htm" />
   <HelpKINode Title="SqlServerAppenders.WithChangeNotification(Of TResult) method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification--1.htm" />
   <HelpKINode Title="SqlServerAppenders.WithChangeNotification&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification--1.htm" />
+  <HelpKINode Title="SqlServerAppenders.WithIndex method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerAppenders.WithIndex.htm" />
   <HelpKINode Title="SqlServerAppenders.WithInfoMessageNotification(Of TResult) method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
   <HelpKINode Title="SqlServerAppenders.WithInfoMessageNotification&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
   <HelpKINode Title="SqlServerCommandExecutionToken class" Url="html/AllMembers.T-Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.htm" />
@@ -5686,6 +5700,12 @@
   <HelpKINode Title="SqlServerInsertBulk.WithOptions method" Url="html/M-Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.WithOptions.htm" />
   <HelpKINode Title="SqlServerInsertBulk.WithStreaming method" Url="html/M-Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.WithStreaming.htm" />
   <HelpKINode Title="SqlServerInsertBulk.WithTimeout method" Url="html/M-Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.WithTimeout.htm" />
+  <HelpKINode Title="SqlServerIsolationLevel enumeration" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
+  <HelpKINode Title="SqlServerIsolationLevel.ReadCommitted field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.ReadCommitted.htm" />
+  <HelpKINode Title="SqlServerIsolationLevel.ReadUncommitted field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.ReadUncommitted.htm" />
+  <HelpKINode Title="SqlServerIsolationLevel.RepeatableRead field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.RepeatableRead.htm" />
+  <HelpKINode Title="SqlServerIsolationLevel.Serializable field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.Serializable.htm" />
+  <HelpKINode Title="SqlServerIsolationLevel.Snapshot field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.Snapshot.htm" />
   <HelpKINode Title="SqlServerLimitOption enumeration" Url="html/T-Tortuga.Chain.SqlServerLimitOption.htm" />
   <HelpKINode Title="SqlServerLimitOption.None field" Url="html/F-Tortuga.Chain.SqlServerLimitOption.None.htm" />
   <HelpKINode Title="SqlServerLimitOption.Percentage field" Url="html/F-Tortuga.Chain.SqlServerLimitOption.Percentage.htm" />
@@ -5942,8 +5962,10 @@
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).AsMin method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.AsMin.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).AsSum method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.AsSum.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).Columns property" Url="html/P-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.Columns.htm" />
+  <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).WithDistinct method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithDistinct.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithFilter.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).WithLimits method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithLimits.htm" />
+  <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).WithSortExpression method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithSortExpression.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit).WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithSorting.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject) class" Url="html/AllMembers.T-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject) class" Url="html/T-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.htm" />
@@ -5969,6 +5991,7 @@
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject).TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetColumn.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject).TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetColumns.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject).TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetNonNullableColumns.htm" />
+  <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject).WithDistinct method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithDistinct.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject).WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithFilter.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject).WithLimits method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithLimits.htm" />
   <HelpKINode Title="TableDbCommandBuilder(Of TCommand, TParameter, TLimit, TObject).WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithSorting.htm" />
@@ -5996,6 +6019,7 @@
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit, TObject&gt;.TryGetColumn method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetColumn.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit, TObject&gt;.TryGetColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetColumns.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit, TObject&gt;.TryGetNonNullableColumns method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.TryGetNonNullableColumns.htm" />
+  <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit, TObject&gt;.WithDistinct method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithDistinct.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit, TObject&gt;.WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithFilter.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit, TObject&gt;.WithLimits method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithLimits.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit, TObject&gt;.WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithSorting.htm" />
@@ -6014,8 +6038,10 @@
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.AsMin method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.AsMin.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.AsSum method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.AsSum.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.Columns property" Url="html/P-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.Columns.htm" />
+  <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.WithDistinct method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithDistinct.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithFilter.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.WithLimits method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithLimits.htm" />
+  <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.WithSortExpression method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithSortExpression.htm" />
   <HelpKINode Title="TableDbCommandBuilder&lt;TCommand, TParameter, TLimit&gt;.WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithSorting.htm" />
   <HelpKINode Title="TableFunction method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsTableFunction.TableFunction.htm" />
   <HelpKINode Title="TableFunctionMetadata class" Url="html/AllMembers.T-Tortuga.Chain.Metadata.TableFunctionMetadata.htm" />
@@ -7130,6 +7156,7 @@
   <HelpKINode Title="Tortuga.Chain.SqlServerDataSource class" Url="html/T-Tortuga.Chain.SqlServerDataSource.htm" />
   <HelpKINode Title="Tortuga.Chain.SqlServerExtensions class" Url="html/AllMembers.T-Tortuga.Chain.SqlServerExtensions.htm" />
   <HelpKINode Title="Tortuga.Chain.SqlServerExtensions class" Url="html/T-Tortuga.Chain.SqlServerExtensions.htm" />
+  <HelpKINode Title="Tortuga.Chain.SqlServerIsolationLevel enumeration" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
   <HelpKINode Title="Tortuga.Chain.SqlServerLimitOption enumeration" Url="html/T-Tortuga.Chain.SqlServerLimitOption.htm" />
   <HelpKINode Title="Tortuga.Chain.SqlServerParameterDefaults structure" Url="html/AllMembers.T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
   <HelpKINode Title="Tortuga.Chain.SqlServerParameterDefaults structure" Url="html/T-Tortuga.Chain.SqlServerParameterDefaults.htm" />
@@ -7533,6 +7560,8 @@
   <HelpKINode Title="WithBatchSize method" Url="html/M-Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.WithBatchSize.htm" />
   <HelpKINode Title="WithChangeNotification(Of TResult) method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification--1.htm" />
   <HelpKINode Title="WithChangeNotification&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification--1.htm" />
+  <HelpKINode Title="WithDistinct method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithDistinct.htm" />
+  <HelpKINode Title="WithDistinct method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithDistinct.htm" />
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder-1.WithFilter.htm" />
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.WithFilter.htm" />
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder-2.WithFilter.htm" />
@@ -7540,6 +7569,7 @@
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithFilter.htm" />
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.WithFilter.htm" />
   <HelpKINode Title="WithFilter method" Url="html/Overload-Tortuga.Chain.CommandBuilders.UpdateSetDbCommandBuilder-2.WithFilter.htm" />
+  <HelpKINode Title="WithIndex method" Url="html/Overload-Tortuga.Chain.SqlServer.SqlServerAppenders.WithIndex.htm" />
   <HelpKINode Title="WithInfoMessageNotification(Of TResult) method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
   <HelpKINode Title="WithInfoMessageNotification&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithInfoMessageNotification--1.htm" />
   <HelpKINode Title="WithKeys method" Url="html/M-Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder-1.WithKeys.htm" />
@@ -7565,6 +7595,7 @@
   <HelpKINode Title="WithSettings method" Url="html/M-Tortuga.Chain.PostgreSqlDataSource.WithSettings.htm" />
   <HelpKINode Title="WithSettings method" Url="html/M-Tortuga.Chain.SQLiteDataSource.WithSettings.htm" />
   <HelpKINode Title="WithSettings method" Url="html/M-Tortuga.Chain.SqlServerDataSource.WithSettings.htm" />
+  <HelpKINode Title="WithSortExpression method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithSortExpression.htm" />
   <HelpKINode Title="WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder-1.WithSorting.htm" />
   <HelpKINode Title="WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.WithSorting.htm" />
   <HelpKINode Title="WithSorting method" Url="html/Overload-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-3.WithSorting.htm" />

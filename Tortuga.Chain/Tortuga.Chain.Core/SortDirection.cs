@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Tortuga.Chain;
+﻿namespace Tortuga.Chain;
 
 /// <summary>
 /// Used to indicate the sort direction
@@ -16,5 +14,11 @@ public enum SortDirection : byte
 	/// <summary>
 	/// Descending
 	/// </summary>
-	Descending = 1
+	Descending = 1,
+
+
+	/// <summary>
+	/// Rather than a column name, a sort expression is provided.
+	/// </summary>
+	Expression = 2
 }

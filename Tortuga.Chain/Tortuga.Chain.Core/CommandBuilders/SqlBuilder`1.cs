@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Anchor;
 using Tortuga.Anchor.ComponentModel;
@@ -796,32 +795,38 @@ public sealed class SqlBuilder<TDbType>
 			if (!isFirst)
 				sql.Append(", ");
 
-			var columnIndex = FindColumnIndexByName(expression.ColumnName);
-			if (columnIndex.HasValue)
+			if (expression.Direction == SortDirection.Expression)
 			{
-				sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName! + (expression.Direction == SortDirection.Descending ? " DESC " : null));
-			}
-			else if (expression.ColumnName.EndsWith(" ACS", StringComparison.OrdinalIgnoreCase))
-			{
-				var truncateedName = expression.ColumnName[..^4];
-				columnIndex = FindColumnIndexByName(truncateedName);
-				if (columnIndex.HasValue)
-					sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName!);
-				else
-					throw new MappingException($"Cannot find a column on {m_Name} named '{truncateedName}' or '{expression.ColumnName}'");
-			}
-			else if (expression.ColumnName.EndsWith(" DESC", StringComparison.OrdinalIgnoreCase))
-			{
-				var truncateedName = expression.ColumnName[..^5];
-				columnIndex = FindColumnIndexByName(truncateedName);
-				if (columnIndex.HasValue)
-					sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName! + " DESC ");
-				else
-					throw new MappingException($"Cannot find a column on {m_Name} named '{truncateedName}' or '{expression.ColumnName}'");
+				sql.Append(expression.ColumnName);
 			}
 			else
-				throw new MappingException($"Cannot find a column on {m_Name} named '{expression.ColumnName}'");
-
+			{
+				var columnIndex = FindColumnIndexByName(expression.ColumnName);
+				if (columnIndex.HasValue)
+				{
+					sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName! + (expression.Direction == SortDirection.Descending ? " DESC " : null));
+				}
+				else if (expression.ColumnName.EndsWith(" ACS", StringComparison.OrdinalIgnoreCase))
+				{
+					var truncateedName = expression.ColumnName[..^4];
+					columnIndex = FindColumnIndexByName(truncateedName);
+					if (columnIndex.HasValue)
+						sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName!);
+					else
+						throw new MappingException($"Cannot find a column on {m_Name} named '{truncateedName}' or '{expression.ColumnName}'");
+				}
+				else if (expression.ColumnName.EndsWith(" DESC", StringComparison.OrdinalIgnoreCase))
+				{
+					var truncateedName = expression.ColumnName[..^5];
+					columnIndex = FindColumnIndexByName(truncateedName);
+					if (columnIndex.HasValue)
+						sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName! + " DESC ");
+					else
+						throw new MappingException($"Cannot find a column on {m_Name} named '{truncateedName}' or '{expression.ColumnName}'");
+				}
+				else
+					throw new MappingException($"Cannot find a column on {m_Name} named '{expression.ColumnName}'");
+			}
 			isFirst = false;
 		}
 

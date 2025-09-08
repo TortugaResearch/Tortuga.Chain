@@ -184,6 +184,32 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
+
+#if SQL_SERVER_MDS
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToTable_NoColumnNames(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.Procedure("dbo.NoColumnNames").ToTable().Execute();
+			Assert.AreEqual(1, table.Rows.Count);
+			Assert.AreEqual(6, table.ColumnNames.Count);
+
+			var dataTable = table.ToDataTable();
+			Assert.AreEqual(1, dataTable.Rows.Count);
+			Assert.AreEqual(6, dataTable.Columns.Count);
+
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+#endif
+
 	[DataTestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
 	public async Task ToTable_WithLimit_Async(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
 	{

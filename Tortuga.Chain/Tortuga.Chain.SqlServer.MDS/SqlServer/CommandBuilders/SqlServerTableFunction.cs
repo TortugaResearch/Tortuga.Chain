@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// Use for table-valued functions.
 /// </summary>
 /// <seealso cref="TableDbCommandBuilder{SqlCommand, SqlParameter, SqlServerLimitOption}" />
-sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsApproximateCount
+sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsApproximateCount, ISupportsQueryHints
 {
 	readonly object? m_FunctionArgumentValue;
 	readonly TableFunctionMetadata<SqlServerObjectName, SqlDbType> m_Table;
@@ -25,6 +25,8 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
 	string? m_WhereClause;
+	List<string>? m_QueryHints;
+	bool m_Distinct;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerTableFunction" /> class.
@@ -146,10 +148,12 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 				break;
 		}
 
+		var distinctClause = m_Distinct ? "DISTINCT " : "";
+
 		if (AggregateColumns.IsEmpty)
-			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+			sqlBuilder.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, null, null);
 		else
-			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
+			AggregateColumns.BuildSelectClause(sql, "SELECT " + distinctClause + topClause, DataSource, null);
 
 		sqlBuilder.BuildFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -209,6 +213,9 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 
 				break;
 		}
+
+		if (m_QueryHints != null)
+			sql.Append($" OPTION ({string.Join(", ", m_QueryHints)})");
 
 		sql.Append(';');
 
@@ -321,6 +328,23 @@ sealed internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand,
 			throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
 
 		m_SortExpressions = sortExpressions;
+		return this;
+	}
+
+	void ISupportsQueryHints.AddQueryHint(string hint)
+	{
+		if (m_QueryHints == null)
+			m_QueryHints = new List<string>();
+		m_QueryHints.Add(hint);
+	}
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption&gt;.</returns>
+	protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnWithDistinct()
+	{
+		m_Distinct = true;
 		return this;
 	}
 }

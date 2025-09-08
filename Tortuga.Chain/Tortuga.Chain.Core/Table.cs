@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Reflection;
+using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
@@ -66,11 +67,15 @@ public sealed class Table
 
 		var cols = new List<string>(source.FieldCount);
 		var colTypes = new Dictionary<string, Type>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
+
 		for (var i = 0; i < source.FieldCount; i++)
-		{
 			cols.Add(source.GetName(i));
-			colTypes.Add(source.GetName(i), source.GetFieldType(i));
-		}
+
+		DuplicateColumnNameHandling(cols);
+
+		for (var i = 0; i < source.FieldCount; i++)
+			colTypes.Add(cols[i], source.GetFieldType(i));
+
 		m_Columns = new ReadOnlyCollection<string>(cols);
 		m_ColumnTypes = new ReadOnlyDictionary<string, Type>(colTypes);
 
@@ -85,13 +90,24 @@ public sealed class Table
 				if (temp == DBNull.Value)
 					temp = null;
 
-				row.Add(source.GetName(i), temp);
+				row.Add(cols[i], temp);
 			}
 
 			rows.Add(new Row(row));
 		}
 
 		m_Rows = new RowCollection(rows);
+	}
+
+	static void DuplicateColumnNameHandling(List<string> cols)
+	{
+		if (cols.Count != cols.Distinct().Count())
+			for (var i = 0; i < cols.Count; i++)
+			{
+				var columnName = cols[i];
+				if (columnName.IsNullOrEmpty() || cols.Take(i).Any(c => c == columnName)) //do any previous columns have the same name?
+					cols[i] = columnName + "_" + i; //rename the column
+			}
 	}
 
 	/// <summary>
@@ -112,11 +128,15 @@ public sealed class Table
 
 		var cols = new List<string>(source.FieldCount);
 		var colTypes = new Dictionary<string, Type>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
+
 		for (var i = 0; i < source.FieldCount; i++)
-		{
 			cols.Add(source.GetName(i));
-			colTypes.Add(source.GetName(i), source.GetFieldType(i));
-		}
+
+		DuplicateColumnNameHandling(cols);
+
+		for (var i = 0; i < source.FieldCount; i++)
+			colTypes.Add(cols[i], source.GetFieldType(i));
+
 		m_Columns = new ReadOnlyCollection<string>(cols);
 		m_ColumnTypes = new ReadOnlyDictionary<string, Type>(colTypes);
 
@@ -131,7 +151,7 @@ public sealed class Table
 				if (temp == DBNull.Value)
 					temp = null;
 
-				row.Add(source.GetName(i), temp);
+				row.Add(cols[i], temp);
 			}
 
 			rows.Add(new Row(row));

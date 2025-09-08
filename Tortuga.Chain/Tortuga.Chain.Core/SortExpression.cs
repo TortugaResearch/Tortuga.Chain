@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Tortuga.Chain;
+﻿namespace Tortuga.Chain;
 
 /// <summary>
 /// Sort expressions are used for From and FromFunction command builders.
@@ -12,15 +10,16 @@ public struct SortExpression : IEquatable<SortExpression>
 	/// Initializes a new instance of the <see cref="SortExpression"/> class.
 	/// </summary>
 	/// <param name="columnName">Name of the column to be sorted by.</param>
-	/// <param name="descending">if set to <c>true</c> [descending].</param>
+	/// <param name="direction">if set to <c>true</c> [descending].</param>
 	/// <exception cref="ArgumentException"></exception>
-	public SortExpression(string columnName, SortDirection descending)
+	/// <remarks>If direction == Expression, columnName is a raw expression instead of a column name.</remarks>
+	public SortExpression(string columnName, SortDirection direction)
 	{
 		if (string.IsNullOrWhiteSpace(columnName))
 			throw new ArgumentException($"{nameof(columnName)} is null or empty.", nameof(columnName));
 
 		ColumnName = columnName;
-		Direction = descending;
+		Direction = direction;
 	}
 
 	/// <summary>
@@ -38,11 +37,12 @@ public struct SortExpression : IEquatable<SortExpression>
 	}
 
 	/// <summary>
-	/// Gets the name of the column to be sorted by.
+	/// Gets the name of the column to be sorted by. 
 	/// </summary>
 	/// <value>
 	/// The name of the column.
 	/// </value>
+	/// <remarks>If Direction == Expression, this is a raw expression instead of a column name.</remarks>
 	public string? ColumnName { get; }
 
 	/// <summary>

@@ -25,7 +25,8 @@ internal sealed partial class SQLiteTableOrView<TObject> : TableDbCommandBuilder
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
 	string? m_WhereClause;
-	//public object MetadataCache { get; private set; }
+	bool m_Distinct;
+
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SQLiteTableOrView{TObject}" /> class.
@@ -98,10 +99,12 @@ internal sealed partial class SQLiteTableOrView<TObject> : TableDbCommandBuilder
 
 		var sql = new StringBuilder();
 
+		var distinctClause = m_Distinct ? "DISTINCT " : "";
+
 		if (AggregateColumns.IsEmpty)
-			sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+			sqlBuilder.BuildSelectClause(sql, "SELECT " + distinctClause, null, null);
 		else
-			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
+			AggregateColumns.BuildSelectClause(sql, "SELECT " + distinctClause, DataSource, null);
 
 		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
@@ -241,6 +244,16 @@ internal sealed partial class SQLiteTableOrView<TObject> : TableDbCommandBuilder
 			throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
 
 		m_SortExpressions = sortExpressions;
+		return this;
+	}
+
+	/// <summary>
+	/// Adds DISTINCT to the command builder.
+	/// </summary>
+	/// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption&gt;.</returns>
+	protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithDistinct()
+	{
+		m_Distinct = true;
 		return this;
 	}
 }
