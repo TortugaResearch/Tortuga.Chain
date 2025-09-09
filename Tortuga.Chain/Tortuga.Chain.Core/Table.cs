@@ -101,13 +101,26 @@ public sealed class Table
 
 	static void DuplicateColumnNameHandling(List<string> cols)
 	{
-		if (cols.Count != cols.Distinct().Count())
-			for (var i = 0; i < cols.Count; i++)
+		if (!cols.Any(c => c.IsNullOrEmpty()) && (cols.Count == cols.Distinct().Count()))
+			return;
+
+		//We need to fix the broken resultset.
+		for (var i = 0; i < cols.Count; i++)
+		{
+			var columnName = cols[i];
+
+			if (columnName.IsNullOrEmpty())
 			{
-				var columnName = cols[i];
-				if (columnName.IsNullOrEmpty() || cols.Take(i).Any(c => c == columnName)) //do any previous columns have the same name?
-					cols[i] = columnName + "_" + i; //rename the column
+				cols[i] = "Column_" + (i + 1); //rename the column
 			}
+			else
+			{
+				var priorCount = cols.Take(i).Where(c => c == columnName).Count();
+
+				if (priorCount > 0) //do any previous columns have the same name?
+					cols[i] = columnName + "_" + (priorCount + 1); //rename the column
+			}
+		}
 	}
 
 	/// <summary>
