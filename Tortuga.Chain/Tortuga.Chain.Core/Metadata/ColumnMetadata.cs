@@ -70,7 +70,7 @@ public abstract class ColumnMetadata
 	/// <summary>
 	/// Gets the extended properties.
 	/// </summary>
-	public IReadOnlyDictionary<string, string> ExtendedProperties { get; init; } = FrozenDictionary<string, string>.Empty;
+	public IReadOnlyDictionary<string, object?> ExtendedProperties { get; init; } = FrozenDictionary<string, object?>.Empty;
 
 	/// <summary>
 	/// Gets or sets the full name of the type including max length, precision, and/or scale.

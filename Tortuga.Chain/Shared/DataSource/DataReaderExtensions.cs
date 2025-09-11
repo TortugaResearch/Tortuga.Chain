@@ -154,16 +154,19 @@ internal static class DataReaderExtensions
 	}
 
 	/// <summary>
-	/// Gets the value.
+	/// Gets the value or null.
 	/// </summary>
 	/// <param name="dataReader">The data reader.</param>
 	/// <param name="columnName">Name of the column.</param>
 	/// <returns>System.Object.</returns>
 	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-	public static object GetValue(this DbDataReader dataReader, string columnName)
+	public static object? GetValueOrNull(this DbDataReader dataReader, string columnName)
 	{
-		return dataReader.GetValue(dataReader.GetOrdinal(columnName));
+		var ordinal = dataReader.GetOrdinal(columnName);
+		if (dataReader.IsDBNull(ordinal))
+			return null;
+		else
+			return dataReader.GetValue(ordinal);
 	}
 
 	/// <summary>

@@ -1,3 +1,11 @@
+## Version 5.4.5
+
+### Bugs | Breaking Change
+
+Extended properties for SQL Server may contain non-string data. `TableOrViewMetadata.ExtendedProperties` and `ColumnMetadata.ExtendedProperties` are now a `IReadOnlyDictionary<string, object?>`.
+
+This has to be changed to prevent runtime errors when loading data about a table.
+
 ## Version 5.4
 
 ### Bugs
