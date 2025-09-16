@@ -6,6 +6,7 @@
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<LangVersion>13.0</LangVersion>
+		<DefineConstants>CONTRACTS_FULL</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

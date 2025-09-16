@@ -14,6 +14,7 @@
 		<AnalysisLevel>latest</AnalysisLevel>
 		
 		<Version>5.5.0</Version>
+		<DefineConstants>CONTRACTS_FULL</DefineConstants>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 

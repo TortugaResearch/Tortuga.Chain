@@ -17,6 +17,7 @@
 		<Version>5.5.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<DefineConstants>CONTRACTS_FULL</DefineConstants>
 
 		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
