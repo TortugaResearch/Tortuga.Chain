@@ -1,3 +1,10 @@
+## Version 5.4.6
+
+
+### Bugs 
+
+Column Order for MySQL tables was incorrect. It was sorted by name rather than ordinal.
+
 ## Version 5.4.5
 
 ### Bugs | Breaking Change
