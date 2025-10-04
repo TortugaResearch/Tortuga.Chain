@@ -655,7 +655,7 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 										AND i.object_id = ?
 							 )
 					SELECT  c.name AS ColumnName ,
-							c.is_computed ,
+							CONVERT(BIT, CASE WHEN c.is_computed = 1 OR c.generated_always_type > 0 THEN 1 ELSE 0 END) AS is_computed,
 							c.is_identity ,
 							c.column_id ,
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,

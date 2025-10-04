@@ -6,6 +6,10 @@ namespace Tests.Core;
 [TestClass]
 public class MetadataTests : TestBase
 {
+
+
+
+
 #if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
@@ -555,6 +559,25 @@ public class MetadataTests : TestBase
 			dataSource.DatabaseMetadata.PreloadTableFunctions();
 			var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction2Name);
 			Assert.IsNotNull(function, $"Error reading function {TableFunction2Name}");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void GeneratedColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView("dbo.Address");
+
+			var computedColumns = table.Columns.Where(c => c.IsComputed).ToList();
+			Assert.AreEqual(3, computedColumns.Count);
+
 		}
 		finally
 		{
