@@ -585,6 +585,29 @@ public class MetadataTests : TestBase
 		}
 	}
 
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void SystemVersionedTables(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView("dbo.Address");
+			Assert.AreEqual("dbo.Address_History", table.HistoryTableName);
+			Assert.AreEqual(false, table.IsHistoryTable);
+
+			var history = table.GetHistoryTable();
+			Assert.AreEqual(true, history.IsHistoryTable);
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+
+
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetTableById(string dataSourceName, DataSourceType mode)
 	{

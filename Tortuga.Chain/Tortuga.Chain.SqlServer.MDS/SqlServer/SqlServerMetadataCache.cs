@@ -804,14 +804,15 @@ WHERE v.object_id = @ObjectId";
 	internal SqlServerTableOrViewMetadata<SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
 	{
 		const string TableSql =
-			@"
-SELECT
+			@"SELECT
 	s.name AS SchemaName,
 	t.name AS Name,
 	t.object_id AS ObjectId,
 	CONVERT(BIT, 1) AS IsTable,
 	(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
-	p1.value AS Description
+	p1.value AS Description,
+	CONVERT(BIT, CASE WHEN t.temporal_type = 1 THEN 1 ELSE 0 END) AS IsHistoryTable,
+	t.history_table_id
 FROM SYS.tables t
 INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 LEFT JOIN sys.extended_properties p1
@@ -829,7 +830,9 @@ SELECT
 	t.object_id AS ObjectId,
 	CONVERT(BIT, 0) AS IsTable,
 	(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
-	p1.value AS Description
+	p1.value AS Description,
+	CONVERT(BIT, 0) AS IsHistoryTable,
+	NULL AS history_table_id
 FROM SYS.views t
 INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 LEFT JOIN sys.extended_properties p1
@@ -851,6 +854,8 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 		int objectId;
 		bool isTable;
 		bool hasTriggers;
+		bool isHistoryTable;
+		int? historyTableObjectId;
 		string? description;
 		var properties = new List<PropertyTemp>();
 
@@ -869,6 +874,8 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 					actualName = reader.GetString("Name");
 					objectId = reader.GetInt32("ObjectId");
 					isTable = reader.GetBoolean("IsTable");
+					isHistoryTable = reader.GetBoolean("IsHistoryTable");
+					historyTableObjectId = reader.GetInt32OrNull("history_table_id");
 					hasTriggers = reader.GetInt32("Triggers") > 0;
 					description = reader.GetStringOrNull("Description");
 				}
@@ -900,7 +907,9 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 		var actualTableName = new SqlServerObjectName(actualSchema, actualName);
 		m_ObjectIdTableMap[objectId] = actualTableName;
 
-		return new SqlServerTableOrViewMetadata<SqlDbType>(this, actualTableName, isTable, columns, hasTriggers, objectId) { Description = description, ExtendedProperties = tableProperties };
+		var historyTableName = historyTableObjectId.HasValue ? (SqlServerObjectName?)GetTableOrViewName(historyTableObjectId.Value) : null;
+
+		return new SqlServerTableOrViewMetadata<SqlDbType>(this, actualTableName, isTable, columns, hasTriggers, objectId, historyTableName, isHistoryTable) { Description = description, ExtendedProperties = tableProperties };
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTableTypeInternal(SqlServerObjectName typeName)

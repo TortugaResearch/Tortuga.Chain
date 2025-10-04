@@ -12,7 +12,7 @@ public abstract class AbstractSqlServerMetadataCache : DatabaseMetadataCache<Sql
 #elif SQL_SERVER_OLEDB
 
 /// <summary>Class AbstractSqlServerMetadataCache.</summary>
-public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadataCache<SqlServerObjectName>
+public abstract class AbstractSqlServerMetadataCache : OleDbDatabaseMetadataCache<SqlServerObjectName>
 #endif
 
 {
@@ -35,7 +35,7 @@ public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadat
 partial class SqlServerMetadataCache : AbstractSqlServerMetadataCache
 #elif SQL_SERVER_OLEDB
 
-partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
+partial class OleDbSqlServerMetadataCache : AbstractSqlServerMetadataCache
 #endif
 {
 	internal readonly DbConnectionStringBuilder m_ConnectionBuilder;
