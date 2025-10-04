@@ -132,6 +132,12 @@ public class AuditRulesTests : TestBase
 			Assert.IsNotNull(deletedRecord.DeletedDate, "Deleted date should be set");
 			Assert.AreEqual(currentUser1.EmployeeKey, deletedRecord.DeletedByKey, "Deleted by key should be set");
 
+			var deletedRecord2 = dsWithRules.From(CustomerTableName, new { CustomerKey = customerKey }).WithDeletedRecords().ToObject<CustomerWithValidation>().Execute();
+
+			Assert.IsTrue(deletedRecord2.DeletedFlag, "Deleted flag should be set");
+			Assert.IsNotNull(deletedRecord2.DeletedDate, "Deleted date should be set");
+			Assert.AreEqual(currentUser1.EmployeeKey, deletedRecord2.DeletedByKey, "Deleted by key should be set");
+
 			var misingRecord = ds1.From(CustomerTableName, new { CustomerKey = customerKey }).ToObjectOrNull<CustomerWithValidation>().Execute();
 
 			Assert.IsNull(misingRecord, "The soft delete rule should prevent this record from being returned.");

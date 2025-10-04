@@ -243,6 +243,15 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 		=> WithFilter(whereClause, null);
 
 	/// <summary>
+	/// Ignore the audit rule that normally hides deleted records.
+	/// </summary>
+	new public TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject> WithDeletedRecords()
+	{
+		IncludeDeletedRecords = true;
+		return this;
+	}
+
+	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.
 	/// </summary>
 	/// <param name="whereClause">The where clause.</param>
@@ -370,5 +379,4 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	/// <returns></returns>
 	new public TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject> WithDistinct()
 		=> (TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject>)OnWithDistinct();
-
 }
