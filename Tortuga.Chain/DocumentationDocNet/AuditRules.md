@@ -33,8 +33,8 @@ If your object model has its own validation interface, you can subclass ` Valida
 Chain can automatically set fields such as “CreatedByKey” and “UpdatedByKey”. There are two steps necessary to do this. First, you need to create a data source with the appropriate rules. As with a normal data source, this should be cached at the application level.
 
     dataSource = dataSource.WithRules(
-        new UserDataRule("CreatedByKey", "UserKey", OperationType.Insert),
-        new UserDataRule("UpdatedByKey", "UserKey", OperationType.InsertOrUpdate));
+        new UserDataRule("CreatedByKey", "UserKey", OperationTypes.Insert),
+        new UserDataRule("UpdatedByKey", "UserKey", OperationTypes.InsertOrUpdate));
 
 When a request is initiated, you then create a contextual data source with the user object. There are no restrictions on what this object looks like, so long as it has the columns indicated by your audit rules.
 
@@ -51,8 +51,8 @@ This will automatically apply the user’s `UserKey` value to the `UpdatedByKey`
 To ensure that `CreatedDate` and `UpdatedDate` are correctly set without using constraints and triggers, you can use `DateTimeRule` or `DateTimeOffsetRule`. 
 
     dataSource = dataSource.WithRules(
-        new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationType.Insert),
-        new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationType.InsertOrUpdate));
+        new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+        new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate));
 
 These rules do not require a context data source.
 

@@ -576,7 +576,7 @@ AND (
 	/// <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
 	private ColumnMetadataCollection<MySqlDbType> GetColumns(string schema, string tableName)
 	{
-		const string ColumnSql = @"SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, COLUMN_TYPE, COLUMN_KEY, EXTRA, COLUMN_COMMENT, COLLATION_NAME, COLUMN_COMMENT FROM INFORMATION_SCHEMA.Columns WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
+		const string ColumnSql = @"SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, COLUMN_TYPE, COLUMN_KEY, EXTRA, COLUMN_COMMENT, COLLATION_NAME, COLUMN_COMMENT FROM INFORMATION_SCHEMA.Columns WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name ORDER BY ORDINAL_POSITION";
 
 		var columns = new List<ColumnMetadata<MySqlDbType>>();
 		using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))

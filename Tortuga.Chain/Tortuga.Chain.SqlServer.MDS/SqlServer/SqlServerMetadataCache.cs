@@ -850,7 +850,7 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 						properties.Add(new()
 						{
 							Key = reader.GetString("Key"),
-							Value = reader.GetString("Value")
+							Value = reader.GetValueOrNull("Value")
 						});
 					}
 				}
@@ -859,7 +859,7 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 
 		var tableProperties = properties.Count > 0
 			? properties.ToFrozenDictionary(x => x.Key, x => x.Value)
-			: FrozenDictionary<string, string>.Empty;
+			: FrozenDictionary<string, object?>.Empty;
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
@@ -1167,7 +1167,7 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.ma
 						{
 							ColumnName = reader.GetString("ColumnName"),
 							Key = reader.GetString("Key"),
-							Value = reader.GetString("Value")
+							Value = reader.GetValueOrNull("Value")
 						});
 					}
 				}
@@ -1194,7 +1194,7 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.ma
 
 						var columnProperties = properties.Any(p => p.ColumnName == name)
 							? properties.Where(p => p.ColumnName == name).ToFrozenDictionary(x => x.Key, x => x.Value)
-							: FrozenDictionary<string, string>.Empty;
+							: FrozenDictionary<string, object?>.Empty;
 
 						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)) { Description = description, ExtendedProperties = columnProperties });
 					}
@@ -1348,7 +1348,7 @@ ORDER BY ic.key_ordinal;";
 	{
 		public string? ColumnName { get; set; }
 		public required string Key { get; set; }
-		public required string Value { get; set; }
+		public required object? Value { get; set; }
 	}
 
 	sealed class SqlServerIndexColumnMetadata : IndexColumnMetadata<SqlDbType>
