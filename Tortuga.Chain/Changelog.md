@@ -4,6 +4,12 @@
 
 [#555 If a SQL Server column is marked as 'Always Generated', set the IsComputed property to true](https://github.com/TortugaResearch/Tortuga.Chain/issues/555)
 
+[#553 Find table by object id in SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/553)
+
+
+* Add `ObjectId` property to `SqlServerTableOrViewMetadata`
+* Add method `SqlServerObjectName GetTableOrViewName(int objectId)` to `SqlServerMetadataCache`
+* Add method `SqlServerTableOrViewMetadata<SqlDbType> GetTableOrView(int objectId)` to `SqlServerMetadataCache`
 
 
 ## Version 5.4.6

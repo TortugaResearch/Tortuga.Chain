@@ -543,7 +543,10 @@ public sealed partial class OleDbSqlServerMetadataCache
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<OleDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+		var actualTableName = new SqlServerObjectName(actualSchema, actualName);
+		m_ObjectIdTableMap[objectId] = actualTableName;
+
+		return new SqlServerTableOrViewMetadata<OleDbType>(this, actualTableName, isTable, columns, hasTriggers, objectId);
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, OleDbType>
@@ -761,5 +764,40 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 		{
 			throw new MetadataException($"Error getting parameters for {procedureName}", ex);
 		}
+	}
+
+	internal SqlServerObjectName GetTableOrViewNameInternal(int objectId)
+	{
+		const string sql =
+			@"SELECT s.name AS SchemaName, t.name AS Name FROM sys.tables t 
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+WHERE t.object_id = ?
+UNION ALL
+SELECT s.name AS SchemaName, v.name AS Name FROM sys.views v 
+INNER JOIN sys.schemas s ON v.schema_id = s.schema_id
+WHERE v.object_id = ?";
+
+		string actualSchema;
+		string actualName;
+
+		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+		{
+			con.Open();
+			using (var cmd = new OleDbCommand(sql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId1", objectId);
+				cmd.Parameters.AddWithValue("@ObjectId2", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					if (!reader.Read())
+						throw new MissingObjectException($"Could not find table or view with the object_id {objectId}");
+
+					actualSchema = reader.GetString("SchemaName");
+					actualName = reader.GetString("Name");
+				}
+			}
+		}
+
+		return new SqlServerObjectName(actualSchema, actualName);
 	}
 }

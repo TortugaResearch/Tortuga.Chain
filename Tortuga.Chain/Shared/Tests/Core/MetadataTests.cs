@@ -585,5 +585,37 @@ public class MetadataTests : TestBase
 		}
 	}
 
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void GetTableById(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView("dbo.Address");
+
+			var name = dataSource.DatabaseMetadata.GetTableOrViewName(table.ObjectId);
+			Assert.AreEqual(table.Name, name, "The wrong table name was returned");
+
+			var table2 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
+			Assert.AreEqual(table, table2, "The wrong table was returned");
+
+
+			//Reset to force a different code path
+			dataSource.DatabaseMetadata.Reset();
+			var name2 = dataSource.DatabaseMetadata.GetTableOrViewName(table.ObjectId);
+			Assert.AreEqual(table.Name, name2, "The wrong table name was returned");
+
+			//Reset to force a different code path
+			dataSource.DatabaseMetadata.Reset();
+			var table3 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
+			Assert.AreNotEqual(table, table3, "The table cache wasn't reset");
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 #endif
 }

@@ -18,9 +18,11 @@ public class SqlServerTableOrViewMetadata<TDbType> : TableOrViewMetadata<SqlServ
 	/// <param name="isTable">if set to <c>true</c> is a table.</param>
 	/// <param name="columns">The columns.</param>
 	/// <param name="hasTriggers">if set to <c>true</c> has triggers.</param>
-	public SqlServerTableOrViewMetadata(DatabaseMetadataCache<SqlServerObjectName, TDbType> metadataCache, SqlServerObjectName name, bool isTable, ColumnMetadataCollection<TDbType> columns, bool hasTriggers) : base(metadataCache, name, isTable, columns)
+	/// <param name="objectId">SQL Server's internal object_id.</param>
+	public SqlServerTableOrViewMetadata(DatabaseMetadataCache<SqlServerObjectName, TDbType> metadataCache, SqlServerObjectName name, bool isTable, ColumnMetadataCollection<TDbType> columns, bool hasTriggers, int objectId) : base(metadataCache, name, isTable, columns)
 	{
 		HasTriggers = hasTriggers;
+		ObjectId = objectId;
 	}
 
 	/// <summary>
@@ -29,4 +31,9 @@ public class SqlServerTableOrViewMetadata<TDbType> : TableOrViewMetadata<SqlServ
 	/// <value><c>true</c> if this instance has triggers; otherwise, <c>false</c>.</value>
 	/// <remarks>This affects SQL generation.</remarks>
 	public bool HasTriggers { get; }
+
+	/// <summary>
+	/// SQL Server's internal object_id.
+	/// </summary>
+	public int ObjectId { get; }
 }

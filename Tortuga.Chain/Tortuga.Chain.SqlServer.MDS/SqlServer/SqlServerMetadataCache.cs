@@ -767,6 +767,40 @@ WHERE o.name = @Name
 		}
 	}
 
+	internal SqlServerObjectName GetTableOrViewNameInternal(int objectId)
+	{
+		const string sql =
+			@"SELECT s.name AS SchemaName, t.name AS Name FROM sys.tables t 
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+WHERE t.object_id = @ObjectId
+UNION ALL
+SELECT s.name AS SchemaName, v.name AS Name FROM sys.views v 
+INNER JOIN sys.schemas s ON v.schema_id = s.schema_id
+WHERE v.object_id = @ObjectId";
+
+		string actualSchema;
+		string actualName;
+
+		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+		{
+			con.Open();
+			using (var cmd = new SqlCommand(sql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					if (!reader.Read())
+						throw new MissingObjectException($"Could not find table or view with the object_id {objectId}");
+
+					actualSchema = reader.GetString("SchemaName");
+					actualName = reader.GetString("Name");
+				}
+			}
+		}
+
+		return new SqlServerObjectName(actualSchema, actualName);
+	}
+
 	internal SqlServerTableOrViewMetadata<SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
 	{
 		const string TableSql =
@@ -863,7 +897,10 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers) { Description = description, ExtendedProperties = tableProperties };
+		var actualTableName = new SqlServerObjectName(actualSchema, actualName);
+		m_ObjectIdTableMap[objectId] = actualTableName;
+
+		return new SqlServerTableOrViewMetadata<SqlDbType>(this, actualTableName, isTable, columns, hasTriggers, objectId) { Description = description, ExtendedProperties = tableProperties };
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTableTypeInternal(SqlServerObjectName typeName)
