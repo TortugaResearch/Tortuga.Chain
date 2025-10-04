@@ -1,3 +1,11 @@
+## Version 5.5
+
+### Features
+
+[#555 If a SQL Server column is marked as 'Always Generated', set the IsComputed property to true](https://github.com/TortugaResearch/Tortuga.Chain/issues/555)
+
+
+
 ## Version 5.4.6
 
 

@@ -1,0 +1,13 @@
+﻿CREATE TABLE dbo.Address_History
+(
+	AddressKey INT NOT NULL,
+	AddressLine1 NVARCHAR(50) NULL,
+	AddressLine2 NVARCHAR(50) NULL,
+	City NVARCHAR(50) NULL,
+	[State] INT NULL,
+	ZipCode NVARCHAR(12) NULL,
+	ValidFromDateTime DATETIME2(7) NOT NULL,
+	ValidToDateTime DATETIME2(7) NOT NULL,
+	[Hello] VARCHAR(11) NOT NULL
+);
+GO
