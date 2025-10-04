@@ -14,7 +14,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// SqlServerTableOrView supports queries against tables and views.
 /// </summary>
 [UseTrait(typeof(SupportsCount64Trait<SqlCommand, SqlParameter, SqlServerLimitOption>))]
-internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount, ISupportsChangeListener, ISupportsTableHints, ISupportsQueryHints
+internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount, ISupportsChangeListener, ISupportsTableHints, ISupportsQueryHints, ISupportsHistory
 	where TObject : class
 {
 	readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
@@ -31,6 +31,10 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	List<string>? m_TableHints;
 	List<string>? m_QueryHints;
 	bool m_Distinct;
+
+	DateTime? m_HistoryFromDate;
+	DateTime? m_HistoryToDate;
+	HistoryQueryMode m_HistoryMode;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerTableOrView{TObject}" /> class.
@@ -182,6 +186,29 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 
 		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
+		switch (m_HistoryMode)
+		{
+			case HistoryQueryMode.All:
+				sql.Append(" FOR SYSTEM_TIME ALL");
+				break;
+
+			case HistoryQueryMode.AsOfDate:
+				sql.Append(" FOR SYSTEM_TIME AS OF @system_time_date_1");
+				break;
+
+			case HistoryQueryMode.FromTo:
+				sql.Append(" FOR SYSTEM_TIME FROM @system_time_date_1 TO @system_time_date_2");
+				break;
+
+			case HistoryQueryMode.Between:
+				sql.Append(" FOR SYSTEM_TIME BETWEEN @system_time_date_1 AND @system_time_date_2");
+				break;
+
+			case HistoryQueryMode.Contains:
+				sql.Append(" FOR SYSTEM_TIME CONTAINED IN (@system_time_date_1, @system_time_date_2)");
+				break;
+		}
+
 		if (m_TableHints != null)
 			sql.Append($" WITH ({string.Join(", ", m_TableHints)})");
 
@@ -203,21 +230,21 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE (" + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions) + ")");
-			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters = sqlBuilder.GetParameters();
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE (" + m_WhereClause + ")");
-			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters = SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue);
 			parameters.AddRange(sqlBuilder.GetParameters());
 		}
 		else
 		{
-			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
+			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null, IncludeDeletedRecords);
 			parameters = sqlBuilder.GetParameters();
 		}
 
@@ -234,6 +261,20 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 		else
 		{
 			sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+		}
+
+		switch (m_HistoryMode)
+		{
+			case HistoryQueryMode.AsOfDate:
+				parameters.Add(new SqlParameter("@system_time_date_1", m_HistoryFromDate));
+				break;
+
+			case HistoryQueryMode.FromTo:
+			case HistoryQueryMode.Between:
+			case HistoryQueryMode.Contains:
+				parameters.Add(new SqlParameter("@system_time_date_1", m_HistoryFromDate));
+				parameters.Add(new SqlParameter("@system_time_date_2", m_HistoryToDate));
+				break;
 		}
 
 		switch (m_LimitOptions)
@@ -396,6 +437,11 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 		m_Distinct = true;
 		return this;
 	}
+
+	void ISupportsHistory.AddHistoryClause(DateTime? fromDate, DateTime? toDate, HistoryQueryMode mode)
+	{
+		m_HistoryFromDate = fromDate;
+		m_HistoryToDate = toDate;
+		m_HistoryMode = mode;
+	}
 }
-
-

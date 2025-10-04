@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Data.Common;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -17,6 +18,35 @@ public class SingleRowDbCommandBuilder<TCommand, TParameter, TObject> : SingleRo
 	where TObject : class
 {
 	readonly SingleRowDbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
+
+	/// <summary>
+	/// Gets an interface on this object or its underlying command builder.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public T? GetInterface<T>() where T : class
+	{
+		var result = this as T;
+		if (result != null)
+			return result;
+		result = m_CommandBuilder as T;
+		return result;
+	}
+
+
+	/// <summary>
+	/// Rewraps as multiple row command builder.
+	/// </summary>
+	/// <exception cref="InvalidOperationException">Cannot upgrade to a MultipleRowDbCommandBuilder.</exception>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> RewrapAsMultipleRow()
+	{
+		var result = this.m_CommandBuilder as MultipleRowDbCommandBuilder<TCommand, TParameter>;
+		if (result == null)
+			throw new InvalidOperationException("Cannot upgrade to a MultipleRowDbCommandBuilder.");
+
+		return new MultipleRowDbCommandBuilder<TCommand, TParameter, TObject>(result);
+	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SingleRowDbCommandBuilder{TCommand, TParameter, TObject}"/> class.

@@ -145,21 +145,21 @@ public partial class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlComm
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE (" + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions) + ")");
-			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters = sqlBuilder.GetParameters();
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE (" + m_WhereClause + ")");
-			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters = SqlBuilder.GetParameters<MySqlParameter>(m_ArgumentValue);
 			parameters.AddRange(sqlBuilder.GetParameters());
 		}
 		else
 		{
-			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
+			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null, IncludeDeletedRecords);
 			parameters = sqlBuilder.GetParameters();
 		}
 
