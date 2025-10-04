@@ -4,13 +4,13 @@
 
 [#555 If a SQL Server column is marked as 'Always Generated', set the IsComputed property to true](https://github.com/TortugaResearch/Tortuga.Chain/issues/555)
 
-[#553 Find table by object id in SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/553)
+This affects operations such as INSERT/UPDATE where generated columns are treated as read-only. It has the same effect as placeing `[IgnoreOnInsert]` and `[IgnoreOnUpdate]` on the associated properties.
 
+[#553 Find table by object id in SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/553)
 
 * Add property `ObjectId` to `SqlServerTableOrViewMetadata`
 * Add method `SqlServerObjectName GetTableOrViewName(int objectId)` to `SqlServerMetadataCache`
 * Add method `SqlServerTableOrViewMetadata<SqlDbType> GetTableOrView(int objectId)` to `SqlServerMetadataCache`
-
 
 [#552 Table Metadata should indicate if a table is a temporal table](https://github.com/TortugaResearch/Tortuga.Chain/issues/552)
 
@@ -18,6 +18,9 @@
 * Add property `IsHistoryTable` to `SqlServerTableOrViewMetadata`
 * Add method `SqlServerTableOrViewMetadata GetHistoryTable()` to `SqlServerTableOrViewMetadata`
 
+[#320 ClearCache](https://github.com/TortugaResearch/Tortuga.Chain/issues/320)
+
+The appender `.ClearCache()` can be added to any database operation to clear the cache.
 
 ## Version 5.4.6
 
