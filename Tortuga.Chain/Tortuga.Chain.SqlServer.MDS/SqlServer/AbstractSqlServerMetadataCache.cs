@@ -129,7 +129,7 @@ partial class OleDbSqlServerMetadataCache : AbstractSqlServerMetadataCache
 	/// <remarks>
 	/// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 	/// </remarks>
-	public override IReadOnlyCollection<TableOrViewMetadata<SqlServerObjectName, AbstractDbType>> GetTablesAndViews()
+	public override IReadOnlyCollection<SqlServerTableOrViewMetadata<AbstractDbType>> GetTablesAndViews()
 	{
 		return m_Tables.GetValues();
 	}
