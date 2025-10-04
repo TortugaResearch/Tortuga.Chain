@@ -12,7 +12,7 @@ public abstract class AbstractSqlServerMetadataCache : DatabaseMetadataCache<Sql
 #elif SQL_SERVER_OLEDB
 
 /// <summary>Class AbstractSqlServerMetadataCache.</summary>
-public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadataCache<SqlServerObjectName>
+public abstract class AbstractSqlServerMetadataCache : OleDbDatabaseMetadataCache<SqlServerObjectName>
 #endif
 
 {
@@ -35,7 +35,7 @@ public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadat
 partial class SqlServerMetadataCache : AbstractSqlServerMetadataCache
 #elif SQL_SERVER_OLEDB
 
-partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
+partial class OleDbSqlServerMetadataCache : AbstractSqlServerMetadataCache
 #endif
 {
 	internal readonly DbConnectionStringBuilder m_ConnectionBuilder;
@@ -50,6 +50,8 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 	internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>> m_TypeTableMap = new();
 
 	internal readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTableTypeMetadata<SqlServerObjectName, AbstractDbType>> m_UserDefinedTableTypes = new();
+
+	readonly ConcurrentDictionary<int, SqlServerObjectName> m_ObjectIdTableMap = new();
 
 	internal string? m_DatabaseName;
 	internal string? m_DefaultSchema;
@@ -183,6 +185,7 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 		m_UserDefinedTableTypes.Clear();
 		m_ScalarFunctions.Clear();
 		m_ScalarFunctions.Clear();
+		m_ObjectIdTableMap.Clear();
 		m_DefaultSchema = null;
 	}
 
@@ -298,4 +301,24 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 	/// Get the maximum number of rows in a single SQL statement's Values clause.
 	/// </summary>
 	public override int? MaxRowsPerValuesClause => 1000;
+
+
+	/// <summary>
+	/// Gets the name of the table or view.
+	/// </summary>
+	/// <param name="objectId">The object identifier.</param>
+	public SqlServerObjectName GetTableOrViewName(int objectId)
+	{
+		return m_ObjectIdTableMap.GetOrAdd(objectId, x => GetTableOrViewNameInternal(x));
+	}
+
+	/// <summary>
+	/// Gets the table or view from its object_id.
+	/// </summary>
+	/// <param name="objectId">The object identifier.</param>
+	public SqlServerTableOrViewMetadata<AbstractDbType> GetTableOrView(int objectId)
+	{
+		return GetTableOrView(GetTableOrViewName(objectId));
+	}
+
 }

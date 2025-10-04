@@ -767,17 +767,52 @@ WHERE o.name = @Name
 		}
 	}
 
+	internal SqlServerObjectName GetTableOrViewNameInternal(int objectId)
+	{
+		const string sql =
+			@"SELECT s.name AS SchemaName, t.name AS Name FROM sys.tables t 
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+WHERE t.object_id = @ObjectId
+UNION ALL
+SELECT s.name AS SchemaName, v.name AS Name FROM sys.views v 
+INNER JOIN sys.schemas s ON v.schema_id = s.schema_id
+WHERE v.object_id = @ObjectId";
+
+		string actualSchema;
+		string actualName;
+
+		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+		{
+			con.Open();
+			using (var cmd = new SqlCommand(sql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					if (!reader.Read())
+						throw new MissingObjectException($"Could not find table or view with the object_id {objectId}");
+
+					actualSchema = reader.GetString("SchemaName");
+					actualName = reader.GetString("Name");
+				}
+			}
+		}
+
+		return new SqlServerObjectName(actualSchema, actualName);
+	}
+
 	internal SqlServerTableOrViewMetadata<SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
 	{
 		const string TableSql =
-			@"
-SELECT
+			@"SELECT
 	s.name AS SchemaName,
 	t.name AS Name,
 	t.object_id AS ObjectId,
 	CONVERT(BIT, 1) AS IsTable,
 	(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
-	p1.value AS Description
+	p1.value AS Description,
+	CONVERT(BIT, CASE WHEN t.temporal_type = 1 THEN 1 ELSE 0 END) AS IsHistoryTable,
+	t.history_table_id
 FROM SYS.tables t
 INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 LEFT JOIN sys.extended_properties p1
@@ -795,7 +830,9 @@ SELECT
 	t.object_id AS ObjectId,
 	CONVERT(BIT, 0) AS IsTable,
 	(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
-	p1.value AS Description
+	p1.value AS Description,
+	CONVERT(BIT, 0) AS IsHistoryTable,
+	NULL AS history_table_id
 FROM SYS.views t
 INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 LEFT JOIN sys.extended_properties p1
@@ -817,6 +854,8 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 		int objectId;
 		bool isTable;
 		bool hasTriggers;
+		bool isHistoryTable;
+		int? historyTableObjectId;
 		string? description;
 		var properties = new List<PropertyTemp>();
 
@@ -835,6 +874,8 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 					actualName = reader.GetString("Name");
 					objectId = reader.GetInt32("ObjectId");
 					isTable = reader.GetBoolean("IsTable");
+					isHistoryTable = reader.GetBoolean("IsHistoryTable");
+					historyTableObjectId = reader.GetInt32OrNull("history_table_id");
 					hasTriggers = reader.GetInt32("Triggers") > 0;
 					description = reader.GetStringOrNull("Description");
 				}
@@ -863,7 +904,12 @@ WHERE  p.class_desc = 'OBJECT_OR_COLUMN' and p.name <> 'MS_Description' AND p.mi
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers) { Description = description, ExtendedProperties = tableProperties };
+		var actualTableName = new SqlServerObjectName(actualSchema, actualName);
+		m_ObjectIdTableMap[objectId] = actualTableName;
+
+		var historyTableName = historyTableObjectId.HasValue ? (SqlServerObjectName?)GetTableOrViewName(historyTableObjectId.Value) : null;
+
+		return new SqlServerTableOrViewMetadata<SqlDbType>(this, actualTableName, isTable, columns, hasTriggers, objectId, historyTableName, isHistoryTable) { Description = description, ExtendedProperties = tableProperties };
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTableTypeInternal(SqlServerObjectName typeName)
