@@ -4,7 +4,11 @@
 
 [#555 If a SQL Server column is marked as 'Always Generated', set the IsComputed property to true](https://github.com/TortugaResearch/Tortuga.Chain/issues/555)
 
+This affects operations such as INSERT/UPDATE where generated columns are treated as read-only. It has the same effect as placeing `[IgnoreOnInsert]` and `[IgnoreOnUpdate]` on the associated properties.
 
+[#320 ClearCache](https://github.com/TortugaResearch/Tortuga.Chain/issues/320)
+
+The appender `.ClearCache()` can be added to any database operation to clear the cache.
 
 ## Version 5.4.6
 
