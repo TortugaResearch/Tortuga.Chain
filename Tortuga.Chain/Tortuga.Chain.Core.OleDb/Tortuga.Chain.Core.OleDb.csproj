@@ -14,9 +14,10 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<AnalysisLevel>latest</AnalysisLevel>
 		
-		<Version>5.4.5</Version>
+		<Version>5.5.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<DefineConstants>CONTRACTS_FULL</DefineConstants>
 
 		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
@@ -49,7 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="5.4.5" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="5.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

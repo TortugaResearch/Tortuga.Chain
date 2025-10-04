@@ -52,7 +52,7 @@ public static class CommonAppenders
 	}
 
 	/// <summary>
-	/// Invalidates the cache.
+	/// Invalidates the cache for the indicated key.
 	/// </summary>
 	/// <param name="previousLink">The previous link.</param>
 	/// <param name="cacheKey">The cache key.</param>
@@ -62,7 +62,16 @@ public static class CommonAppenders
 	}
 
 	/// <summary>
-	/// Invalidates the cache.
+	/// Clears the cache.
+	/// </summary>
+	/// <param name="previousLink">The previous link.</param>
+	public static ILink<TResult> ClearCache<TResult>(this ILink<TResult> previousLink)
+	{
+		return new ClearCacheAppender<TResult>(previousLink);
+	}
+
+	/// <summary>
+	/// Invalidates the cache for the indicated key.
 	/// </summary>
 	/// <param name="commandBuilder">The command builder.</param>
 	/// <param name="cacheKey">The cache key.</param>

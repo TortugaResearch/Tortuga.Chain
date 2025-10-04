@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>ACCESS;NO_DISTINCT_COUNT;NO_ROW_SKIPPING;CLASS_1</DefineConstants>
+    <DefineConstants>ACCESS;NO_DISTINCT_COUNT;NO_ROW_SKIPPING;CLASS_1;CONTRACTS_FULL</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

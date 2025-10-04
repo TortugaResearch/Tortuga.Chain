@@ -13,13 +13,14 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<AnalysisLevel>latest</AnalysisLevel>
 		
-		<Version>5.4.5</Version>
+		<Version>5.5.1</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
 		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
 		<PackageProjectUrl>https://github.com/TortugaResearch/Tortuga.Chain</PackageProjectUrl>
+		<DefineConstants>CONTRACTS_FULL</DefineConstants>
 
 		<RepositoryUrl>https://github.com/TortugaResearch/Tortuga.Chain.git</RepositoryUrl>
 
@@ -64,7 +65,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="5.4.5" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="5.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

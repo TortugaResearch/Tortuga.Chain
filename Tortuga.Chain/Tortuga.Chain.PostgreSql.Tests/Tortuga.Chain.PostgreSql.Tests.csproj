@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DefineConstants>POSTGRESQL;CLASS_1;CLASS_2;CLASS_3;COUNT64</DefineConstants>
+		<DefineConstants>POSTGRESQL;CLASS_1;CLASS_2;CLASS_3;COUNT64;CONTRACTS_FULL</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
