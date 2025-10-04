@@ -39,6 +39,7 @@
 		<Compile Include="..\Shared\GlobalUsingForTests.cs" Link="GlobalUsingForTests.cs" />
 	</ItemGroup>
 
+
 	<ItemGroup>
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
