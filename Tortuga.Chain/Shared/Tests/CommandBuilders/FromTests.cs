@@ -288,7 +288,6 @@ public class FromTests : TestBase
 		var dataSource = DataSource(dataSourceName);
 		try
 		{
-
 			var record = dataSource.Insert(new Address() { AddressLine1 = "AAA" }).ToObject<Address>().Execute();
 			Assert.AreNotEqual(0, record.AddressKey);
 			Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -300,13 +299,11 @@ public class FromTests : TestBase
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			var time2 = DateTime.UtcNow;
 
-
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			record.AddressLine1 = "CCC";
 			dataSource.Update(record).Execute();
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			var time3 = DateTime.UtcNow;
-
 
 			Debug.WriteLine("Address Key " + record.AddressKey);
 
@@ -327,7 +324,6 @@ public class FromTests : TestBase
 
 			var contains = dataSource.From<Address>(new { record.AddressKey }).WithHistory(time1, time3, HistoryQueryMode.Contains).ToCollection().Execute();
 			Assert.AreEqual(1, contains.Count);
-
 		}
 		finally
 		{
@@ -338,7 +334,6 @@ public class FromTests : TestBase
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
 	public void HistoricalTests(string dataSourceName)
 	{
-
 		var dataSource = DataSource(dataSourceName);
 		try
 		{
@@ -355,13 +350,11 @@ public class FromTests : TestBase
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			var time2 = DateTime.UtcNow;
 
-
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			record.AddressLine1 = "CCC";
 			dataSource.Update(record).Execute();
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			var time3 = DateTime.UtcNow;
-
 
 			Debug.WriteLine("Address Key " + record.AddressKey);
 
@@ -382,13 +375,12 @@ public class FromTests : TestBase
 
 			var contains = dataSource.From(tableName, new { record.AddressKey }).WithHistory(time1, time3, HistoryQueryMode.Contains).ToCollection<Address>().Execute();
 			Assert.AreEqual(1, contains.Count);
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-#endif
 
+#endif
 }

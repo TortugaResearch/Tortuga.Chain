@@ -1,4 +1,5 @@
 ﻿using Tests.Models;
+using Tortuga.Chain;
 using Tortuga.Chain.SqlServer;
 
 namespace Tests.CommandBuilders;
@@ -236,7 +237,6 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-
 #if SQL_SERVER_MDS
 
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
@@ -258,12 +258,14 @@ public class GetByKeyTests : TestBase
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			var time2 = DateTime.UtcNow;
 
-
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			record.AddressLine1 = "CCC";
 			dataSource.Update(record).Execute();
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			var time3 = DateTime.UtcNow;
+
+			var all_deleted = dataSource.GetByKey(tableName, record.AddressKey).WithDeletedRecords().WithHistory().ToCollection<Address>().Execute();
+			Assert.AreEqual(3, all_deleted.Count);
 
 			var all = dataSource.GetByKey(tableName, record.AddressKey).WithHistory().ToCollection<Address>().Execute();
 			Assert.AreEqual(3, all.Count);
@@ -282,7 +284,6 @@ public class GetByKeyTests : TestBase
 
 			var contains = dataSource.GetByKey(tableName, record.AddressKey).WithHistory(time1, time3, HistoryQueryMode.Contains).ToCollection<Address>().Execute();
 			Assert.AreEqual(1, contains.Count);
-
 		}
 		finally
 		{
@@ -296,8 +297,6 @@ public class GetByKeyTests : TestBase
 		var dataSource = DataSource(dataSourceName);
 		try
 		{
-
-
 			var record = dataSource.Insert(new Address() { AddressLine1 = "AAA" }).ToObject<Address>().Execute();
 			Assert.AreNotEqual(0, record.AddressKey);
 			Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -308,7 +307,6 @@ public class GetByKeyTests : TestBase
 			dataSource.Update(record).Execute();
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			var time2 = DateTime.UtcNow;
-
 
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 			record.AddressLine1 = "CCC";
@@ -333,12 +331,12 @@ public class GetByKeyTests : TestBase
 
 			var contains = dataSource.GetByKey<Address>(record.AddressKey).WithHistory(time1, time3, HistoryQueryMode.Contains).ToCollection().Execute();
 			Assert.AreEqual(1, contains.Count);
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
+
 #endif
 }
