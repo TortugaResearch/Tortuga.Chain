@@ -14,7 +14,7 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<AnalysisLevel>latest</AnalysisLevel>
 		
-		<Version>5.6.0</Version>
+		<Version>5.7.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<DefineConstants>CONTRACTS_FULL</DefineConstants>
@@ -56,7 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="5.6.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="5.7.0" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
