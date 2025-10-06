@@ -208,6 +208,20 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 		=> OnWithFilter(whereClause, null);
 
 	/// <summary>
+	/// Ignore the audit rule that normally hides deleted records.
+	/// </summary>
+	public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithDeletedRecords()
+	{
+		IncludeDeletedRecords = true;
+		return this;
+	}
+
+	/// <summary>
+	/// If true, ignore the audit rule that normally hides deleted records.
+	/// </summary>
+	protected bool IncludeDeletedRecords { get; set; }
+
+	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.
 	/// </summary>
 	/// <param name="whereClause">The where clause.</param>
@@ -333,11 +347,9 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// <returns></returns>
 	protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithSorting(IEnumerable<SortExpression> sortExpressions);
 
-
 	/// <summary>
 	/// Adds DISTINCT to the command builder.
 	/// </summary>
 	/// <returns></returns>
 	protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithDistinct();
-
 }

@@ -1,3 +1,17 @@
+## Version 5.6
+
+[#560 FOR SYSTEM_TIME support for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/560)
+
+Tables and Views
+
+* `.WithHistory()` Return all versions of the record.
+* `.WithHistory(asOfDate)` Return the version of the record as of a specific date.
+* `.WithHistory(fromDate, toDate, HistoryQueryMode.FromTo)` Return all versions of the record matching `ValidFrom < end_date_time AND ValidTo > start_date_time`
+* `.WithHistory(fromDate, toDate, HistoryQueryMode.Between)` Return all versions of the record matching `ValidFrom <= end_date_time AND ValidTo > start_date_time`
+* `.WithHistory(fromDate, toDate, HistoryQueryMode.Contains)` Return all versions of the record matching `ValidFrom >= start_date_time AND ValidTo <&lt;>= end_date_time`
+
+
+
 ## Version 5.5
 
 ### Features

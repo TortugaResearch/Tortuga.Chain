@@ -615,13 +615,17 @@ public sealed class SqlBuilder<TDbType>
 	/// <param name="header">The header.</param>
 	/// <param name="dataSource">The data source.</param>
 	/// <param name="footer">The footer.</param>
+	/// <param name="includeDeletedRecords">Override to show deleted records.</param>
 	/// <exception cref="ArgumentNullException"></exception>
-	public void BuildAnonymousSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string? footer)
+	public void BuildAnonymousSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string? footer, bool includeDeletedRecords)
 	{
 		if (dataSource == null)
 			throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 		if (sql == null)
 			throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+		if (includeDeletedRecords)
+			return;
 
 		var softDeletes = dataSource.AuditRules.SoftDeleteForSelect;
 
@@ -942,13 +946,17 @@ public sealed class SqlBuilder<TDbType>
 	/// <param name="header">The optional header. Usually not used.</param>
 	/// <param name="dataSource">The data source.</param>
 	/// <param name="footer">The optional footer. Usually not used.</param>
+	/// <param name="includeDeletedRecords">Override to show deleted records.</param>
 	/// <exception cref="ArgumentNullException"></exception>
-	public void BuildSoftDeleteClause(StringBuilder sql, string? header, IDataSource dataSource, string? footer)
+	public void BuildSoftDeleteClause(StringBuilder sql, string? header, IDataSource dataSource, string? footer, bool includeDeletedRecords)
 	{
 		if (dataSource == null)
 			throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 		if (sql == null)
 			throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+		if (includeDeletedRecords)
+			return;
 
 		var softDeletes = dataSource.AuditRules.SoftDeleteForSelect;
 

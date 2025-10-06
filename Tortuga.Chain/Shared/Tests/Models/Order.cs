@@ -9,3 +9,5 @@ public class Order
 	[IgnoreOnUpdate]
 	public int CustomerKey { get; set; }
 }
+
+
