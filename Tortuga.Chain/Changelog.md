@@ -10,7 +10,9 @@ Tables and Views
 * `.WithHistory(fromDate, toDate, HistoryQueryMode.Between)` Return all versions of the record matching `ValidFrom <= end_date_time AND ValidTo > start_date_time`
 * `.WithHistory(fromDate, toDate, HistoryQueryMode.Contains)` Return all versions of the record matching `ValidFrom >= start_date_time AND ValidTo <&lt;>= end_date_time`
 
+[#559 Ignore Soft Delete Rule when Reading](https://github.com/TortugaResearch/Tortuga.Chain/issues/559)
 
+* `.WithDeletedRecords()` causes soft delete rules to be ignored so that you can read deleted rows.
 
 ## Version 5.5
 
