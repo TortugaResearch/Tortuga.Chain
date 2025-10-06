@@ -27,7 +27,6 @@ internal sealed partial class SQLiteTableOrView<TObject> : TableDbCommandBuilder
 	string? m_WhereClause;
 	bool m_Distinct;
 
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SQLiteTableOrView{TObject}" /> class.
 	/// </summary>
@@ -111,21 +110,21 @@ internal sealed partial class SQLiteTableOrView<TObject> : TableDbCommandBuilder
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE (" + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions) + ")");
-			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters = sqlBuilder.GetParameters();
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE (" + m_WhereClause + ")");
-			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters = SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue);
 			parameters.AddRange(sqlBuilder.GetParameters());
 		}
 		else
 		{
-			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
+			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null, IncludeDeletedRecords);
 			parameters = sqlBuilder.GetParameters();
 		}
 

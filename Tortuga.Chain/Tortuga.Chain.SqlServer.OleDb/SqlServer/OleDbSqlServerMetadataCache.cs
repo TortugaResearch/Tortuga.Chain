@@ -496,7 +496,9 @@ public sealed partial class OleDbSqlServerMetadataCache
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 1) AS IsTable,
-				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
+				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
+				CONVERT(BIT, CASE WHEN t.temporal_type = 1 THEN 1 ELSE 0 END) AS IsHistoryTable,
+				t.history_table_id
 				FROM SYS.tables t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?
@@ -508,7 +510,9 @@ public sealed partial class OleDbSqlServerMetadataCache
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 0) AS IsTable,
-				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
+				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers,
+				CONVERT(BIT, 0) AS IsHistoryTable,
+				NULL AS history_table_id
 				FROM SYS.views t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?";
@@ -518,6 +522,8 @@ public sealed partial class OleDbSqlServerMetadataCache
 		int objectId;
 		bool isTable;
 		bool hasTriggers;
+		bool isHistoryTable;
+		int? historyTableObjectId;
 
 		using (var con = new OleDbConnection(m_ConnectionBuilder!.ConnectionString))
 		{
@@ -536,6 +542,8 @@ public sealed partial class OleDbSqlServerMetadataCache
 					actualName = reader.GetString("Name");
 					objectId = reader.GetInt32("ObjectId");
 					isTable = reader.GetBoolean("IsTable");
+					isHistoryTable = reader.GetBoolean("IsHistoryTable");
+					historyTableObjectId = reader.GetInt32OrNull("history_table_id");
 					hasTriggers = reader.GetInt32("Triggers") > 0;
 				}
 			}
@@ -543,7 +551,12 @@ public sealed partial class OleDbSqlServerMetadataCache
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<OleDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+		var actualTableName = new SqlServerObjectName(actualSchema, actualName);
+		m_ObjectIdTableMap[objectId] = actualTableName;
+
+		var historyTableName = historyTableObjectId.HasValue ? (SqlServerObjectName?)GetTableOrViewName(historyTableObjectId.Value) : null;
+
+		return new SqlServerTableOrViewMetadata<OleDbType>(this, actualTableName, isTable, columns, hasTriggers, objectId, historyTableName, isHistoryTable);
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, OleDbType>
@@ -655,7 +668,7 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 										AND i.object_id = ?
 							 )
 					SELECT  c.name AS ColumnName ,
-							c.is_computed ,
+							CONVERT(BIT, CASE WHEN c.is_computed = 1 OR c.generated_always_type > 0 THEN 1 ELSE 0 END) AS is_computed,
 							c.is_identity ,
 							c.column_id ,
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
@@ -761,5 +774,40 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 		{
 			throw new MetadataException($"Error getting parameters for {procedureName}", ex);
 		}
+	}
+
+	internal SqlServerObjectName GetTableOrViewNameInternal(int objectId)
+	{
+		const string sql =
+			@"SELECT s.name AS SchemaName, t.name AS Name FROM sys.tables t 
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+WHERE t.object_id = ?
+UNION ALL
+SELECT s.name AS SchemaName, v.name AS Name FROM sys.views v 
+INNER JOIN sys.schemas s ON v.schema_id = s.schema_id
+WHERE v.object_id = ?";
+
+		string actualSchema;
+		string actualName;
+
+		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+		{
+			con.Open();
+			using (var cmd = new OleDbCommand(sql, con))
+			{
+				cmd.Parameters.AddWithValue("@ObjectId1", objectId);
+				cmd.Parameters.AddWithValue("@ObjectId2", objectId);
+				using (var reader = cmd.ExecuteReader())
+				{
+					if (!reader.Read())
+						throw new MissingObjectException($"Could not find table or view with the object_id {objectId}");
+
+					actualSchema = reader.GetString("SchemaName");
+					actualName = reader.GetString("Name");
+				}
+			}
+		}
+
+		return new SqlServerObjectName(actualSchema, actualName);
 	}
 }

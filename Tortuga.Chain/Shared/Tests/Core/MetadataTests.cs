@@ -6,6 +6,10 @@ namespace Tests.Core;
 [TestClass]
 public class MetadataTests : TestBase
 {
+
+
+
+
 #if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
@@ -555,6 +559,80 @@ public class MetadataTests : TestBase
 			dataSource.DatabaseMetadata.PreloadTableFunctions();
 			var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction2Name);
 			Assert.IsNotNull(function, $"Error reading function {TableFunction2Name}");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void GeneratedColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView("dbo.Address");
+
+			var computedColumns = table.Columns.Where(c => c.IsComputed).ToList();
+			Assert.AreEqual(3, computedColumns.Count);
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void SystemVersionedTables(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView("dbo.Address");
+			Assert.AreEqual("dbo.Address_History", table.HistoryTableName);
+			Assert.AreEqual(false, table.IsHistoryTable);
+
+			var history = table.GetHistoryTable();
+			Assert.AreEqual(true, history.IsHistoryTable);
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void GetTableById(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView("dbo.Address");
+
+			var name = dataSource.DatabaseMetadata.GetTableOrViewName(table.ObjectId);
+			Assert.AreEqual(table.Name, name, "The wrong table name was returned");
+
+			var table2 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
+			Assert.AreEqual(table, table2, "The wrong table was returned");
+
+
+			//Reset to force a different code path
+			dataSource.DatabaseMetadata.Reset();
+			var name2 = dataSource.DatabaseMetadata.GetTableOrViewName(table.ObjectId);
+			Assert.AreEqual(table.Name, name2, "The wrong table name was returned");
+
+			//Reset to force a different code path
+			dataSource.DatabaseMetadata.Reset();
+			var table3 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
+			Assert.AreNotEqual(table, table3, "The table cache wasn't reset");
+
 		}
 		finally
 		{

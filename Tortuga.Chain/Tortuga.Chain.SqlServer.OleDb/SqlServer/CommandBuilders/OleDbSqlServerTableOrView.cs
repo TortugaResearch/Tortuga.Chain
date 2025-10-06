@@ -167,21 +167,21 @@ internal sealed partial class OleDbSqlServerTableOrView<TObject> : TableDbComman
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE (" + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions) + ")");
-			sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters.AddRange(sqlBuilder.GetParameters());
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE (" + m_WhereClause + ")");
-			sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ");
+			sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ", IncludeDeletedRecords);
 
 			parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
 			parameters.AddRange(sqlBuilder.GetParameters());
 		}
 		else
 		{
-			sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " WHERE ", DataSource, null);
+			sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " WHERE ", DataSource, null, IncludeDeletedRecords);
 			parameters.AddRange(sqlBuilder.GetParameters());
 		}
 

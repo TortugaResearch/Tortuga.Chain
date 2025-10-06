@@ -1,3 +1,58 @@
+## Version 5.6
+
+[#560 FOR SYSTEM_TIME support for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/560)
+
+Tables and Views
+
+* `.WithHistory()` Return all versions of the record.
+* `.WithHistory(asOfDate)` Return the version of the record as of a specific date.
+* `.WithHistory(fromDate, toDate, HistoryQueryMode.FromTo)` Return all versions of the record matching `ValidFrom < end_date_time AND ValidTo > start_date_time`
+* `.WithHistory(fromDate, toDate, HistoryQueryMode.Between)` Return all versions of the record matching `ValidFrom <= end_date_time AND ValidTo > start_date_time`
+* `.WithHistory(fromDate, toDate, HistoryQueryMode.Contains)` Return all versions of the record matching `ValidFrom >= start_date_time AND ValidTo <&lt;>= end_date_time`
+
+[#559 Ignore Soft Delete Rule when Reading](https://github.com/TortugaResearch/Tortuga.Chain/issues/559)
+
+* `.WithDeletedRecords()` causes soft delete rules to be ignored so that you can read deleted rows.
+
+## Version 5.5
+
+### Features
+
+[#555 If a SQL Server column is marked as 'Always Generated', set the IsComputed property to true](https://github.com/TortugaResearch/Tortuga.Chain/issues/555)
+
+This affects operations such as INSERT/UPDATE where generated columns are treated as read-only. It has the same effect as placeing `[IgnoreOnInsert]` and `[IgnoreOnUpdate]` on the associated properties.
+
+[#553 Find table by object id in SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/553)
+
+* Add property `ObjectId` to `SqlServerTableOrViewMetadata`
+* Add method `SqlServerObjectName GetTableOrViewName(int objectId)` to `SqlServerMetadataCache`
+* Add method `SqlServerTableOrViewMetadata<SqlDbType> GetTableOrView(int objectId)` to `SqlServerMetadataCache`
+
+[#552 Table Metadata should indicate if a table is a temporal table](https://github.com/TortugaResearch/Tortuga.Chain/issues/552)
+
+* Add property `HistoryTableName` to `SqlServerTableOrViewMetadata`
+* Add property `IsHistoryTable` to `SqlServerTableOrViewMetadata`
+* Add method `SqlServerTableOrViewMetadata GetHistoryTable()` to `SqlServerTableOrViewMetadata`
+
+[#320 ClearCache](https://github.com/TortugaResearch/Tortuga.Chain/issues/320)
+
+The appender `.ClearCache()` can be added to any database operation to clear the cache.
+
+## Version 5.4.6
+
+
+### Bugs 
+
+Column Order for MySQL tables was incorrect. It was sorted by name rather than ordinal.
+
+## Version 5.4.5
+
+### Bugs | Breaking Change
+
+Extended properties for SQL Server may contain non-string data. `TableOrViewMetadata.ExtendedProperties` and `ColumnMetadata.ExtendedProperties` are now a `IReadOnlyDictionary<string, object?>`.
+
+This has to be changed to prevent runtime errors when loading data about a table.
+
 ## Version 5.4
 
 ### Bugs

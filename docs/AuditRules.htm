@@ -111,8 +111,8 @@
 <h2 id="created-byupdated-by-support">Created By/Updated By Support<a class="headerlink" href="#created-byupdated-by-support" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>Chain can automatically set fields such as “CreatedByKey” and “UpdatedByKey”. There are two steps necessary to do this. First, you need to create a data source with the appropriate rules. As with a normal data source, this should be cached at the application level.</p>
 <pre><code>dataSource = dataSource.WithRules(
-    new UserDataRule(&quot;CreatedByKey&quot;, &quot;UserKey&quot;, OperationType.Insert),
-    new UserDataRule(&quot;UpdatedByKey&quot;, &quot;UserKey&quot;, OperationType.InsertOrUpdate));
+    new UserDataRule(&quot;CreatedByKey&quot;, &quot;UserKey&quot;, OperationTypes.Insert),
+    new UserDataRule(&quot;UpdatedByKey&quot;, &quot;UserKey&quot;, OperationTypes.InsertOrUpdate));
 </code></pre>
 
 <p>When a request is initiated, you then create a contextual data source with the user object. There are no restrictions on what this object looks like, so long as it has the columns indicated by your audit rules.</p>
@@ -127,8 +127,8 @@
 <h2 id="created-dateupdated-date-support">Created Date/Updated Date Support<a class="headerlink" href="#created-dateupdated-date-support" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>To ensure that <code>CreatedDate</code> and <code>UpdatedDate</code> are correctly set without using constraints and triggers, you can use <code>DateTimeRule</code> or <code>DateTimeOffsetRule</code>. </p>
 <pre><code>dataSource = dataSource.WithRules(
-    new DateTimeRule(&quot;CreatedDate&quot;, DateTimeKind.Local, OperationType.Insert),
-    new DateTimeRule(&quot;UpdatedDate&quot;, DateTimeKind.Local, OperationType.InsertOrUpdate));
+    new DateTimeRule(&quot;CreatedDate&quot;, DateTimeKind.Local, OperationTypes.Insert),
+    new DateTimeRule(&quot;UpdatedDate&quot;, DateTimeKind.Local, OperationTypes.InsertOrUpdate));
 </code></pre>
 
 <p>These rules do not require a context data source.</p>

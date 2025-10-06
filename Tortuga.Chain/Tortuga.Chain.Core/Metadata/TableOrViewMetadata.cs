@@ -32,7 +32,7 @@ public abstract class TableOrViewMetadata : DatabaseObject
 	/// <summary>
 	/// Gets the extended properties.
 	/// </summary>
-	public IReadOnlyDictionary<string, string> ExtendedProperties { get; init; } = FrozenDictionary<string, string>.Empty;
+	public IReadOnlyDictionary<string, object?> ExtendedProperties { get; init; } = FrozenDictionary<string, object?>.Empty;
 
 	/// <summary>
 	/// Gets a value indicating whether this table or view has primary key.

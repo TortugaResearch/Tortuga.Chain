@@ -1,8 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Tortuga.Anchor.Modeling;
 
 namespace Tests.Models;
 
+#if SQLITE || ACCESS
+[Table("Customer")]
+#else
+
+[Table("Sales.Customer")]
+#endif
 public class CustomerWithValidation : ModelBase
 {
 	[IgnoreOnUpdate]

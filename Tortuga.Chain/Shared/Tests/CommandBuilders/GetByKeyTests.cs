@@ -1,4 +1,6 @@
 ﻿using Tests.Models;
+using Tortuga.Chain;
+using Tortuga.Chain.SqlServer;
 
 namespace Tests.CommandBuilders;
 
@@ -234,4 +236,107 @@ public class GetByKeyTests : TestBase
 			Release(dataSource);
 		}
 	}
+
+#if SQL_SERVER_MDS
+
+	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	public void HistoricalTests(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName);
+		try
+		{
+			var tableName = "dbo.Address";
+
+			var record = dataSource.Insert(new Address() { AddressLine1 = "AAA" }).ToObject<Address>().Execute();
+			Assert.AreNotEqual(0, record.AddressKey);
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			var time1 = DateTime.UtcNow;
+
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			record.AddressLine1 = "BBB";
+			dataSource.Update(record).Execute();
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			var time2 = DateTime.UtcNow;
+
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			record.AddressLine1 = "CCC";
+			dataSource.Update(record).Execute();
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			var time3 = DateTime.UtcNow;
+
+			var all_deleted = dataSource.GetByKey(tableName, record.AddressKey).WithDeletedRecords().WithHistory().ToCollection<Address>().Execute();
+			Assert.AreEqual(3, all_deleted.Count);
+
+			var all = dataSource.GetByKey(tableName, record.AddressKey).WithHistory().ToCollection<Address>().Execute();
+			Assert.AreEqual(3, all.Count);
+
+			var current = dataSource.GetByKey(tableName, record.AddressKey).ToObject<Address>().Execute();
+			Assert.AreEqual("CCC", current.AddressLine1);
+
+			var old = dataSource.GetByKey(tableName, record.AddressKey).WithHistory(time1).ToObject<Address>().Execute();
+			Assert.AreEqual("AAA", old.AddressLine1);
+
+			var fromTo = dataSource.GetByKey(tableName, record.AddressKey).WithHistory(time1, time2, HistoryQueryMode.FromTo).ToCollection<Address>().Execute();
+			Assert.AreEqual(2, fromTo.Count);
+
+			var between = dataSource.GetByKey(tableName, record.AddressKey).WithHistory(time1, time2, HistoryQueryMode.Between).ToCollection<Address>().Execute();
+			Assert.AreEqual(2, between.Count);
+
+			var contains = dataSource.GetByKey(tableName, record.AddressKey).WithHistory(time1, time3, HistoryQueryMode.Contains).ToCollection<Address>().Execute();
+			Assert.AreEqual(1, contains.Count);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	public void HistoricalTests_ByObject(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName);
+		try
+		{
+			var record = dataSource.Insert(new Address() { AddressLine1 = "AAA" }).ToObject<Address>().Execute();
+			Assert.AreNotEqual(0, record.AddressKey);
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			var time1 = DateTime.UtcNow;
+
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			record.AddressLine1 = "BBB";
+			dataSource.Update(record).Execute();
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			var time2 = DateTime.UtcNow;
+
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			record.AddressLine1 = "CCC";
+			dataSource.Update(record).Execute();
+			Thread.Sleep(TimeSpan.FromSeconds(1));
+			var time3 = DateTime.UtcNow;
+
+			var all = dataSource.GetByKey<Address>(record.AddressKey).WithHistory().ToCollection().Execute();
+			Assert.AreEqual(3, all.Count);
+
+			var current = dataSource.GetByKey<Address>(record.AddressKey).ToObject().Execute();
+			Assert.AreEqual("CCC", current.AddressLine1);
+
+			var old = dataSource.GetByKey<Address>(record.AddressKey).WithHistory(time1).ToObject().Execute();
+			Assert.AreEqual("AAA", old.AddressLine1);
+
+			var fromTo = dataSource.GetByKey<Address>(record.AddressKey).WithHistory(time1, time2, HistoryQueryMode.FromTo).ToCollection().Execute();
+			Assert.AreEqual(2, fromTo.Count);
+
+			var between = dataSource.GetByKey<Address>(record.AddressKey).WithHistory(time1, time2, HistoryQueryMode.Between).ToCollection().Execute();
+			Assert.AreEqual(2, between.Count);
+
+			var contains = dataSource.GetByKey<Address>(record.AddressKey).WithHistory(time1, time3, HistoryQueryMode.Contains).ToCollection().Execute();
+			Assert.AreEqual(1, contains.Count);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
 }

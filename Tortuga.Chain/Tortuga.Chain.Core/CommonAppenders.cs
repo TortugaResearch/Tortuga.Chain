@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Data.Common;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Tortuga.Anchor.Metadata;
@@ -52,7 +53,7 @@ public static class CommonAppenders
 	}
 
 	/// <summary>
-	/// Invalidates the cache.
+	/// Invalidates the cache for the indicated key.
 	/// </summary>
 	/// <param name="previousLink">The previous link.</param>
 	/// <param name="cacheKey">The cache key.</param>
@@ -62,7 +63,16 @@ public static class CommonAppenders
 	}
 
 	/// <summary>
-	/// Invalidates the cache.
+	/// Clears the cache.
+	/// </summary>
+	/// <param name="previousLink">The previous link.</param>
+	public static ILink<TResult> ClearCache<TResult>(this ILink<TResult> previousLink)
+	{
+		return new ClearCacheAppender<TResult>(previousLink);
+	}
+
+	/// <summary>
+	/// Invalidates the cache for the indicated key.
 	/// </summary>
 	/// <param name="commandBuilder">The command builder.</param>
 	/// <param name="cacheKey">The cache key.</param>
@@ -357,5 +367,44 @@ public static class CommonAppenders
 		where TKey : notnull
 	{
 		return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
+	}
+
+	/// <summary>
+	/// Ignore the audit rule that normally hides deleted records.
+	/// </summary>
+	/// <param name="tableDbCommand">The table database command.</param>
+	public static SingleRowDbCommandBuilder<TCommand, TParameter, TObject> WithDeletedRecords<TCommand, TParameter, TObject>(this SingleRowDbCommandBuilder<TCommand, TParameter, TObject> tableDbCommand)
+		where TCommand : DbCommand
+		where TParameter : DbParameter
+		where TObject : class
+	{
+		if (tableDbCommand == null)
+			throw new ArgumentNullException(nameof(tableDbCommand), $"{nameof(tableDbCommand)} is null.");
+
+		var deletedRecords = tableDbCommand.GetInterface<ISupportsDeletedRecords>();
+		if (deletedRecords == null)
+			throw new InvalidOperationException("Deleted records are not supported by this command builder.");
+		deletedRecords.InlcudeDeletedRecords();
+
+		return tableDbCommand;
+	}
+
+	/// <summary>
+	/// Ignore the audit rule that normally hides deleted records.
+	/// </summary>
+	/// <param name="tableDbCommand">The table database command.</param>
+	public static SingleRowDbCommandBuilder<TCommand, TParameter> WithDeletedRecords<TCommand, TParameter>(this SingleRowDbCommandBuilder<TCommand, TParameter> tableDbCommand)
+		where TCommand : DbCommand
+		where TParameter : DbParameter
+	{
+		if (tableDbCommand == null)
+			throw new ArgumentNullException(nameof(tableDbCommand), $"{nameof(tableDbCommand)} is null.");
+
+		var deletedRecords = tableDbCommand as ISupportsDeletedRecords;
+		if (deletedRecords == null)
+			throw new InvalidOperationException("Deleted records are not supported by this command builder.");
+		deletedRecords.InlcudeDeletedRecords();
+
+		return tableDbCommand;
 	}
 }
