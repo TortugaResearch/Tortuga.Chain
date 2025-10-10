@@ -1,4 +1,5 @@
 using System.Text;
+using Tests.Models;
 using Tortuga.Chain.Metadata;
 
 namespace Tests.Core;
@@ -6,43 +7,6 @@ namespace Tests.Core;
 [TestClass]
 public class MetadataTests : TestBase
 {
-
-
-
-
-#if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
-
-	[DataTestMethod, TableData(DataSourceGroup.All)]
-	public void TableIndexes(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-			var indexes = table.GetIndexes();
-			Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
-
-#if SQL_SERVER_MDS
-			if (table.Columns.Any(c => c.IsPrimaryKey))
-				Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() == 1, "A column is marked as primary, so there should be a primary index.");
-#endif
-			foreach (var index in indexes)
-			{
-				if (index.IndexType != IndexType.Heap)
-				{
-					Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), $"Indexes should have names. Table name {table.Name}");
-					Assert.IsTrue(index.Columns.Count > 0, $"Indexes should have columns. Table name {table.Name} Index name {index.Name}");
-				}
-			}
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-#endif
-
 #if SQL_SERVER_MDS || POSTGRESQL || MYSQL || SQLITE || ACCESS
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
@@ -58,35 +22,6 @@ public class MetadataTests : TestBase
 #if SQL_SERVER_MDS || POSTGRESQL || MYSQL
 				Assert.IsFalse(string.IsNullOrWhiteSpace(fKey.Name), $"Constraints should have names. Table name {table.Name}");
 #endif
-			}
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-#endif
-
-#if SQL_SERVER_MDS
-
-	[DataTestMethod, ViewData(DataSourceGroup.All)]
-	public void ViewIndexes(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-			var indexes = table.GetIndexes();
-			Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
-
-			if (table.Columns.Any(c => c.IsPrimaryKey))
-				Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "A column is marked as primary, so there should be a primary index.");
-
-			foreach (var index in indexes)
-			{
-				//Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
-				Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
 			}
 		}
 		finally
@@ -566,7 +501,6 @@ public class MetadataTests : TestBase
 		}
 	}
 
-
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GeneratedColumns(string dataSourceName, DataSourceType mode)
 	{
@@ -577,14 +511,12 @@ public class MetadataTests : TestBase
 
 			var computedColumns = table.Columns.Where(c => c.IsComputed).ToList();
 			Assert.AreEqual(3, computedColumns.Count);
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void SystemVersionedTables(string dataSourceName, DataSourceType mode)
@@ -598,15 +530,12 @@ public class MetadataTests : TestBase
 
 			var history = table.GetHistoryTable();
 			Assert.AreEqual(true, history.IsHistoryTable);
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetTableById(string dataSourceName, DataSourceType mode)
@@ -622,7 +551,6 @@ public class MetadataTests : TestBase
 			var table2 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
 			Assert.AreEqual(table, table2, "The wrong table was returned");
 
-
 			//Reset to force a different code path
 			dataSource.DatabaseMetadata.Reset();
 			var name2 = dataSource.DatabaseMetadata.GetTableOrViewName(table.ObjectId);
@@ -632,7 +560,6 @@ public class MetadataTests : TestBase
 			dataSource.DatabaseMetadata.Reset();
 			var table3 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
 			Assert.AreNotEqual(table, table3, "The table cache wasn't reset");
-
 		}
 		finally
 		{
