@@ -1,3 +1,13 @@
+## Version 5.7
+
+
+### Bug Fixes
+
+[#564 CacheAllItems needs a test](https://github.com/TortugaResearch/Tortuga.Chain/issues/564)
+
+The `.CacheAllItems` appender no longer needs type parameter when caching a `List<T>`, `ImmutableList<T>`, or `ImmutableArray<T>` collection.
+
+
 ## Version 5.6
 
 [#560 FOR SYSTEM_TIME support for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/560)
