@@ -4,13 +4,11 @@ using System.Collections.Immutable;
 using Tests.Models;
 using Tortuga.Chain;
 
-
 namespace Tests.CommandBuilders;
 
 [TestClass]
 public class FromTests_ToDictionary : TestBase
 {
-
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDictionary_InferredObject(string dataSourceName, DataSourceType mode)
 	{
@@ -84,6 +82,13 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("B", test6[2].FirstName);
 			Assert.AreEqual("C", test6[3].FirstName);
 			Assert.AreEqual("D", test6[4].FirstName);
+
+			var test9 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToScalarDictionary<string, string>("LastName", "FirstName").Execute();
+			Assert.IsInstanceOfType(test9, typeof(Dictionary<string, string>));
+			Assert.AreEqual("A", test9["1"]);
+			Assert.AreEqual("B", test9["2"]);
+			Assert.AreEqual("C", test9["3"]);
+			Assert.AreEqual("D", test9["4"]);
 		}
 		finally
 		{
@@ -313,7 +318,6 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("C", test6[3].FirstName);
 			Assert.AreEqual("D", test6[4].FirstName);
 
-			
 			var test7 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToFrozenDictionary<string, EmployeeLookup>("FirstName").WithConstructor<long, string, string>().Execute();
 			Assert.IsInstanceOfType(test7, typeof(FrozenDictionary<string, EmployeeLookup>));
 			Assert.AreEqual("1", test7["A"].LastName);
@@ -545,7 +549,6 @@ public class FromTests_ToDictionary : TestBase
 			Assert.AreEqual("B", test4[2].FirstName);
 			Assert.AreEqual("C", test4[3].FirstName);
 			Assert.AreEqual("D", test4[4].FirstName);
-
 		}
 		finally
 		{
@@ -624,6 +627,4 @@ public class FromTests_ToDictionary : TestBase
 			Release(dataSource);
 		}
 	}
-
-
 }
