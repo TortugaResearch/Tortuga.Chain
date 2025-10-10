@@ -1,3 +1,16 @@
+## Version 5.7
+[#554 SQL Sever Disable/Enable Indexes](https://github.com/TortugaResearch/Tortuga.Chain/issues/554)
+
+[#568 PostgreSQL Disable/Enable all indexes](https://github.com/TortugaResearch/Tortuga.Chain/issues/568)
+
+* `.EnableIndexes(tableName)`*
+* `.EnableIndexes<TObject>()`*
+* `.DisableIndexes(tableName)`*
+* `.DisableIndexes<TObject>()`*
+
+This can be used before and after a bulk data load to improve performance.
+
+
 ## Version 5.6
 
 [#560 FOR SYSTEM_TIME support for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/560)

@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 
@@ -8,6 +7,46 @@ namespace Tortuga.Chain.SqlServer;
 
 partial class SqlServerDataSourceBase
 {
+	///// <summary>
+	///// Disables all of the indexes on the indicated table..
+	///// </summary>
+	///// <param name="tableName">Name of the table.</param>
+	//public ILink<int?> DisableIndexes(SqlServerObjectName tableName)
+	//{
+	//	var table = DatabaseMetadata.GetTableOrView(tableName);
+	//	return DisableIndexes(table);
+	//}
+
+	///// <summary>
+	///// Disables all of the indexes on the indicated table.
+	///// </summary>
+	//public ILink<int?> DisableIndexes<TObject>()
+	//	where TObject : class
+	//{
+	//	var table = DatabaseMetadata.GetTableOrViewFromClass<TObject>();
+	//	return DisableIndexes(table);
+	//}
+
+	///// <summary>
+	///// Enables all of the indexes on the indicated table.
+	///// </summary>
+	///// <param name="tableName">Name of the table.</param>
+	//public ILink<int?> EnableIndexes(SqlServerObjectName tableName)
+	//{
+	//	var table = DatabaseMetadata.GetTableOrView(tableName);
+	//	return EnableIndexes(table);
+	//}
+
+	///// <summary>
+	///// Enables all of the indexes on the indicated table..
+	///// </summary>
+	//public ILink<int?> EnableIndexes<TObject>()
+	//	where TObject : class
+	//{
+	//	var table = DatabaseMetadata.GetTableOrViewFromClass<TObject>();
+	//	return EnableIndexes(table);
+	//}
+
 	/// <summary>
 	/// Inserts the batch of records as one operation.
 	/// </summary>
@@ -170,4 +209,16 @@ partial class SqlServerDataSourceBase
 	{
 		return new SqlServerSqlCall(this, sqlStatement, argumentValue, defaults);
 	}
+
+	//ILink<int?> DisableIndexes(Metadata.TableOrViewMetadata<AbstractObjectName, AbstractDbType> table)
+	//{
+	//	var sqlStatement = $"ALTER INDEX ALL ON {table.Name.ToQuotedString()} DISABLE";
+	//	return new SqlServerSqlCall(this, sqlStatement, null).AsNonQuery();
+	//}
+
+	//ILink<int?> EnableIndexes(Metadata.TableOrViewMetadata<AbstractObjectName, AbstractDbType> table)
+	//{
+	//	var sqlStatement = $"ALTER INDEX ALL ON {table.Name.ToQuotedString()} REBUILD";
+	//	return new SqlServerSqlCall(this, sqlStatement, null).AsNonQuery();
+	//}
 }
