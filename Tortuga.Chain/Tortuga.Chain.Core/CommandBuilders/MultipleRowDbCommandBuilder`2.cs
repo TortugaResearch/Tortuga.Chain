@@ -497,6 +497,40 @@ public abstract class MultipleRowDbCommandBuilder<TCommand, TParameter> : Single
 	}
 
 	/// <summary>
+	/// Materializes the result as a dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <typeparam name="TValue">The type of the value.</typeparam>
+	/// <typeparam name="TDictionary">The type of dictionary.</typeparam>
+	/// <param name="keyColumn">The name of the key column.</param>
+	/// <param name="valueColumn">The name of the value column.</param>
+	/// <param name="dictionaryOptions">The dictionary options. The InferConstructor option is not supported.</param>
+	/// <returns></returns>
+	public ILink<TDictionary> ToScalarDictionary<TKey, TValue, TDictionary>(string keyColumn, string valueColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull
+		where TValue : notnull
+		where TDictionary : IDictionary<TKey, TValue>, new()
+	{
+		return new ScalarDictionaryMaterializer<TCommand, TParameter, TKey, TValue, TDictionary>(this, keyColumn, valueColumn, dictionaryOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a dictionary of objects.
+	/// </summary>
+	/// <typeparam name="TKey">The type of the key.</typeparam>
+	/// <typeparam name="TValue">The type of the value.</typeparam>
+	/// <param name="keyColumn">The name of the key column.</param>
+	/// <param name="valueColumn">The name of the value column.</param>
+	/// <param name="dictionaryOptions">The dictionary options. The InferConstructor option is not supported.</param>
+	/// <returns></returns>
+	public ILink<Dictionary<TKey, TValue>> ToScalarDictionary<TKey, TValue>(string keyColumn, string valueColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+		where TKey : notnull
+		where TValue : notnull
+	{
+		return new ScalarDictionaryMaterializer<TCommand, TParameter, TKey, TValue, Dictionary<TKey, TValue>>(this, keyColumn, valueColumn, dictionaryOptions);
+	}
+
+	/// <summary>
 	/// Indicates the results should be materialized as a list of numbers.
 	/// </summary>
 	/// <param name="columnName">Name of the desired column.</param>

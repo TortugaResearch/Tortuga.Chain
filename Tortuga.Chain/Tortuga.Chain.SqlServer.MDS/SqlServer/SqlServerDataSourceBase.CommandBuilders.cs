@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 

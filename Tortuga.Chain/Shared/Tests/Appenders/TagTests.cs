@@ -3,8 +3,6 @@ using Tortuga.Chain;
 
 namespace Tests.Appenders;
 
-
-
 [TestClass]
 public class TagTests : TestBase
 {
@@ -36,4 +34,3 @@ public class TagTests : TestBase
 		}
 	}
 }
-

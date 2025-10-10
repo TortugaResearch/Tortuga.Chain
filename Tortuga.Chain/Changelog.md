@@ -1,3 +1,34 @@
+## Version 5.7
+
+[#198 ToDictionary needs a ValueColumn name](https://github.com/TortugaResearch/Tortuga.Chain/issues/198)
+
+* `.ToScalarDictionary<TKey, TValue>(keyColumn, valueColumn, dictionaryOptions)`
+* `.ToScalarDictionary<TKey, TValue, TDictionary>(keyColumn, valueColumn, dictionaryOptions)`
+* `DictionaryOptions.DiscardNullKeys`
+* `DictionaryOptions.DiscardNullValues`
+
+If a `TDictionary` is not supplied, the normal `Dictionary<TKey, TValue>` will be used.
+
+Nulls are not supported for keys or values, but can be silently discarded.
+
+[#554 SQL Sever Disable/Enable Indexes](https://github.com/TortugaResearch/Tortuga.Chain/issues/554)
+
+[#568 PostgreSQL Disable/Enable all indexes](https://github.com/TortugaResearch/Tortuga.Chain/issues/568)
+
+* `.EnableIndexes(tableName)`*
+* `.EnableIndexes<TObject>()`*
+* `.DisableIndexes(tableName)`*
+* `.DisableIndexes<TObject>()`*
+
+This can be used before and after a bulk data load to improve performance.
+
+### Bug Fixes
+
+[#564 CacheAllItems needs a test](https://github.com/TortugaResearch/Tortuga.Chain/issues/564)
+
+The `.CacheAllItems` appender no longer needs type parameter when caching a `List<T>`, `ImmutableList<T>`, or `ImmutableArray<T>` collection.
+
+
 ## Version 5.6
 
 [#560 FOR SYSTEM_TIME support for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/560)

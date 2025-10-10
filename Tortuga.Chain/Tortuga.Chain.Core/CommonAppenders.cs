@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Collections.Immutable;
+using System.Data.Common;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -45,11 +46,46 @@ public static class CommonAppenders
 	/// <param name="previousLink">The previous link.</param>
 	/// <param name="cacheKeyFunction">Function to generate cache keys.</param>
 	/// <param name="policy">Optional cache policy.</param>
-	/// <returns>ILink&lt;TCollection&gt;.</returns>
 	public static ICacheLink<TCollection> CacheAllItems<TCollection, TItem>(this ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy? policy = null)
 		where TCollection : IEnumerable<TItem>
 	{
 		return new CacheAllItemsAppender<TCollection, TItem>(previousLink, cacheKeyFunction, policy);
+	}
+
+	/// <summary>
+	/// Caches all items in the result set.
+	/// </summary>
+	/// <typeparam name="TItem">The type of the t item.</typeparam>
+	/// <param name="previousLink">The previous link.</param>
+	/// <param name="cacheKeyFunction">Function to generate cache keys.</param>
+	/// <param name="policy">Optional cache policy.</param>
+	public static ICacheLink<List<TItem>> CacheAllItems<TItem>(this ILink<List<TItem>> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy? policy = null)
+	{
+		return new CacheAllItemsAppender<List<TItem>, TItem>(previousLink, cacheKeyFunction, policy);
+	}
+
+	/// <summary>
+	/// Caches all items in the result set.
+	/// </summary>
+	/// <typeparam name="TItem">The type of the t item.</typeparam>
+	/// <param name="previousLink">The previous link.</param>
+	/// <param name="cacheKeyFunction">Function to generate cache keys.</param>
+	/// <param name="policy">Optional cache policy.</param>
+	public static ICacheLink<ImmutableArray<TItem>> CacheAllItems<TItem>(this ILink<ImmutableArray<TItem>> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy? policy = null)
+	{
+		return new CacheAllItemsAppender<ImmutableArray<TItem>, TItem>(previousLink, cacheKeyFunction, policy);
+	}
+
+	/// <summary>
+	/// Caches all items in the result set.
+	/// </summary>
+	/// <typeparam name="TItem">The type of the t item.</typeparam>
+	/// <param name="previousLink">The previous link.</param>
+	/// <param name="cacheKeyFunction">Function to generate cache keys.</param>
+	/// <param name="policy">Optional cache policy.</param>
+	public static ICacheLink<ImmutableList<TItem>> CacheAllItems<TItem>(this ILink<ImmutableList<TItem>> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy? policy = null)
+	{
+		return new CacheAllItemsAppender<ImmutableList<TItem>, TItem>(previousLink, cacheKeyFunction, policy);
 	}
 
 	/// <summary>
