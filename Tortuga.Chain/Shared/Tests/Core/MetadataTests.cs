@@ -1,4 +1,5 @@
 using System.Text;
+using Tests.Models;
 using Tortuga.Chain.Metadata;
 
 namespace Tests.Core;
@@ -6,10 +7,6 @@ namespace Tests.Core;
 [TestClass]
 public class MetadataTests : TestBase
 {
-
-
-
-
 #if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
@@ -566,7 +563,6 @@ public class MetadataTests : TestBase
 		}
 	}
 
-
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GeneratedColumns(string dataSourceName, DataSourceType mode)
 	{
@@ -577,14 +573,12 @@ public class MetadataTests : TestBase
 
 			var computedColumns = table.Columns.Where(c => c.IsComputed).ToList();
 			Assert.AreEqual(3, computedColumns.Count);
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void SystemVersionedTables(string dataSourceName, DataSourceType mode)
@@ -598,15 +592,12 @@ public class MetadataTests : TestBase
 
 			var history = table.GetHistoryTable();
 			Assert.AreEqual(true, history.IsHistoryTable);
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetTableById(string dataSourceName, DataSourceType mode)
@@ -622,7 +613,6 @@ public class MetadataTests : TestBase
 			var table2 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
 			Assert.AreEqual(table, table2, "The wrong table was returned");
 
-
 			//Reset to force a different code path
 			dataSource.DatabaseMetadata.Reset();
 			var name2 = dataSource.DatabaseMetadata.GetTableOrViewName(table.ObjectId);
@@ -632,7 +622,6 @@ public class MetadataTests : TestBase
 			dataSource.DatabaseMetadata.Reset();
 			var table3 = dataSource.DatabaseMetadata.GetTableOrView(table.ObjectId);
 			Assert.AreNotEqual(table, table3, "The table cache wasn't reset");
-
 		}
 		finally
 		{
@@ -641,4 +630,25 @@ public class MetadataTests : TestBase
 	}
 
 #endif
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ColumnOrder(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var columns = dataSource.DatabaseMetadata.GetTableOrViewFromClass<Employee>().Columns.Select(x => x.SqlName).ToList();
+
+			var expectedColumns = new[] { "EmployeeKey", "FirstName", "MiddleName", "LastName", "Title", "ManagerKey", "OfficePhone", "CellPhone", "CreatedDate", "UpdatedDate", "EmployeeId", "Gender", "Status" };
+
+			for (var i = 0; i < columns.Count; i++)
+			{
+				Assert.AreEqual(expectedColumns[i], columns[i], true);
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
 }
