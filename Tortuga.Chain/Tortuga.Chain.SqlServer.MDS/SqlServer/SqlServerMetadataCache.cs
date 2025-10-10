@@ -267,7 +267,7 @@ WHERE o.name = @Name
 	/// <summary>
 	/// Gets the detailed metadata for a table or view.
 	/// </summary>
-	/// <param name="tableName">Name of the table.</param>
+	/// <param name="tableName">Name of the table or view.</param>
 	/// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
 	public new SqlServerTableOrViewMetadata<SqlDbType> GetTableOrView(SqlServerObjectName tableName)
 	{
@@ -770,11 +770,11 @@ WHERE o.name = @Name
 	internal SqlServerObjectName GetTableOrViewNameInternal(int objectId)
 	{
 		const string sql =
-			@"SELECT s.name AS SchemaName, t.name AS Name FROM sys.tables t 
+			@"SELECT s.name AS SchemaName, t.name AS Name FROM sys.tables t
 INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 WHERE t.object_id = @ObjectId
 UNION ALL
-SELECT s.name AS SchemaName, v.name AS Name FROM sys.views v 
+SELECT s.name AS SchemaName, v.name AS Name FROM sys.views v
 INNER JOIN sys.schemas s ON v.schema_id = s.schema_id
 WHERE v.object_id = @ObjectId";
 
