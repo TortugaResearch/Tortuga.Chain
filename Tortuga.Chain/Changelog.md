@@ -1,3 +1,20 @@
+## Version 5.7
+
+
+[#198 ToDictionary needs a ValueColumn name](https://github.com/TortugaResearch/Tortuga.Chain/issues/198)
+
+* `.ToScalarDictionary<TKey, TValue>(keyColumn, valueColumn, dictionaryOptions)`
+* `.ToScalarDictionary<TKey, TValue, TDictionary>(keyColumn, valueColumn, dictionaryOptions)`
+* `DictionaryOptions.DiscardNullKeys`
+* `DictionaryOptions.DiscardNullValues`
+
+
+If a `TDictionary` is not supplied, the normal `Dictionary<TKey, TValue>` will be used.
+
+
+Nulls are not supported for keys or values, but can be silently discarded.
+
+
 ## Version 5.6
 
 [#560 FOR SYSTEM_TIME support for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/560)

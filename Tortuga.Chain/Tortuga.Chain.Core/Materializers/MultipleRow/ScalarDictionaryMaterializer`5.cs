@@ -93,14 +93,14 @@ internal class ScalarDictionaryMaterializer<TCommand, TParameter, TKey, TValue, 
 			if (m_DictionaryOptions.HasFlag(DictionaryOptions.DiscardNullKeys))
 				return;
 			else
-				throw new MissingDataException($"Key column {m_KeyColumn} is null");
+				throw new MissingDataException($"Key column {m_KeyColumn} is null. Consider using DictionaryOptions.DiscardNullKeys.");
 		var key = source.GetFieldValue<TKey>(keyIndex);
 
 		if (source.IsDBNull(valueIndex))
 			if (m_DictionaryOptions.HasFlag(DictionaryOptions.DiscardNullValues))
 				return;
 			else
-				throw new MissingDataException($"Value column {m_ValueColumn} is null");
+				throw new MissingDataException($"Value column {m_ValueColumn} is null. Consider using DictionaryOptions.DiscardNullValues.");
 		var value = source.GetFieldValue<TValue>(valueIndex);
 
 		if (m_DictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
