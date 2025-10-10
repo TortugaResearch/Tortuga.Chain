@@ -7,6 +7,39 @@ namespace Tests.Core;
 [TestClass]
 public class MetadataTests : TestBase
 {
+#if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
+
+	[DataTestMethod, TableData(DataSourceGroup.All)]
+	public void TableIndexes(string dataSourceName, DataSourceType mode, string tableName)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+			var indexes = table.GetIndexes();
+			Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
+
+#if SQL_SERVER_MDS
+			if (table.Columns.Any(c => c.IsPrimaryKey))
+				Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() == 1, "A column is marked as primary, so there should be a primary index.");
+#endif
+			foreach (var index in indexes)
+			{
+				if (index.IndexType != IndexType.Heap)
+				{
+					Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), $"Indexes should have names. Table name {table.Name}");
+					Assert.IsTrue(index.Columns.Count > 0, $"Indexes should have columns. Table name {table.Name} Index name {index.Name}");
+				}
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#endif
+
 #if SQL_SERVER_MDS || POSTGRESQL || MYSQL || SQLITE || ACCESS
 
 	[DataTestMethod, TableData(DataSourceGroup.All)]
@@ -568,4 +601,25 @@ public class MetadataTests : TestBase
 	}
 
 #endif
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ColumnOrder(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var columns = dataSource.DatabaseMetadata.GetTableOrViewFromClass<Employee>().Columns.Select(x => x.SqlName).ToList();
+
+			var expectedColumns = new[] { "EmployeeKey", "FirstName", "MiddleName", "LastName", "Title", "ManagerKey", "OfficePhone", "CellPhone", "CreatedDate", "UpdatedDate", "EmployeeId", "Gender", "Status" };
+
+			for (var i = 0; i < columns.Count; i++)
+			{
+				Assert.AreEqual(expectedColumns[i], columns[i], true);
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
 }

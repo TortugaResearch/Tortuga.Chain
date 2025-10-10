@@ -52,13 +52,13 @@ CREATE TABLE Employee
 	FirstName TEXT(30) NOT NULL,
 	MiddleName TEXT(30) NULL,
 	LastName TEXT(30) NOT NULL,
-	EmployeeId TEXT(50) NOT NULL,
 	Title TEXT(100) null,
+	ManagerKey LONG NULL REFERENCES Employee(EmployeeKey),
 	OfficePhone TEXT(15) NULL,
 	CellPhone TEXT(15) NULL,
-	ManagerKey LONG NULL REFERENCES Employee(EmployeeKey),
 	CreatedDate DateTime NOT NULL DEFAULT NOW(),
 	UpdatedDate DateTime NULL,
+	EmployeeId TEXT(50) NOT NULL,
 	Gender Char(1) NOT NULL,
 	Status Char(1) NULL
 )";
