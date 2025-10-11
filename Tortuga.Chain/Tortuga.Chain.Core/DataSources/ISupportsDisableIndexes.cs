@@ -9,6 +9,7 @@ public interface ISupportsDisableIndexes
 	/// Disables all of the indexes on the indicated table..
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
+	/// <remarks>For SQL Server, this will not disable the clustered index.</remarks>
 	public ILink<int?> DisableIndexes(string tableName);
 
 	/// <summary>
@@ -21,6 +22,7 @@ public interface ISupportsDisableIndexes
 	/// <summary>
 	/// Disables all of the indexes on the indicated table..
 	/// </summary>
+	/// <remarks>For SQL Server, this will not disable the clustered index.</remarks>
 	public ILink<int?> DisableIndexes<TObject>() where TObject : class;
 
 	/// <summary>

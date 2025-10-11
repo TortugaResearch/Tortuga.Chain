@@ -238,8 +238,8 @@ WHERE o.name = @Name
 						var index_id = reader.GetInt32("index_id");
 						var name = reader.GetStringOrNull("Name");
 						var columns = new IndexColumnMetadataCollection<SqlDbType>(allColumns.Where(c => c.IndexId == index_id));
-						var indexSize = reader.GetInt64("IndexSizeKB");
-						var rowCount = reader.GetInt64("RowCount");
+						var indexSize = reader.GetInt64OrNull("IndexSizeKB");
+						var rowCount = reader.GetInt64OrNull("RowCount");
 
 						IndexType indexType;
 						switch (reader.GetByte("type"))

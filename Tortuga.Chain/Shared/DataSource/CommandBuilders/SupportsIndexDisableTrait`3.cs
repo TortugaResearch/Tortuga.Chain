@@ -22,6 +22,7 @@ sealed class SupportsDisableIndexesTrait<TParameter, TObjectName, TDbType> : ISu
 	/// Disables all of the indexes on the indicated table..
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
+	/// <remarks>For SQL Server, this will not disable the clustered index.</remarks>
 	[Expose] public ILink<int?> DisableIndexes(TObjectName tableName) => OnDisableIndexes(tableName);
 
 	/// <summary>
@@ -34,6 +35,7 @@ sealed class SupportsDisableIndexesTrait<TParameter, TObjectName, TDbType> : ISu
 	/// <summary>
 	/// Disables all of the indexes on the indicated table..
 	/// </summary>
+	/// <remarks>For SQL Server, this will not disable the clustered index.</remarks>
 	[Expose]
 	public ILink<int?> DisableIndexes<TObject>() where TObject : class
 	{

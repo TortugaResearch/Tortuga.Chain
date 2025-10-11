@@ -1,3 +1,4 @@
+using System.Text;
 using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -232,7 +233,13 @@ where TArgument : class
 	private partial ILink<int?> OnDisableIndexes(SqlServerObjectName tableName)
 	{
 		var table = DatabaseMetadata.GetTableOrView(tableName);
-		var sqlStatement = $"ALTER INDEX ALL ON {table.Name.ToQuotedString()} DISABLE";
-		return new SqlServerSqlCall(this, sqlStatement, null).AsNonQuery();
+		var indexes = table.GetIndexes();
+
+		var sql = new StringBuilder();
+		foreach (var index in indexes.Where(i => i.IndexType != IndexType.Clustered))
+		{
+			sql.AppendLine($"ALTER INDEX [{index.Name}] ON {table.Name.ToQuotedString()} DISABLE;");
+		}
+		return new SqlServerSqlCall(this, sql.ToString(), null).AsNonQuery();
 	}
 }
