@@ -46,12 +46,12 @@ CREATE TABLE Employee
 	MiddleName nvarChar(25) NULL,
 	LastName nVarChar(25) NOT NULL,
 	Title nVarChar(100) null,
-	EmployeeId nvarChar(50) NOT NULL,
 	ManagerKey INT NULL REferences Employee(EmployeeKey),
 	OfficePhone VARCHAR(15) NULL UNIQUE ,
 	CellPhone VARCHAR(15) NULL ,
 	CreatedDate DateTime NOT NULL DEFAULT CURRENT_TIME,
 	UpdatedDate DateTime NULL,
+	EmployeeId nvarChar(50) NOT NULL,
 	Gender Char(1) NOT NULL,
 	Status Char(1) NULL
 )";

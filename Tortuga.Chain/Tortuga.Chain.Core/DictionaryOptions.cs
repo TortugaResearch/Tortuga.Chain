@@ -13,6 +13,16 @@ public enum DictionaryOptions
 	None = 0,
 
 	/// <summary>
+	/// If a key is null, that row will be discarded.
+	/// </summary>
+	DiscardNullKeys = 1,
+
+	/// <summary>
+	/// If a value is null, that row will be discarded.
+	/// </summary>
+	DiscardNullValues = 2,
+
+	/// <summary>
 	/// Infer which non-default constructor to use. When this option is chosen, individual properties will not be set.
 	/// </summary>
 	/// <remarks>This will throw an error unless there is exactly one public, non-default constructor.</remarks>

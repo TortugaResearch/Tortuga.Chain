@@ -1,3 +1,4 @@
+using System.Text;
 using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -28,6 +29,7 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsProcedureTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsTableFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByColumnListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDisableIndexesTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -51,7 +53,6 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		var parameters = new List<SqlParameter>();
 		for (var i = 0; i < keyList.Count; i++)
 		{
-
 			parameters.Add(Utilities.CreateParameter(columnMetadata, "@Param" + i, keyList[i]));
 		}
 
@@ -108,7 +109,6 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 		return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
 	}
-
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
 	{
@@ -221,5 +221,25 @@ where TArgument : class
 		//Verify the table name actually exists.
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
+	}
+
+	private partial ILink<int?> OnEnableIndexes(SqlServerObjectName tableName)
+	{
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		var sqlStatement = $"ALTER INDEX ALL ON {table.Name.ToQuotedString()} REBUILD";
+		return new SqlServerSqlCall(this, sqlStatement, null).AsNonQuery();
+	}
+
+	private partial ILink<int?> OnDisableIndexes(SqlServerObjectName tableName)
+	{
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		var indexes = table.GetIndexes();
+
+		var sql = new StringBuilder();
+		foreach (var index in indexes.Where(i => i.IndexType != IndexType.Clustered))
+		{
+			sql.AppendLine($"ALTER INDEX [{index.Name}] ON {table.Name.ToQuotedString()} DISABLE;");
+		}
+		return new SqlServerSqlCall(this, sql.ToString(), null).AsNonQuery();
 	}
 }
