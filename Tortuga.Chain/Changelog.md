@@ -1,3 +1,11 @@
+## Version 5.8
+
+
+[#570 WithNoTimeout Appender](https://github.com/TortugaResearch/Tortuga.Chain/issues/570)
+
+* `.WithNoTimeout` calls `.SetTimeout` with a 0, effectively removing the timeout.
+
+
 ## Version 5.7
 
 [#198 ToDictionary needs a ValueColumn name](https://github.com/TortugaResearch/Tortuga.Chain/issues/198)
