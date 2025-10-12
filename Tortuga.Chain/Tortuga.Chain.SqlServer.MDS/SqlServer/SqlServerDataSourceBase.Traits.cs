@@ -226,8 +226,17 @@ where TArgument : class
 	private partial ILink<int?> OnEnableIndexes(SqlServerObjectName tableName)
 	{
 		var table = DatabaseMetadata.GetTableOrView(tableName);
-		var sqlStatement = $"ALTER INDEX ALL ON {table.Name.ToQuotedString()} REBUILD";
-		return new SqlServerSqlCall(this, sqlStatement, null).AsNonQuery();
+		var indexes = table.GetIndexes();
+		//var sqlStatement = $"ALTER INDEX ALL ON {table.Name.ToQuotedString()} REBUILD";
+		//SELECT * FROM sys.indexes i WHERE i.is_disabled = 1 AND i.object_id = ? AND i.name = ?
+
+		var sql = new StringBuilder();
+		foreach (var index in indexes.Where(i => i.Name != null))
+		{
+			sql.AppendLine($"IF EXISTS (SELECT * FROM sys.indexes i WHERE i.is_disabled = 1 AND i.object_id = {table.ObjectId} AND i.name = '{index.Name!.Replace("'", "''", StringComparison.Ordinal)}')");
+			sql.AppendLine($"\tALTER INDEX [{index.Name}] ON {table.Name.ToQuotedString()} REBUILD;");
+		}
+		return new SqlServerSqlCall(this, sql.ToString(), null).AsNonQuery();
 	}
 
 	private partial ILink<int?> OnDisableIndexes(SqlServerObjectName tableName)
@@ -236,7 +245,7 @@ where TArgument : class
 		var indexes = table.GetIndexes();
 
 		var sql = new StringBuilder();
-		foreach (var index in indexes.Where(i => i.IndexType != IndexType.Clustered))
+		foreach (var index in indexes.Where(i => i.IndexType != IndexType.Clustered && i.Name != null))
 		{
 			sql.AppendLine($"ALTER INDEX [{index.Name}] ON {table.Name.ToQuotedString()} DISABLE;");
 		}
