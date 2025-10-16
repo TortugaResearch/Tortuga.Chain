@@ -1,5 +1,9 @@
 ## Version 5.8
 
+[#573 Add ColumnMetadata.ClrBaseType](https://github.com/TortugaResearch/Tortuga.Chain/issues/573)
+
+* `ColumnMetadata.ClrBaseType` is useful for parsing scenarios where you need the underlying data type of `Nullable<T>` fields.
+
 
 [#570 WithNoTimeout Appender](https://github.com/TortugaResearch/Tortuga.Chain/issues/570)
 

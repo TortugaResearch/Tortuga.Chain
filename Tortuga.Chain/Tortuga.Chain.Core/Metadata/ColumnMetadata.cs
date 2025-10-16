@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using System.Data.Common;
 using System.Text.RegularExpressions;
 using Tortuga.Anchor.Metadata;
 
@@ -39,6 +40,7 @@ public abstract class ColumnMetadata
 		SqlVariableName = "@" + ClrName;
 
 		ClrType = clrType ?? typeof(object);
+		ClrBaseType = ClrType.IsGenericType ? ClrType.GetGenericArguments()[0] : ClrType;
 
 		IsNullable = isNullable;
 		Precision = precision;
@@ -53,9 +55,14 @@ public abstract class ColumnMetadata
 	public string ClrName { get; }
 
 	/// <summary>
-	/// The CLR type of the column or NULL if the type is unknown.
+	/// The CLR type of the column or System.Object if the type is unknown.
 	/// </summary>
 	public Type ClrType { get; }
+
+	/// <summary>
+	/// The CLR type of the column or NULL if the type is unknown. Nullable types will return the underlying type (e.g. Nullable&lt;int&gt; becomes int)
+	/// </summary>
+	public Type ClrBaseType { get; }
 
 	/// <summary>
 	/// Gets the type used by the database.
