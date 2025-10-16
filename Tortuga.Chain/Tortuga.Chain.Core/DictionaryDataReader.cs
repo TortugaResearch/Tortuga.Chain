@@ -21,6 +21,7 @@ public class DictionaryDataReader : DbDataReader
 	readonly FrozenDictionary<string, int> m_PropertyLookup;
 	readonly int? m_RecordCount;
 	readonly DataTable m_Schema;
+	readonly int m_ExpectedKeyCount;
 	IEnumerator<Dictionary<string, object?>>? m_Source;
 
 	///// <summary>
@@ -69,6 +70,7 @@ public class DictionaryDataReader : DbDataReader
 		m_Schema = metadata.Schema;
 		m_PropertyList = metadata.Properties;
 		m_PropertyLookup = metadata.PropertyLookup;
+		m_ExpectedKeyCount = metadata.ExpectedKeyCount;
 	}
 
 	/// <summary>
@@ -362,7 +364,13 @@ public class DictionaryDataReader : DbDataReader
 	{
 		ObjectDisposedException.ThrowIf(m_Source == null, this);
 
-		return m_Source.MoveNext();
+		var result = m_Source.MoveNext();
+		if (result)
+		{
+			if (m_Source.Current.Keys.Count != m_ExpectedKeyCount)
+				throw new InvalidOperationException($"Expected {m_ExpectedKeyCount} keys in the dictionary but found {m_Source.Current.Keys.Count}. Ensure that all dictionaries in the source collection have the same set of keys.");
+		}
+		return result;
 	}
 
 	/// <summary>
@@ -472,20 +480,23 @@ public class DictionaryDataReader : DbDataReader
 		return new DictionaryDataReaderMetadata(
 			dtSchema,
 			realPropertyList.ToImmutableArray(),
-			realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToFrozenDictionary(px => px.Property.SqlName, px => px.Index, StringComparer.OrdinalIgnoreCase));
+			realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToFrozenDictionary(px => px.Property.SqlName, px => px.Index, StringComparer.OrdinalIgnoreCase),
+			dictionary.Keys.Count);
 	}
 
 	class DictionaryDataReaderMetadata
 	{
-		public DictionaryDataReaderMetadata(DataTable schema, ImmutableArray<ColumnKeyMap> properties, FrozenDictionary<string, int> propertyLookup)
+		public DictionaryDataReaderMetadata(DataTable schema, ImmutableArray<ColumnKeyMap> properties, FrozenDictionary<string, int> propertyLookup, int expectedKeyCount)
 		{
 			Schema = schema;
 			Properties = properties;
 			PropertyLookup = propertyLookup;
+			ExpectedKeyCount = expectedKeyCount;
 		}
 
 		public ImmutableArray<ColumnKeyMap> Properties { get; }
 		public FrozenDictionary<string, int> PropertyLookup { get; }
 		public DataTable Schema { get; }
+		public int ExpectedKeyCount { get; }
 	}
 }
