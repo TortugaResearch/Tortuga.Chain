@@ -22,9 +22,9 @@ Chain is primarily designed to take advantage of the capabilities of a database.
 
 However, we realize that some projects actually do need database portability. For those project we offer a set of data source classifications, which are expressed in terms of interfaces.
 
-### IClass1DataSource
+### ICrudDataSource
 
-A class 1 data source provides the necessary functionality to support a repository pattern using CRUD style operations. Briefly these include:
+A CRUD data source provides the necessary functionality to support a repository pattern using CRUD style operations. Briefly these include:
 
 * Database metadata (tables, views, columns, etc.)
 * From
@@ -36,13 +36,14 @@ A class 1 data source provides the necessary functionality to support a reposito
 
 Separate pages will be offered to document each of these operations.
 
-### IClass2DataSource
+### IAdvancedCrudDataSource
 
-We are still identifying the minimum necessary features to classify something as class 2 data source. The current thought is that it would have to support the following operations:
+These data sources add:
 
-* Procedure: Execute a stored procedure
-* Bulk Insert: For quickly loading a lot of data [Milestone 1.1]
-* Function: Query from table-valued functions [Milestone 1.2]
+* Truncate
+* Upsert
+
+
 
 ## Internals
 
