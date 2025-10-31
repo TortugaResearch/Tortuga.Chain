@@ -16,6 +16,12 @@ public interface IDbCommandBuilder
 	ILink<int?> AsNonQuery();
 
 	/// <summary>
+	/// Returns the command text (usually SQL) without executing it.
+	/// </summary>
+	/// <returns>System.String.</returns>
+	public string? CommandText() => AsNonQuery().CommandText();
+
+	/// <summary>
 	/// Execute the operation synchronously.
 	/// </summary>
 	/// <param name="state">User defined state, usually used for logging.</param>

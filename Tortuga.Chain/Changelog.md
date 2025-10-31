@@ -2,6 +2,10 @@
 
 ### Features 
 
+[#575 Expose .CommandText()](https://github.com/TortugaResearch/Tortuga.Chain/issues/575)
+
+* `.CommandText()` shortcut was added so you don't have to call `.AsNoQuery().CommandText()` on Insert/Update operations to get the SQL.
+
 [#573 Add ColumnMetadata.ClrBaseType](https://github.com/TortugaResearch/Tortuga.Chain/issues/573)
 
 * `ColumnMetadata.ClrBaseType` is useful for parsing scenarios where you need the underlying data type of `Nullable<T>` fields.
