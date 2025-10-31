@@ -17,7 +17,7 @@ namespace Tortuga.Chain;
 public class ObjectDataReader<TObject> : DbDataReader
 {
 	readonly ImmutableArray<PropertyMetadata> m_PropertyList;
-	readonly FrozenDictionary<string, int> m_PropertyLookup;
+	readonly FrozenDictionary<string, int> m_ColumnPropertyIndexMap;
 	readonly int? m_RecordCount;
 	readonly DataTable m_Schema;
 	IEnumerator<TObject>? m_Source;
@@ -43,7 +43,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 		var metadata = BuildStructure(tableType.Name, tableType.Columns, true, operationType);
 		m_Schema = metadata.Schema;
 		m_PropertyList = metadata.Properties;
-		m_PropertyLookup = metadata.PropertyLookup;
+		m_ColumnPropertyIndexMap = metadata.ColumnPropertyIndexMap;
 	}
 
 	/// <summary>
@@ -67,7 +67,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 		var metadata = BuildStructure(tableOrView.Name, tableOrView.Columns, false, operationType);
 		m_Schema = metadata.Schema;
 		m_PropertyList = metadata.Properties;
-		m_PropertyLookup = metadata.PropertyLookup;
+		m_ColumnPropertyIndexMap = metadata.ColumnPropertyIndexMap;
 
 		if (m_PropertyList.Length == 0)
 			throw new MappingException($"Unable to map object of type {typeof(TObject).Name} to a the table {tableOrView.Name}.");
@@ -116,7 +116,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 		{
 			ObjectDisposedException.ThrowIf(m_Source == null, this);
 
-			return m_PropertyList[m_PropertyLookup[name]].InvokeGet(m_Source.Current!);
+			return m_PropertyList[m_ColumnPropertyIndexMap[name]].InvokeGet(m_Source.Current!);
 		}
 	}
 
@@ -293,7 +293,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 	/// </summary>
 	/// <param name="name">The name of the column.</param>
 	/// <returns>The zero-based column ordinal.</returns>
-	public override int GetOrdinal(string name) => m_PropertyLookup[name];
+	public override int GetOrdinal(string name) => m_ColumnPropertyIndexMap[name];
 
 	/// <summary>
 	/// Returns a <see cref="System.Data.DataTable" /> that describes the column metadata of the <see cref="System.Data.Common.DbDataReader" />.
@@ -388,8 +388,8 @@ public class ObjectDataReader<TObject> : DbDataReader
 	static ObjectDataReaderMetadata BuildStructure(string targetName, ColumnMetadataCollection columns, bool allColumnsRequired, OperationTypes operationType)
 	{
 		var propertyList = MetadataCache.GetMetadata<TObject>().Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
-		bool checkIgnoreOnInsert = operationType == OperationTypes.Insert;
-		bool checkIgnoreOnUpdate = operationType == OperationTypes.Update;
+		var checkIgnoreOnInsert = operationType == OperationTypes.Insert;
+		var checkIgnoreOnUpdate = operationType == OperationTypes.Update;
 
 		var dtSchema = new DataTable();
 		dtSchema.Columns.Add("ColumnName", typeof(string));
@@ -419,13 +419,15 @@ public class ObjectDataReader<TObject> : DbDataReader
 		dtSchema.Columns.Add("BaseColumnNamespace", typeof(string));
 
 		var ordinal = 0;
-		var realPropertyList = new List<PropertyMetadata>(columns.Count);
+		var realPropertyList = new List<(ColumnMetadata Column, PropertyMetadata Property)>(columns.Count);
 		foreach (var column in columns)
 		{
 			PropertyMetadata? property = null;
 			foreach (var item in propertyList)
 			{
-				if (column.ClrName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase) || column.SqlName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+				if (column.ClrName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase)
+					|| column.ClrNameStandardized.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase)
+					|| column.SqlName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase))
 				{
 					if (checkIgnoreOnInsert && item.IgnoreOnInsert)
 						continue; //look for another match
@@ -446,7 +448,7 @@ public class ObjectDataReader<TObject> : DbDataReader
 					continue; //tables don't need every column
 			}
 
-			realPropertyList.Add(property);
+			realPropertyList.Add((column, property));
 
 			var row = dtSchema.NewRow();
 			row["ColumnName"] = column.SqlName;
@@ -479,20 +481,28 @@ public class ObjectDataReader<TObject> : DbDataReader
 			dtSchema.Rows.Add(row);
 		}
 
-		return new ObjectDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToFrozenDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
+		return new ObjectDataReaderMetadata(
+			schema: dtSchema,
+			properties: realPropertyList.Select(x => x.Property).ToImmutableArray(),
+			//propertyLookup: realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToFrozenDictionary(px => px.Property.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase),
+			columnPropertyIndexMap: realPropertyList.Select((p, x) => new { Index = x, Item = p }).ToFrozenDictionary(px => px.Item.Column.SqlName, px => px.Index, StringComparer.OrdinalIgnoreCase)
+
+			/*,
+			columnMap : realPropertyList.ToFrozenDictionary(px => px.Column.SqlName, px => px.Index, StringComparer.OrdinalIgnoreCase)*/);
 	}
 
 	class ObjectDataReaderMetadata
 	{
-		public ObjectDataReaderMetadata(DataTable schema, ImmutableArray<PropertyMetadata> properties, FrozenDictionary<string, int> propertyLookup)
+		public ObjectDataReaderMetadata(DataTable schema, ImmutableArray<PropertyMetadata> properties, FrozenDictionary<string, int> columnPropertyIndexMap)
 		{
 			Schema = schema;
 			Properties = properties;
-			PropertyLookup = propertyLookup;
+			ColumnPropertyIndexMap = columnPropertyIndexMap;
 		}
 
 		public ImmutableArray<PropertyMetadata> Properties { get; }
-		public FrozenDictionary<string, int> PropertyLookup { get; }
+		public FrozenDictionary<string, int> ColumnPropertyIndexMap { get; }
+		//public FrozenDictionary<string, int> PropertyLookup { get; }
 		public DataTable Schema { get; }
 	}
 }

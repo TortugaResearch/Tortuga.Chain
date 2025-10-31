@@ -69,16 +69,16 @@ public class FromTests_ToDynamic : TestBase
 			emp3 = dataSource.Insert(emp3).ToObject().Execute();
 			emp4 = dataSource.Insert(emp4).ToObject().Execute();
 
-			var list = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicCollection().WithProperties("FirstName", "LastName", "Title").Execute();
+			var list = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicCollection().WithProperties("First_Name", "Last_Name", "Title").Execute();
 
 			Assert.AreEqual(4, list.Count);
-			var test1 = list.Single(x => x.firstname == "A");
+			var test1 = list.Single(x => x.first_name == "A");
 
-			Assert.AreEqual("1", test1.lastname);
+			Assert.AreEqual("1", test1.last_name);
 			Assert.AreEqual(uniqueKey, test1.title);
 
 			var test1Internal = (IDictionary<string, object>)test1;
-			Assert.IsTrue(!test1Internal.ContainsKey("employeeid"));
+			Assert.IsTrue(!test1Internal.ContainsKey("employee_id"));
 		}
 		finally
 		{
@@ -98,14 +98,14 @@ public class FromTests_ToDynamic : TestBase
 
 			emp1 = dataSource.Insert(emp1).ToObject().Execute();
 
-			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObject().ExceptProperties("employeeid").Execute();
+			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObject().ExceptProperties("employee_id").Execute();
 
-			Assert.AreEqual("A", test1.firstname);
-			Assert.AreEqual("1", test1.lastname);
+			Assert.AreEqual("A", test1.first_name);
+			Assert.AreEqual("1", test1.last_name);
 			Assert.AreEqual(uniqueKey, test1.title);
 
 			var test1Internal = (IDictionary<string, object>)test1;
-			Assert.IsTrue(!test1Internal.ContainsKey("employeeid"));
+			Assert.IsTrue(!test1Internal.ContainsKey("employee_id"));
 		}
 		finally
 		{

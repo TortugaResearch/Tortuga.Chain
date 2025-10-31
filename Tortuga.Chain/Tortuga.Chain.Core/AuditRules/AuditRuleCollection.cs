@@ -112,16 +112,20 @@ public class AuditRuleCollection : IReadOnlyList<AuditRule>
 			m_Validation[i].CheckValue(argumentValue);
 	}
 
-	internal IEnumerable<RestrictColumn> GetRestrictionsForColumn(string objectName, string? sqlName, string? clrName)
+	internal IEnumerable<RestrictColumn> GetRestrictionsForColumn(string objectName, string? sqlName, string? clrName, string? clrNameStandardized)
 	{
 		return m_List.OfType<RestrictColumn>().Where(c =>
 			(c.ObjectName == null || c.ObjectName.Equals(objectName, StringComparison.OrdinalIgnoreCase))
 			&&
-			(c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
+			(c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) 
+				|| c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase) 
+				|| c.ColumnName.Equals(clrNameStandardized, StringComparison.OrdinalIgnoreCase)));
 	}
 
-	internal IEnumerable<ColumnRule> GetRulesForColumn(string? sqlName, string? clrName, OperationTypes filterByOperationType)
+	internal IEnumerable<ColumnRule> GetRulesForColumn(string? sqlName, string? clrName, string? clrNameStandardized, OperationTypes filterByOperationType)
 	{
-		return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & filterByOperationType) > 0 && (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
+		return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & filterByOperationType) > 0 && (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) 
+			|| c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase) 
+			|| c.ColumnName.Equals(clrNameStandardized, StringComparison.OrdinalIgnoreCase)));
 	}
 }

@@ -62,6 +62,8 @@ public class UpsertTests : TestBase
 				Gender = original.Gender
 			};
 
+
+
 			var updated = dataSource.Upsert(EmployeeTableName, updater).WithKeys("EmployeeId").ToObject<Employee>().Execute();
 			Assert.AreEqual(employeeKey, updated.EmployeeKey, "EmployeeKey should have been read.");
 			Assert.AreEqual(updater.FirstName, updated.FirstName, "FirstName should have changed");

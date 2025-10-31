@@ -35,9 +35,12 @@ public class ColumnMetadataCollection<TDbType> : ReadOnlyCollection<ColumnMetada
 		get
 		{
 			foreach (var item in this)
-				if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
+			{
+				if (item.SqlName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+					|| item.ClrName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+					|| item.ClrNameStandardized.Equals(columnName, StringComparison.OrdinalIgnoreCase))
 					return item;
-
+			}
 #pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
 			throw new KeyNotFoundException($"Could not find column named {columnName} in object {m_Name}");
 #pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
@@ -53,8 +56,13 @@ public class ColumnMetadataCollection<TDbType> : ReadOnlyCollection<ColumnMetada
 	public ColumnMetadata<TDbType>? TryGetColumn(string columnName)
 	{
 		foreach (var item in this)
-			if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
+		{
+			if (item.SqlName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+						|| item.ClrName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+						|| item.ClrNameStandardized.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+						)
 				return item;
+		}
 
 		return null;
 	}

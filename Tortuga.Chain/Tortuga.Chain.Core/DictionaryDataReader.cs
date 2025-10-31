@@ -429,7 +429,9 @@ public class DictionaryDataReader : DbDataReader
 			string? property = null;
 			foreach (var item in propertyList)
 			{
-				if (column.ClrName.Equals(item, StringComparison.OrdinalIgnoreCase) || column.SqlName.Equals(item, StringComparison.OrdinalIgnoreCase))
+				if (column.ClrName.Equals(item, StringComparison.OrdinalIgnoreCase) 
+					|| column.ClrNameStandardized.Equals(item, StringComparison.OrdinalIgnoreCase) 		
+					|| column.SqlName.Equals(item, StringComparison.OrdinalIgnoreCase))
 				{
 					property = item;
 					break;

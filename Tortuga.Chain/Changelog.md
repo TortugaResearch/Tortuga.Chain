@@ -2,6 +2,11 @@
 
 ### Features 
 
+[#576 Add support for snake_case](https://github.com/TortugaResearch/Tortuga.Chain/issues/576)
+
+* Added support for automatically mapping snake_case column names to make it easier to work with PostgreSQL.
+* Added `.ClrNameStandardized` to the column metadata. This will convert column names to PascalCase for use in code generation and column mapping scenarios.
+
 [#575 Expose .CommandText()](https://github.com/TortugaResearch/Tortuga.Chain/issues/575)
 
 * `.CommandText()` shortcut was added so you don't have to call `.AsNoQuery().CommandText()` on Insert/Update operations to get the SQL.

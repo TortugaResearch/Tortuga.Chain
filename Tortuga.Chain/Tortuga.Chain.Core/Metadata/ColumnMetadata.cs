@@ -37,6 +37,7 @@ public abstract class ColumnMetadata
 		QuotedSqlName = quotedSqlName;
 
 		ClrName = Utilities.ToClrName(name);
+		ClrNameStandardized = Utilities.ToClrNameStandardized(name);
 		SqlVariableName = "@" + ClrName;
 
 		ClrType = clrType ?? typeof(object);
@@ -53,6 +54,13 @@ public abstract class ColumnMetadata
 	/// Gets the name used by CLR objects.
 	/// </summary>
 	public string ClrName { get; }
+
+
+	/// <summary>
+	/// Gets the used by CLR objects using standardized naming conventions..
+	/// </summary>
+	/// <remarks>The name is PascalCased and underscores are removed.</remarks>
+	public string ClrNameStandardized { get; }
 
 	/// <summary>
 	/// The CLR type of the column or System.Object if the type is unknown.

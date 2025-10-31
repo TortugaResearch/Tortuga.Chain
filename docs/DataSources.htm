@@ -95,8 +95,8 @@
 <h2 id="data-source-classifications">Data Source Classifications<a class="headerlink" href="#data-source-classifications" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>Chain is primarily designed to take advantage of the capabilities of a database. Rather than catering to the &quot;lowest common denominator&quot; like many ORMs, we'd rather give you full access to everything your database is capable of supporting.</p>
 <p>However, we realize that some projects actually do need database portability. For those project we offer a set of data source classifications, which are expressed in terms of interfaces.</p>
-<h3 id="iclass1datasource">IClass1DataSource<a class="headerlink" href="#iclass1datasource" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
-<p>A class 1 data source provides the necessary functionality to support a repository pattern using CRUD style operations. Briefly these include:</p>
+<h3 id="icruddatasource">ICrudDataSource<a class="headerlink" href="#icruddatasource" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>A CRUD data source provides the necessary functionality to support a repository pattern using CRUD style operations. Briefly these include:</p>
 <ul>
 <li>Database metadata (tables, views, columns, etc.)</li>
 <li>From</li>
@@ -107,12 +107,11 @@
 <li>Sql: Raw SQL statements with optional parameters.</li>
 </ul>
 <p>Separate pages will be offered to document each of these operations.</p>
-<h3 id="iclass2datasource">IClass2DataSource<a class="headerlink" href="#iclass2datasource" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
-<p>We are still identifying the minimum necessary features to classify something as class 2 data source. The current thought is that it would have to support the following operations:</p>
+<h3 id="iadvancedcruddatasource">IAdvancedCrudDataSource<a class="headerlink" href="#iadvancedcruddatasource" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>These data sources add:</p>
 <ul>
-<li>Procedure: Execute a stored procedure</li>
-<li>Bulk Insert: For quickly loading a lot of data [Milestone 1.1]</li>
-<li>Function: Query from table-valued functions [Milestone 1.2]</li>
+<li>Truncate</li>
+<li>Upsert</li>
 </ul>
 <h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <h3 id="command-execution">Command Execution<a class="headerlink" href="#command-execution" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>

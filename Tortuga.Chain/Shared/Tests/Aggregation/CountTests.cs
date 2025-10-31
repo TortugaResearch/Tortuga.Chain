@@ -304,11 +304,22 @@ public class CountTests : TestBase
 
 			var count = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();
 			var columnCount = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Title").Execute();
+#if POSTGRESQL
+			var columnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Middle_Name").Execute();
+#else
 			var columnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("MiddleName").Execute();
+#endif
 
 #if !ACCESS
 			var distinctColumnCount = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Title", true).Execute();
+
+
+#if POSTGRESQL
+			var distinctColumnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Last_Name", true).Execute();
+#else
 			var distinctColumnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("LastName", true).Execute();
+#endif
+
 #endif
 
 			Assert.AreEqual(10, count, "All of the rows");
@@ -336,9 +347,14 @@ public class CountTests : TestBase
 		{
 			var count = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount().Execute();
 			var columnCount = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount("Title").Execute();
-			var columnCount2 = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount("MiddleName").Execute();
 			var distinctColumnCount = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount("Title", true).Execute();
+#if POSTGRESQL
+			var columnCount2 = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount("Middle_Name").Execute();
+			var distinctColumnCount2 = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount("Last_Name", true).Execute();
+#else
+			var columnCount2 = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount("MiddleName").Execute();
 			var distinctColumnCount2 = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).AsCount("LastName", true).Execute();
+#endif
 
 			Assert.AreEqual(1000, count, "All of the rows");
 			Assert.AreEqual(1000, columnCount, "No nulls");
@@ -353,4 +369,4 @@ public class CountTests : TestBase
 	}
 
 #endif
-}
+		}
