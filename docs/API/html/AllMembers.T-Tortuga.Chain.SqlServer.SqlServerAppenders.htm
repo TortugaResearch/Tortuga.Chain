@@ -602,6 +602,11 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ISupportsDeletedRecords.htm" target="_self">ISupportsDeletedRecords Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.htm" target="_self">ITableDbCommandBuilder Interface</a>
 <div class="Hidden">
 </div>
@@ -900,6 +905,11 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteSet.htm" target="_self">ISupportsDeleteSet Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDisableIndexes.htm" target="_self">ISupportsDisableIndexes Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1511,7 +1521,7 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="N-Tortuga.Chain.SqlServer.htm" target="_self">Tortuga.Chain.SqlServer Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractOleDbSqlServerMetadataCache.htm" target="_self">AbstractOleDbSqlServerMetadataCache Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1519,6 +1529,9 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.SqlServer.HistoryQueryMode.htm" target="_self">HistoryQueryMode Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.MetadataException.htm" target="_self">MetadataException Class</a>
@@ -1736,6 +1749,174 @@
                       <td>
                         <div class="summary">
    Attaches a SQL Server dependency change listener to this operation.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory.htm">WithHistory(TableDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>SqlCommand, SqlParameter, SqlServerLimitOption<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get all historical records.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory_1.htm">WithHistory(SingleRowDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>AbstractCommand, AbstractParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get all historical records.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory_2.htm">WithHistory(SingleRowDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>AbstractCommand, AbstractParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory_3.htm">WithHistory(SingleRowDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>AbstractCommand, AbstractParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime, DateTime, HistoryQueryMode)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date range.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory_4.htm">WithHistory(TableDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>SqlCommand, SqlParameter, SqlServerLimitOption<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory_5.htm">WithHistory(TableDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>SqlCommand, SqlParameter, SqlServerLimitOption<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime, DateTime, HistoryQueryMode)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date range.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory--1.htm">WithHistory<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>(TableDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>SqlCommand, SqlParameter, SqlServerLimitOption, TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get all historical records.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory--1_1.htm">WithHistory<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>(SingleRowDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>AbstractCommand, AbstractParameter, TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get all historical records.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory--1_2.htm">WithHistory<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>(SingleRowDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>AbstractCommand, AbstractParameter, TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory--1_3.htm">WithHistory<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>(SingleRowDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>AbstractCommand, AbstractParameter, TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime, DateTime, HistoryQueryMode)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date range.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory--1_4.htm">WithHistory<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>(TableDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>SqlCommand, SqlParameter, SqlServerLimitOption, TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;static;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                        <img src="../icons/static.gif" alt="Static member" title="Static member" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.SqlServer.SqlServerAppenders.WithHistory--1_5.htm">WithHistory<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>(TableDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="fs">&lt;'</span><span class="nu">(</span></span>SqlCommand, SqlParameter, SqlServerLimitOption, TObject<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="fs">&gt;</span><span class="nu">)</span></span>, DateTime, DateTime, HistoryQueryMode)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Adds a FOR SYSTEM_TIME cluse to the query to get the historical record for a specific date range.
    </div>
                       </td>
                     </tr>

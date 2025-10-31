@@ -606,6 +606,11 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ISupportsDeletedRecords.htm" target="_self">ISupportsDeletedRecords Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.htm" target="_self">ITableDbCommandBuilder Interface</a>
 <div class="Hidden">
 </div>
@@ -908,6 +913,11 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDisableIndexes.htm" target="_self">ISupportsDisableIndexes Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsFrom.htm" target="_self">ISupportsFrom Interface</a>
 <div class="Hidden">
 </div>
@@ -1127,7 +1137,13 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Properties.T-Tortuga.Chain.Metadata.ColumnMetadata.htm" target="_self">ColumnMetadata Properties</a>
 <div class="Hidden">
 <div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrBaseType.htm" target="_self">ClrBaseType Property </a>
+</div>
+<div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrName.htm" target="_self">ClrName Property </a>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrNameStandardized.htm" target="_self">ClrNameStandardized Property </a>
 </div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrType.htm" target="_self">ClrType Property </a>
@@ -1579,7 +1595,7 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="N-Tortuga.Chain.SqlServer.htm" target="_self">Tortuga.Chain.SqlServer Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractOleDbSqlServerMetadataCache.htm" target="_self">AbstractOleDbSqlServerMetadataCache Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1587,6 +1603,9 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.SqlServer.HistoryQueryMode.htm" target="_self">HistoryQueryMode Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.MetadataException.htm" target="_self">MetadataException Class</a>
@@ -1730,10 +1749,10 @@
     <b>Namespace:</b> 
    <a href="N-Tortuga.Chain.Metadata.htm">Tortuga.Chain.Metadata</a><br />
     <b>Assembly:</b>
-   <span sdata="assembly">Tortuga.Chain.Core</span> (in Tortuga.Chain.Core.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <span class="nolink">IReadOnlyDictionary</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">string</a>, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">string</a>&gt; <span class="identifier">ExtendedProperties</span> { <span class="keyword">get</span>; }</pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">Public</span> <span class="keyword">ReadOnly</span> <span class="keyword">Property</span> <span class="identifier">ExtendedProperties</span> <span class="keyword">As</span> <span class="nolink">IReadOnlyDictionary</span>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>)
+   <span sdata="assembly">Tortuga.Chain.Core</span> (in Tortuga.Chain.Core.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <span class="nolink">IReadOnlyDictionary</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">string</a>, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>&gt;&gt; <span class="identifier">ExtendedProperties</span> { <span class="keyword">get</span>; }</pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">Public</span> <span class="keyword">ReadOnly</span> <span class="keyword">Property</span> <span class="identifier">ExtendedProperties</span> <span class="keyword">As</span> <span class="nolink">IReadOnlyDictionary</span>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>))
 	<span class="keyword">Get</span></pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span>:
-<span class="keyword">property</span> <span class="nolink">IReadOnlyDictionary</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^&gt;^ <span class="identifier">ExtendedProperties</span> {
-	<span class="nolink">IReadOnlyDictionary</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^&gt;^ <span class="keyword">get</span> ();
+<span class="keyword">property</span> <span class="nolink">IReadOnlyDictionary</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>^&gt;&gt;^ <span class="identifier">ExtendedProperties</span> {
+	<span class="nolink">IReadOnlyDictionary</span>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^, <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>^&gt;&gt;^ <span class="keyword">get</span> ();
 }</pre></div></div></div></div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.Metadata.ColumnMetadata.htm">ColumnMetadata Class</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.Metadata.htm">Tortuga.Chain.Metadata Namespace</a></div></div></div>
             </div>
           </div>
