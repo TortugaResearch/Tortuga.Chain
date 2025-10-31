@@ -332,6 +332,17 @@ public static class CommonAppenders
 	}
 
 	/// <summary>
+	/// Removes the timeout from command, overriding the value set in the DataSource.
+	/// </summary>
+	/// <typeparam name="TResult">The type of the t result.</typeparam>
+	/// <param name="previousLink">The previous link.</param>
+	/// <returns>ILink&lt;TResult&gt;.</returns>
+	public static ILink<TResult> WithNoTimeout<TResult>(this ILink<TResult> previousLink)
+	{
+		return new TimeoutAppender<TResult>(previousLink, TimeSpan.FromSeconds(0));
+	}
+
+	/// <summary>
 	/// Prepends a comment to SQL statement. This is used mostly for logging.
 	/// </summary>
 	/// <typeparam name="TResult">The type of the t result.</typeparam>

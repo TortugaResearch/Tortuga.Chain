@@ -146,7 +146,8 @@ public sealed class SqlBuilder<TDbType>
 					ref var entry = ref m_Entries[i];
 
 					if (string.Equals(entry.Details.ClrName, item.Key, StringComparison.OrdinalIgnoreCase)
-						|| string.Equals(entry.Details.SqlName, item.Key, StringComparison.OrdinalIgnoreCase))
+						|| string.Equals(entry.Details.SqlName, item.Key, StringComparison.OrdinalIgnoreCase)
+						|| string.Equals(entry.Details.ClrNameStandardized, item.Key, StringComparison.OrdinalIgnoreCase))
 					{
 						var value = item.Value ?? DBNull.Value;
 
@@ -410,6 +411,14 @@ public sealed class SqlBuilder<TDbType>
 					found = true;
 					break;
 				}
+				else if (string.Equals(entry.Details.ClrNameStandardized, column, StringComparison.OrdinalIgnoreCase))
+				{
+					entry.UseClrNameStandardizedAsAlias = true;
+					entry.UseForRead = true;
+					columnFound = true;
+					found = true;
+					break;
+				}
 				else if (string.Equals(entry.Details.QuotedSqlName, column, StringComparison.OrdinalIgnoreCase))
 				{
 					throw new MappingException($"Modify the ColumnAttribute for the desired column \"{column}\" to be \"{entry.Details.SqlName}\". SQL Quoted column names are not supported.");
@@ -456,7 +465,8 @@ public sealed class SqlBuilder<TDbType>
 					ref var entry = ref m_Entries[i];
 
 					if (string.Equals(entry.Details.ClrName, item.Key, StringComparison.OrdinalIgnoreCase)
-						|| string.Equals(entry.Details.SqlName, item.Key, StringComparison.OrdinalIgnoreCase))
+						|| string.Equals(entry.Details.SqlName, item.Key, StringComparison.OrdinalIgnoreCase)
+						|| string.Equals(entry.Details.ClrNameStandardized, item.Key, StringComparison.OrdinalIgnoreCase))
 					{
 						var value = item.Value ?? DBNull.Value;
 
@@ -490,7 +500,8 @@ public sealed class SqlBuilder<TDbType>
 				{
 					ref var entry = ref m_Entries[i];
 
-					if (entry.Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+					if (entry.Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase)
+						|| entry.Details.ClrNameStandardized.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
 					{
 						var value = property.InvokeGet(filterValue) ?? DBNull.Value;
 
@@ -640,7 +651,9 @@ public sealed class SqlBuilder<TDbType>
 			{
 				ref var entry = ref m_Entries[i];
 
-				if (string.Equals(entry.Details.SqlName, rule.ColumnName, StringComparison.OrdinalIgnoreCase) || entry.Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
+				if (string.Equals(entry.Details.SqlName, rule.ColumnName, StringComparison.OrdinalIgnoreCase)
+					|| entry.Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase)
+					|| entry.Details.ClrNameStandardized.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
 				{
 					entry.ParameterValue = rule.DeletedValue;
 					entry.UseParameter2 = true;
@@ -799,7 +812,15 @@ public sealed class SqlBuilder<TDbType>
 			if (!isFirst)
 				sql.Append(", ");
 
-			if (expression.Direction == SortDirection.Expression)
+			//Make sure the column expression is actually an expression, not just a column.
+			var isExpression = expression.Direction == SortDirection.Expression && 
+				(
+				expression.ColumnName.Contains(' ', StringComparison.Ordinal)
+				|| expression.ColumnName.Contains('(', StringComparison.Ordinal)
+				|| expression.ColumnName.Contains('.', StringComparison.Ordinal)
+				);
+
+			if (isExpression)
 			{
 				sql.Append(expression.ColumnName);
 			}
@@ -971,7 +992,9 @@ public sealed class SqlBuilder<TDbType>
 
 			foreach (var rule in softDeletes)
 			{
-				if (string.Equals(entry.Details.SqlName, rule.ColumnName, StringComparison.OrdinalIgnoreCase) || entry.Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
+				if (string.Equals(entry.Details.SqlName, rule.ColumnName, StringComparison.OrdinalIgnoreCase)
+					|| entry.Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase)
+					|| entry.Details.ClrNameStandardized.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
 				{
 					entry.ParameterValue = rule.DeletedValue;
 					entry.UseParameter = true;
@@ -1247,10 +1270,12 @@ public sealed class SqlBuilder<TDbType>
 		for (var i = 0; i < m_Entries.Length; i++)
 			if (!m_Entries[i].RestrictedRead && m_Entries[i].UseForRead)
 			{
-				if (!m_Entries[i].UseClrNameAsAlias)
-					yield return m_Entries[i].Details.QuotedSqlNameSafe();
-				else
+				if (m_Entries[i].UseClrNameAsAlias)
 					yield return m_Entries[i].Details.QuotedSqlNameSafe() + " AS " + m_Entries[i].Details.ClrName;
+				else if (m_Entries[i].UseClrNameStandardizedAsAlias)
+					yield return m_Entries[i].Details.QuotedSqlNameSafe() + " AS " + m_Entries[i].Details.ClrNameStandardized;
+				else
+					yield return m_Entries[i].Details.QuotedSqlNameSafe();
 			}
 	}
 
@@ -1307,7 +1332,8 @@ public sealed class SqlBuilder<TDbType>
 			{
 				ref var entry = ref m_Entries[i];
 
-				if (entry.Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+				if (entry.Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase)
+					|| entry.Details.ClrNameStandardized.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
 				{
 					found = true;
 					propertyFound = true;
@@ -1406,6 +1432,7 @@ public sealed class SqlBuilder<TDbType>
 				ref var entry = ref m_Entries[i];
 
 				if (string.Equals(entry.Details.ClrName, item.Key, StringComparison.OrdinalIgnoreCase)
+					|| string.Equals(entry.Details.ClrNameStandardized, item.Key, StringComparison.OrdinalIgnoreCase)
 					|| string.Equals(entry.Details.SqlName, item.Key, StringComparison.OrdinalIgnoreCase)
 					|| string.Equals(entry.Details.SqlVariableName, item.Key, StringComparison.OrdinalIgnoreCase)
 					)
@@ -1502,6 +1529,11 @@ public sealed class SqlBuilder<TDbType>
 						isMatch = true;
 						entry.UseClrNameAsAlias = true;
 					}
+					else if (entry.Details.ClrNameStandardized.Equals(mappedColumnName, StringComparison.OrdinalIgnoreCase))
+					{
+						isMatch = true;
+						entry.UseClrNameStandardizedAsAlias = true;
+					}
 					else if (string.Equals(entry.Details.QuotedSqlName, mappedColumnName, StringComparison.OrdinalIgnoreCase))
 					{
 						throw new MappingException($"Modify the ColumnAttribute for the desired column \"{mappedColumnName}\" to be \"{entry.Details.SqlName}\". SQL Quoted column names are not supported.");
@@ -1564,7 +1596,7 @@ public sealed class SqlBuilder<TDbType>
 		{
 			ref var entry = ref m_Entries[i];
 
-			foreach (var rule in rules.GetRulesForColumn(entry.Details.SqlName, entry.Details.ClrName, operationType))
+			foreach (var rule in rules.GetRulesForColumn(entry.Details.SqlName,entry.Details.ClrName,  entry.Details.ClrNameStandardized, operationType))
 			{
 				entry.ParameterValue = rule.GenerateValue(argumentValue, userValue, entry.ParameterValue);
 				entry.ParameterColumn = null; //replaces the TVP columns
@@ -1577,7 +1609,7 @@ public sealed class SqlBuilder<TDbType>
 					entry.UseForUpdate = true;
 			}
 
-			foreach (var rule in rules.GetRestrictionsForColumn(m_Name, entry.Details.SqlName, entry.Details.ClrName))
+			foreach (var rule in rules.GetRestrictionsForColumn(m_Name, entry.Details.SqlName, entry.Details.ClrName, entry.Details.ClrNameStandardized))
 			{
 				var ignoreRule = rule.ExceptWhen(userValue);
 				if (ignoreRule)
@@ -1600,7 +1632,9 @@ public sealed class SqlBuilder<TDbType>
 		for (var i = 0; i < m_Entries.Length; i++)
 		{
 			var details = m_Entries[i].Details;
-			if (string.Equals(details.SqlName, columnName, StringComparison.OrdinalIgnoreCase) || details.ClrName.Equals(columnName, StringComparison.OrdinalIgnoreCase))
+			if (string.Equals(details.SqlName, columnName, StringComparison.OrdinalIgnoreCase) 
+				|| details.ClrName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+				|| details.ClrNameStandardized.Equals(columnName, StringComparison.OrdinalIgnoreCase))
 			{
 				return i;
 			}

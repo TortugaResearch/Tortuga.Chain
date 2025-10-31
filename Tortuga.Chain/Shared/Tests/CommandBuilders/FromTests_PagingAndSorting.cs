@@ -272,13 +272,19 @@ public class FromTests_PagingAndSorting : TestBase
 			Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
 			Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
 
-			var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName DESC").ToCollection<Employee>().Execute();
+#if POSTGRESQL
+			var sortColumnName = "First_Name";
+#else
+			var sortColumnName = "FirstName";
+#endif
+
+			var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting($"{sortColumnName} DESC").ToCollection<Employee>().Execute();
 			Assert.AreEqual(emp4.EmployeeKey, test5[0].EmployeeKey);
 			Assert.AreEqual(emp3.EmployeeKey, test5[1].EmployeeKey);
 			Assert.AreEqual(emp2.EmployeeKey, test5[2].EmployeeKey);
 			Assert.AreEqual(emp1.EmployeeKey, test5[3].EmployeeKey);
 
-			var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName ACS").ToCollection<Employee>().Execute();
+			var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting($"{sortColumnName} ACS").ToCollection<Employee>().Execute();
 			Assert.AreEqual(emp1.EmployeeKey, test6[0].EmployeeKey);
 			Assert.AreEqual(emp2.EmployeeKey, test6[1].EmployeeKey);
 			Assert.AreEqual(emp3.EmployeeKey, test6[2].EmployeeKey);
@@ -289,7 +295,7 @@ public class FromTests_PagingAndSorting : TestBase
 			const string expression = "CONCAT(FirstName, LastName)";
 #elif POSTGRESQL
 
-			const string expression = "FirstName || LastName";
+			const string expression = "First_Name || Last_Name";
 #else
 			const string expression = "FirstName + LastName";
 #endif

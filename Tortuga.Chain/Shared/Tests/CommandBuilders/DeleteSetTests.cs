@@ -15,10 +15,16 @@ public class DeleteSetTests : TestBase
 			for (var i = 0; i < 10; i++)
 				dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 
+			//var keyColumn = dataSource.DatabaseMetadata.GetTableOrViewFromClass<Employee>().PrimaryKeyColumns[0].SqlName;
 			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
 			var keysToUpdate = allKeys.Take(5).ToList();
 
-			var updatedRows = dataSource.DeleteSet(EmployeeTableName, $"Title = '{lookupKey}' AND MiddleName Is Null").ToCollection<Employee>().Execute();
+#if POSTGRESQL
+			var deleteSql = $"Title = '{lookupKey}' AND Middle_Name Is Null";
+#else
+			var deleteSql = $"Title = '{lookupKey}' AND MiddleName Is Null";
+#endif
+			var updatedRows = dataSource.DeleteSet(EmployeeTableName, deleteSql).ToCollection<Employee>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -36,6 +42,8 @@ public class DeleteSetTests : TestBase
 	{
 #if SQL_SERVER_OLEDB
 			var whereClause = "Title = ? AND MiddleName Is Null";
+#elif POSTGRESQL
+		var whereClause = "Title = @LookupKey AND Middle_Name Is Null";
 #else
 		var whereClause = "Title = @LookupKey AND MiddleName Is Null";
 #endif

@@ -21,6 +21,7 @@ internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDict
 {
 	readonly DictionaryOptions m_DictionaryOptions;
 	readonly string? m_KeyColumn;
+	//readonly string? m_KeyColumnSqlName;
 	readonly Func<TObject, TKey>? m_KeyFunction;
 
 	public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
@@ -34,7 +35,8 @@ internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDict
 
 	public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string keyColumn, DictionaryOptions dictionaryOptions) : base(commandBuilder)
 	{
-		m_KeyColumn = commandBuilder.TryGetColumn(keyColumn)?.SqlName ?? keyColumn;
+		m_KeyColumn = keyColumn;
+		//m_KeyColumnSqlName = commandBuilder.TryGetColumn(keyColumn)?.SqlName ?? keyColumn;
 		m_DictionaryOptions = dictionaryOptions;
 
 		if (m_DictionaryOptions.HasFlag(DictionaryOptions.InferConstructor))
@@ -86,7 +88,7 @@ internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDict
 		}
 		else if (m_KeyColumn != null)
 		{
-			if (!source.CurrentDictionary.ContainsKey(m_KeyColumn))
+			if (!source.CurrentDictionary.Any(c => c.Key.Equals(m_KeyColumn, StringComparison.OrdinalIgnoreCase)))
 				throw new MappingException("The result set does not contain a column named " + m_KeyColumn);
 
 			var key = source.CurrentDictionary[m_KeyColumn];

@@ -24,6 +24,7 @@ public abstract class ParameterMetadata : ISqlBuilderEntryDetails
 		SqlVariableName = sqlVariableName;
 		TypeName = typeName;
 		ClrName = Utilities.ToClrName(sqlParameterName);
+		ClrNameStandardized = Utilities.ToClrNameStandardized(sqlParameterName);
 		DbType = dbType;
 		IsNullable = isNullable;
 		MaxLength = maxLength;
@@ -37,6 +38,13 @@ public abstract class ParameterMetadata : ISqlBuilderEntryDetails
 	/// Gets the name used by CLR objects.
 	/// </summary>
 	public string ClrName { get; }
+
+
+	/// <summary>
+	/// Gets the used by CLR objects using standardized naming conventions..
+	/// </summary>
+	/// <remarks>The name is PascalCased and underscores are removed.</remarks>
+	public string ClrNameStandardized { get; }
 
 	/// <summary>
 	/// Gets the type of the database column as an enum.

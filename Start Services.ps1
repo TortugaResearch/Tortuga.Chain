@@ -8,11 +8,11 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 Start-Service MSSQLSERVER
-Start-Service 'postgresql-x64-17'
+Start-Service 'postgresql-x64-18'
 Start-Service MySQL84
 
 Get-Service MSSQLSERVER
-Get-Service 'postgresql-x64-17'
+Get-Service 'postgresql-x64-18'
 Get-Service MySQL84
 
 Write-Host -NoNewLine "Press any key to continue..."

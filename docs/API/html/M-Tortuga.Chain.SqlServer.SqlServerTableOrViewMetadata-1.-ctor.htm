@@ -11,10 +11,10 @@
     <meta name="file" content="M-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.-ctor" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <meta name="guid" content="M-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.-ctor" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <xml xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata`1.#ctor(DatabaseMetadataCache{SqlServerObjectName, `0},SqlServerObjectName,System.Boolean,ColumnMetadataCollection{`0},System.Boolean)" />
+      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata`1.#ctor(AbstractSqlServerMetadataCache,SqlServerObjectName,System.Boolean,ColumnMetadataCollection{`0},System.Boolean,System.Int32,System.Nullable{SqlServerObjectName},System.Boolean)" />
       <MSHelp:TOCTitle Title="SqlServerTableOrViewMetadata(TDbType) Constructor " />
       <MSHelp:RLTitle Title="SqlServerTableOrViewMetadata(TDbType) Constructor  (Tortuga.Chain.SqlServer)" />
-      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata`1.#ctor(DatabaseMetadataCache{SqlServerObjectName, `0},SqlServerObjectName,System.Boolean,ColumnMetadataCollection{`0},System.Boolean)" />
+      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata`1.#ctor(AbstractSqlServerMetadataCache,SqlServerObjectName,System.Boolean,ColumnMetadataCollection{`0},System.Boolean,System.Int32,System.Nullable{SqlServerObjectName},System.Boolean)" />
       <MSHelp:Keyword Index="A" Term="frlrfTortugaChainSqlServerSqlServerTableOrViewMetadata1ClassctorTopic" />
       <MSHelp:Keyword Index="K" Term="SqlServerTableOrViewMetadata%3CTDbType%3E class, constructor" />
       <MSHelp:Keyword Index="K" Term="SqlServerTableOrViewMetadata(Of TDbType) class, constructor" />
@@ -607,6 +607,11 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ISupportsDeletedRecords.htm" target="_self">ISupportsDeletedRecords Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.htm" target="_self">ITableDbCommandBuilder Interface</a>
 <div class="Hidden">
 </div>
@@ -905,6 +910,11 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteSet.htm" target="_self">ISupportsDeleteSet Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDisableIndexes.htm" target="_self">ISupportsDisableIndexes Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1516,7 +1526,7 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="N-Tortuga.Chain.SqlServer.htm" target="_self">Tortuga.Chain.SqlServer Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractOleDbSqlServerMetadataCache.htm" target="_self">AbstractOleDbSqlServerMetadataCache Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1524,6 +1534,9 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.SqlServer.HistoryQueryMode.htm" target="_self">HistoryQueryMode Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.MetadataException.htm" target="_self">MetadataException Class</a>
@@ -1630,11 +1643,15 @@
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.-ctor.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Constructor </a>
 </div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+<div class="Hidden">
 </div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+<div class="Hidden">
+</div>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Properties.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Properties</a>
@@ -1663,11 +1680,15 @@
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.-ctor.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Constructor </a>
 </div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+<div class="Hidden">
 </div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Methods</a>
+<div class="Hidden">
+</div>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Properties.T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm" target="_self">SqlServerTableOrViewMetadata(TDbType) Properties</a>
@@ -1724,25 +1745,34 @@
    <a href="N-Tortuga.Chain.SqlServer.htm">Tortuga.Chain.SqlServer</a><br />
     <b>Assembly:</b>
    <span sdata="assembly">Tortuga.Chain.SqlServer.OleDb</span> (in Tortuga.Chain.SqlServer.OleDb.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <span class="identifier">SqlServerTableOrViewMetadata</span>(
-	<a href="T-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.htm">DatabaseMetadataCache</a>&lt;<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>, TDbType&gt; <span class="parameter">metadataCache</span>,
+	<a href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm">AbstractSqlServerMetadataCache</a> <span class="parameter">metadataCache</span>,
 	<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a> <span class="parameter">name</span>,
 	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a> <span class="parameter">isTable</span>,
 	<a href="T-Tortuga.Chain.Metadata.ColumnMetadataCollection-1.htm">ColumnMetadataCollection</a>&lt;TDbType&gt; <span class="parameter">columns</span>,
-	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a> <span class="parameter">hasTriggers</span>
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a> <span class="parameter">hasTriggers</span>,
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.int32" target="_blank">int</a> <span class="parameter">objectId</span>,
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>&gt; <span class="parameter">historyTableName</span>,
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a> <span class="parameter">isHistoryTable</span>
 )</pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">Public</span> <span class="keyword">Sub</span> <span class="identifier">New</span> ( _
-	<span class="parameter">metadataCache</span> <span class="keyword">As</span> <a href="T-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.htm">DatabaseMetadataCache</a>(<span class="keyword">Of</span> <a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>, TDbType), _
+	<span class="parameter">metadataCache</span> <span class="keyword">As</span> <a href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm">AbstractSqlServerMetadataCache</a>, _
 	<span class="parameter">name</span> <span class="keyword">As</span> <a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>, _
 	<span class="parameter">isTable</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a>, _
 	<span class="parameter">columns</span> <span class="keyword">As</span> <a href="T-Tortuga.Chain.Metadata.ColumnMetadataCollection-1.htm">ColumnMetadataCollection</a>(<span class="keyword">Of</span> TDbType), _
-	<span class="parameter">hasTriggers</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a> _
+	<span class="parameter">hasTriggers</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a>, _
+	<span class="parameter">objectId</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.int32" target="_blank">Integer</a>, _
+	<span class="parameter">historyTableName</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>(<span class="keyword">Of</span> <a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>), _
+	<span class="parameter">isHistoryTable</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a> _
 )</pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span>:
 <span class="identifier">SqlServerTableOrViewMetadata</span>(
-	<a href="T-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.htm">DatabaseMetadataCache</a>&lt;<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>^, TDbType&gt;^ <span class="parameter">metadataCache</span>, 
+	<a href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm">AbstractSqlServerMetadataCache</a>^ <span class="parameter">metadataCache</span>, 
 	<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>^ <span class="parameter">name</span>, 
 	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a>^ <span class="parameter">isTable</span>, 
 	<a href="T-Tortuga.Chain.Metadata.ColumnMetadataCollection-1.htm">ColumnMetadataCollection</a>&lt;TDbType&gt;^ <span class="parameter">columns</span>, 
-	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a>^ <span class="parameter">hasTriggers</span>
-)</pre></div></div></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="metadataCache"><dt><span class="parameterItalic">metadataCache</span></dt><dd>Type: <a href="T-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.htm">Tortuga.Chain.Metadata<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>DatabaseMetadataCache</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>, <a href="T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm"><span class="typeparam">TDbType</span></a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The metadata cache.</dd></dl><dl paramName="name"><dt><span class="parameterItalic">name</span></dt><dd>Type: <a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">Tortuga.Chain.SqlServer<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>SqlServerObjectName</a><br />The name.</dd></dl><dl paramName="isTable"><dt><span class="parameterItalic">isTable</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a><br />if set to <span class="code">true</span> is a table.</dd></dl><dl paramName="columns"><dt><span class="parameterItalic">columns</span></dt><dd>Type: <a href="T-Tortuga.Chain.Metadata.ColumnMetadataCollection-1.htm">Tortuga.Chain.Metadata<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>ColumnMetadataCollection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm"><span class="typeparam">TDbType</span></a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The columns.</dd></dl><dl paramName="hasTriggers"><dt><span class="parameterItalic">hasTriggers</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a><br />if set to <span class="code">true</span> has triggers.</dd></dl></div></div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm">SqlServerTableOrViewMetadata<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDbType<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Class</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.SqlServer.htm">Tortuga.Chain.SqlServer Namespace</a></div></div></div>
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a>^ <span class="parameter">hasTriggers</span>, 
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.int32" target="_blank">int</a>^ <span class="parameter">objectId</span>, 
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>^&gt; <span class="parameter">historyTableName</span>, 
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">bool</a>^ <span class="parameter">isHistoryTable</span>
+)</pre></div></div></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="metadataCache"><dt><span class="parameterItalic">metadataCache</span></dt><dd>Type: <a href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm">Tortuga.Chain.SqlServer<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>AbstractSqlServerMetadataCache</a><br />The metadata cache.</dd></dl><dl paramName="name"><dt><span class="parameterItalic">name</span></dt><dd>Type: <a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">Tortuga.Chain.SqlServer<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>SqlServerObjectName</a><br />The name.</dd></dl><dl paramName="isTable"><dt><span class="parameterItalic">isTable</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a><br />if set to <span class="code">true</span> is a table.</dd></dl><dl paramName="columns"><dt><span class="parameterItalic">columns</span></dt><dd>Type: <a href="T-Tortuga.Chain.Metadata.ColumnMetadataCollection-1.htm">Tortuga.Chain.Metadata<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>ColumnMetadataCollection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm"><span class="typeparam">TDbType</span></a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The columns.</dd></dl><dl paramName="hasTriggers"><dt><span class="parameterItalic">hasTriggers</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a><br />if set to <span class="code">true</span> has triggers.</dd></dl><dl paramName="objectId"><dt><span class="parameterItalic">objectId</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.int32" target="_blank">Int32</a><br />SQL Server's internal object_id.</dd></dl><dl paramName="historyTableName"><dt><span class="parameterItalic">historyTableName</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />Name of the history table.</dd></dl><dl paramName="isHistoryTable"><dt><span class="parameterItalic">isHistoryTable</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean" target="_blank">Boolean</a><br />if set to true if this is a history table.</dd></dl></div></div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.SqlServer.SqlServerTableOrViewMetadata-1.htm">SqlServerTableOrViewMetadata<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDbType<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Class</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.SqlServer.htm">Tortuga.Chain.SqlServer Namespace</a></div></div></div>
             </div>
           </div>
         </div>

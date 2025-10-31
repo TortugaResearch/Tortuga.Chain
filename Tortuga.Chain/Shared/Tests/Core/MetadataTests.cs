@@ -385,7 +385,7 @@ public class MetadataTests : TestBase
 				if (column.MaxLength > 0)
 					output.AppendLine("    " + "    " + $"[MaxLength({column.MaxLength})]");
 
-				output.AppendLine("    " + "    " + $"public {column.ClrTypeName(NameGenerationOptions.CSharp)} {column.ClrName} " + "{ get; set; }");
+				output.AppendLine("    " + "    " + $"public {column.ClrTypeName(NameGenerationOptions.CSharp)} {column.ClrNameStandardized} " + "{ get; set; }");
 
 				output.AppendLine();
 			}
@@ -610,7 +610,11 @@ public class MetadataTests : TestBase
 		{
 			var columns = dataSource.DatabaseMetadata.GetTableOrViewFromClass<Employee>().Columns.Select(x => x.SqlName).ToList();
 
+#if POSTGRESQL
+			var expectedColumns = new[] { "Employee_Key", "First_Name", "Middle_Name", "Last_Name", "Title", "Manager_Key", "Office_Phone", "Cell_Phone", "Created_Date", "Updated_Date", "Employee_Id", "Gender", "Status" };
+#else
 			var expectedColumns = new[] { "EmployeeKey", "FirstName", "MiddleName", "LastName", "Title", "ManagerKey", "OfficePhone", "CellPhone", "CreatedDate", "UpdatedDate", "EmployeeId", "Gender", "Status" };
+#endif
 
 			for (var i = 0; i < columns.Count; i++)
 			{

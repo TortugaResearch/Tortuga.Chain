@@ -52,7 +52,11 @@ public class ColumnMetadataCollection : IReadOnlyList<ColumnMetadata>
 	public ColumnMetadata? TryGetColumn(string columnName)
 	{
 		foreach (var item in this)
-			if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
+			if (
+				item.SqlName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+				|| item.ClrName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+				|| item.ClrNameStandardized.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+				)
 				return item;
 
 		return null;
@@ -71,7 +75,10 @@ public class ColumnMetadataCollection : IReadOnlyList<ColumnMetadata>
 		get
 		{
 			foreach (var item in this)
-				if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
+				if (
+					item.SqlName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+					|| item.ClrName.Equals(columnName, StringComparison.OrdinalIgnoreCase)
+					|| item.ClrNameStandardized.Equals(columnName, StringComparison.OrdinalIgnoreCase))
 					return item;
 
 #pragma warning disable CA1065 // Do not raise exceptions in unexpected locations

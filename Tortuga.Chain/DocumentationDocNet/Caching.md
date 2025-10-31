@@ -25,7 +25,7 @@ In this example you can see the interplay between caching individual records and
         public IClass1DataSource Source { get; private set; }
         public CachePolicy Policy { get; private set; }
 
-        public EmployeeCachingRepository(IClass1DataSource source, CachePolicy policy = null)
+        public EmployeeCachingRepository(ICrudDataSource source, CachePolicy policy = null)
         {
             Source = source;
             Policy = policy;

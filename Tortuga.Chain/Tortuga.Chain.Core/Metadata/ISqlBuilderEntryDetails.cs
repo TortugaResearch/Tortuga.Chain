@@ -14,6 +14,13 @@ public interface ISqlBuilderEntryDetails
 	string ClrName { get; }
 
 	/// <summary>
+	/// Gets the used by CLR objects using standardized naming conventions..
+	/// </summary>
+	/// <remarks>The name is PascalCased and underscores are removed.</remarks>
+	public string ClrNameStandardized { get; }
+
+
+	/// <summary>
 	/// Indicates the direction of the parameter.
 	/// </summary>
 	ParameterDirection Direction { get; }

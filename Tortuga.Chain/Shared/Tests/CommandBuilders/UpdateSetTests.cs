@@ -16,13 +16,27 @@ public class UpdateSetTests : TestBase
 			for (var i = 0; i < 10; i++)
 				dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
 
-			var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'").WithFilter($"Title = '{lookupKey}' AND MiddleName = 'B'").ToCollection<Employee>().Execute();
+#if POSTGRESQL
+			var sql1 = "First_Name = 'Redacted'";
+			var sql2 = $"Title = '{lookupKey}' AND Middle_Name = 'B'";
+#else
+			var sql1 = "FirstName = 'Redacted'";
+			var sql2 = $"Title = '{lookupKey}' AND MiddleName = 'B'";
+#endif
+			var updatedRows = dataSource.UpdateSet(EmployeeTableName, sql1).WithFilter(sql2).ToCollection<Employee>().Execute();
 			var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were returned.");
 			Assert.AreEqual(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
 
-			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Withheld'", UpdateOptions.ReturnOldValues).WithFilter($"Title = '{lookupKey}' AND MiddleName = 'A'").ToCollection<Employee>().Execute();
+#if POSTGRESQL
+			var sql3 = "First_Name = 'Withheld'";
+			var sql4 = $"Title = '{lookupKey}' AND Middle_Name = 'A'";
+#else
+			var sql3 = "FirstName = 'Withheld'";
+			var sql4 = $"Title = '{lookupKey}' AND MiddleName = 'A'";
+#endif
+			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, sql3, UpdateOptions.ReturnOldValues).WithFilter(sql4).ToCollection<Employee>().Execute();
 			Assert.AreEqual(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
 
 			var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
@@ -42,6 +56,8 @@ public class UpdateSetTests : TestBase
 		{
 #if SQL_SERVER_OLEDB
 			var whereClause = "Title = ? AND MiddleName = ?";
+#elif POSTGRESQL
+			var whereClause = "Title = @LookupKey AND Middle_Name = @MiddleName";
 #else
 			var whereClause = "Title = @LookupKey AND MiddleName = @MiddleName";
 #endif
@@ -50,7 +66,13 @@ public class UpdateSetTests : TestBase
 			for (var i = 0; i < 10; i++)
 				dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
 
-			var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'").WithFilter(whereClause, new
+#if POSTGRESQL
+			var sql1 = "First_Name = 'Redacted'";
+#else
+			var sql1 = "FirstName = 'Redacted'";
+#endif
+
+			var updatedRows = dataSource.UpdateSet(EmployeeTableName, sql1).WithFilter(whereClause, new
 			{
 				LookupKey = lookupKey,
 				MiddleName = "B"
@@ -60,7 +82,13 @@ public class UpdateSetTests : TestBase
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were returned.");
 			Assert.AreEqual(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
 
-			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Withheld'", UpdateOptions.ReturnOldValues).WithFilter(whereClause, new
+#if POSTGRESQL
+			var sql2 = "First_Name = 'Withheld'";
+#else
+			var sql2 = "FirstName = 'Withheld'";
+#endif
+
+			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, sql2, UpdateOptions.ReturnOldValues).WithFilter(whereClause, new
 			{
 				LookupKey = lookupKey,
 				MiddleName = "B"
@@ -85,6 +113,9 @@ public class UpdateSetTests : TestBase
 #if SQL_SERVER_OLEDB
 			var updateExpression = "FirstName = ?";
 			var whereClause = "Title = ? AND MiddleName = ?";
+#elif POSTGRESQL
+			var updateExpression = "First_Name = @FirstName";
+			var whereClause = "Title = @LookupKey AND Middle_Name = @MiddleName";
 #else
 			var updateExpression = "FirstName = @FirstName";
 			var whereClause = "Title = @LookupKey AND MiddleName = @MiddleName";
@@ -130,7 +161,13 @@ public class UpdateSetTests : TestBase
 			for (var i = 0; i < 10; i++)
 				dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
 
-			var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'").WithFilter(new
+#if POSTGRESQL
+			var sql1 = "First_Name = 'Redacted'";
+#else
+			var sql1 = "FirstName = 'Redacted'";
+#endif
+
+			var updatedRows = dataSource.UpdateSet(EmployeeTableName, sql1).WithFilter(new
 			{
 				Title = lookupKey,
 				MiddleName = "B"
@@ -140,7 +177,13 @@ public class UpdateSetTests : TestBase
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were returned.");
 			Assert.AreEqual(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
 
-			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Withheld'", UpdateOptions.ReturnOldValues).WithFilter(new
+#if POSTGRESQL
+			var sql2 = "First_Name = 'Withheld'";
+#else
+			var sql2 = "FirstName = 'Withheld'";
+#endif
+
+			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, sql2, UpdateOptions.ReturnOldValues).WithFilter(new
 			{
 				Title = lookupKey,
 				MiddleName = "B"
@@ -166,13 +209,24 @@ public class UpdateSetTests : TestBase
 			for (var i = 0; i < 10; i++)
 				dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
 
-			var updatedRows = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Redacted" }).WithFilter($"Title = '{lookupKey}' AND MiddleName = 'B'").ToCollection<Employee>().Execute();
+#if POSTGRESQL
+			var sql1 = $"Title = '{lookupKey}' AND Middle_Name = 'B'";
+#else
+			var sql1 = $"Title = '{lookupKey}' AND MiddleName = 'B'";
+#endif
+			var updatedRows = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Redacted" }).WithFilter(sql1).ToCollection<Employee>().Execute();
 			var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were returned.");
 			Assert.AreEqual(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
 
-			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Withheld" }, UpdateOptions.ReturnOldValues).WithFilter($"Title = '{lookupKey}' AND MiddleName = 'A'").ToCollection<Employee>().Execute();
+#if POSTGRESQL
+			var sql2 = $"Title = '{lookupKey}' AND Middle_Name = 'A'";
+#else
+			var sql2 = $"Title = '{lookupKey}' AND MiddleName = 'A'";
+#endif
+
+			var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Withheld" }, UpdateOptions.ReturnOldValues).WithFilter(sql2).ToCollection<Employee>().Execute();
 			Assert.AreEqual(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
 
 			var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
@@ -192,6 +246,8 @@ public class UpdateSetTests : TestBase
 		{
 #if SQL_SERVER_OLEDB
 				var whereClause = "Title = ? AND MiddleName = ?";
+#elif POSTGRESQL
+			var whereClause = "Title = @LookupKey AND Middle_Name = @MiddleName";
 #else
 			var whereClause = "Title = @LookupKey AND MiddleName = @MiddleName";
 #endif

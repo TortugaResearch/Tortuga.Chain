@@ -6,7 +6,11 @@ namespace Tests.Aggregate;
 [TestClass]
 public class ComplexAggregateTests : TestBase
 {
+#if POSTGRESQL
+	const string Filter = "Employee_Key < 100"; //So we don't overlfow on Sum/Avg
+#else
 	const string Filter = "EmployeeKey < 100"; //So we don't overlfow on Sum/Avg
+#endif
 
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void MinMaxAvg(string dataSourceName, DataSourceType mode, string tableName)
@@ -102,18 +106,18 @@ public class ComplexAggregateTests : TestBase
 	public class GroupedEmployeeReport
 	{
 #if POSTGRESQL
-		const string ekColumnName = "employeekey";
+		const string ekColumnName = "employee_key";
 #else
 		const string ekColumnName = "EmployeeKey";
 #endif
 
-		[AggregateColumn(AggregateType.Min, "EmployeeKey")]
+		[AggregateColumn(AggregateType.Min, ekColumnName)]
 		public int MinEmployeeKey { get; set; }
 
-		[AggregateColumn(AggregateType.Max, "EmployeeKey")]
+		[AggregateColumn(AggregateType.Max, ekColumnName)]
 		public int MaxEmployeeKey { get; set; }
 
-		[AggregateColumn(AggregateType.Count, "EmployeeKey")]
+		[AggregateColumn(AggregateType.Count, ekColumnName)]
 		public int CountEmployeeKey { get; set; }
 
 		[GroupByColumn]
@@ -125,13 +129,20 @@ public class ComplexAggregateTests : TestBase
 
 	public class EmployeeReport
 	{
-		[AggregateColumn(AggregateType.Min, "EmployeeKey")]
+
+#if POSTGRESQL
+		const string ekColumnName = "employee_key";
+#else
+		const string ekColumnName = "EmployeeKey";
+#endif
+
+		[AggregateColumn(AggregateType.Min, ekColumnName)]
 		public int MinEmployeeKey { get; set; }
 
-		[AggregateColumn(AggregateType.Max, "EmployeeKey")]
+		[AggregateColumn(AggregateType.Max, ekColumnName)]
 		public int MaxEmployeeKey { get; set; }
 
-		[AggregateColumn(AggregateType.Count, "EmployeeKey")]
+		[AggregateColumn(AggregateType.Count, ekColumnName)]
 		public int CountEmployeeKey { get; set; }
 	}
 }

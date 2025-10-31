@@ -5,7 +5,11 @@ namespace Tests.Aggregate;
 [TestClass]
 public class SimpleAggregateTests : TestBase
 {
+#if POSTGRESQL
+	const string Filter = "Employee_Key < 100"; //So we don't overlfow on Sum/Avg
+#else
 	const string Filter = "EmployeeKey < 100"; //So we don't overlfow on Sum/Avg
+#endif
 
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AsMax(string dataSourceName, DataSourceType mode, string tableName)

@@ -21,6 +21,7 @@ internal class ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObje
 {
 	readonly DictionaryOptions m_DictionaryOptions;
 	readonly string? m_KeyColumn;
+	//readonly string? m_KeyColumnSqlName;
 	readonly Func<TObject, TKey>? m_KeyFunction;
 
 	public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
@@ -40,7 +41,8 @@ internal class ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObje
 		if (dictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
 			throw new NotImplementedException("DiscardDuplicates is not implemented for ImmutableDictionary with default constructors.");
 
-		m_KeyColumn = commandBuilder.TryGetColumn(keyColumn)?.SqlName ?? keyColumn;
+		m_KeyColumn = keyColumn;
+		//m_KeyColumnSqlName = commandBuilder.TryGetColumn(keyColumn)?.SqlName ?? keyColumn;
 		m_DictionaryOptions = dictionaryOptions;
 
 		if (m_DictionaryOptions.HasFlag(DictionaryOptions.InferConstructor))
@@ -82,7 +84,7 @@ internal class ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObje
 		if (m_KeyFunction != null)
 			return ImmutableDictionary.CreateRange(table.ToObjects<TObject>(Constructor).Select(x => new KeyValuePair<TKey, TObject>(m_KeyFunction(x), x)));
 
-		if (!table.ColumnNames.Contains(m_KeyColumn))
+		if (!table.ColumnNames.Any(c => c.Equals(m_KeyColumn, StringComparison.OrdinalIgnoreCase)))
 			throw new MappingException("The result set does not contain a column named " + m_KeyColumn);
 
 		return ImmutableDictionary.CreateRange(table.ToObjectsWithEcho<TObject>(Constructor).Select(x => NewMethod(x)));
@@ -115,6 +117,7 @@ internal class FrozenDictionaryMaterializer<TCommand, TParameter, TKey, TObject>
 {
 	readonly DictionaryOptions m_DictionaryOptions;
 	readonly string? m_KeyColumn;
+	readonly string? m_KeyColumnSqlName;
 	readonly Func<TObject, TKey>? m_KeyFunction;
 
 	public FrozenDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
@@ -134,7 +137,8 @@ internal class FrozenDictionaryMaterializer<TCommand, TParameter, TKey, TObject>
 		if (dictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
 			throw new NotImplementedException("DiscardDuplicates is not implemented for FrozenDictionary with default constructors.");
 
-		m_KeyColumn = commandBuilder.TryGetColumn(keyColumn)?.SqlName ?? keyColumn;
+		m_KeyColumn = keyColumn;
+		m_KeyColumnSqlName = commandBuilder.TryGetColumn(keyColumn)?.SqlName ?? keyColumn;
 		m_DictionaryOptions = dictionaryOptions;
 
 		if (m_DictionaryOptions.HasFlag(DictionaryOptions.InferConstructor))
@@ -176,7 +180,7 @@ internal class FrozenDictionaryMaterializer<TCommand, TParameter, TKey, TObject>
 		if (m_KeyFunction != null)
 			return table.ToObjects<TObject>(Constructor).Select(x => new KeyValuePair<TKey, TObject>(m_KeyFunction(x), x)).ToFrozenDictionary();
 
-		if (!table.ColumnNames.Contains(m_KeyColumn))
+		if (!table.ColumnNames.Any(c => c.Equals(m_KeyColumn, StringComparison.OrdinalIgnoreCase)))
 			throw new MappingException("The result set does not contain a column named " + m_KeyColumn);
 
 		return table.ToObjectsWithEcho<TObject>(Constructor).Select(x => NewMethod(x)).ToFrozenDictionary();

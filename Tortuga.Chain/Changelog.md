@@ -1,3 +1,32 @@
+## Version 5.8
+
+### Features 
+
+[#576 Add support for snake_case](https://github.com/TortugaResearch/Tortuga.Chain/issues/576)
+
+* Added support for automatically mapping snake_case column names to make it easier to work with PostgreSQL.
+* Added `.ClrNameStandardized` to the column metadata. This will convert column names to PascalCase for use in code generation and column mapping scenarios.
+
+[#575 Expose .CommandText()](https://github.com/TortugaResearch/Tortuga.Chain/issues/575)
+
+* `.CommandText()` shortcut was added so you don't have to call `.AsNoQuery().CommandText()` on Insert/Update operations to get the SQL.
+
+[#573 Add ColumnMetadata.ClrBaseType](https://github.com/TortugaResearch/Tortuga.Chain/issues/573)
+
+* `ColumnMetadata.ClrBaseType` is useful for parsing scenarios where you need the underlying data type of `Nullable<T>` fields.
+
+[#570 WithNoTimeout Appender](https://github.com/TortugaResearch/Tortuga.Chain/issues/570)
+
+* `.WithNoTimeout` calls `.SetTimeout` with a 0, effectively removing the timeout.
+
+### Bugs
+
+[#574 Error checking for bulk inserts of dictionaries](https://github.com/TortugaResearch/Tortuga.Chain/issues/574)
+
+If you bulk insert a collection of dictionaries, it is vital that each dictionary has the same keys as the first item in the collection. If you violate this rule, it won't be able to accurately detect all of the columns in use.
+
+This change will check for mismatches in the number of keys in each dictionary. It won't check all of the keys themselves, as that could be expensive. But the count check should be enough to catch most mistakes.
+
 ## Version 5.7
 
 [#198 ToDictionary needs a ValueColumn name](https://github.com/TortugaResearch/Tortuga.Chain/issues/198)

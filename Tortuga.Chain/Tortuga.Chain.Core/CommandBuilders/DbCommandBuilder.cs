@@ -26,11 +26,16 @@ public abstract class DbCommandBuilder : IDbCommandBuilder
 	public abstract ILink<int?> AsNonQuery();
 
 	/// <summary>
+	/// Returns the command text (usually SQL) without executing it.
+	/// </summary>
+	/// <returns>System.String.</returns>
+	public string? CommandText() => AsNonQuery().CommandText();
+
+	/// <summary>
 	/// Execute the operation synchronously.
 	/// </summary>
 	/// <param name="state">User defined state, usually used for logging.</param>
 	public int? Execute(object? state = null) => AsNonQuery().Execute(state);
-
 	/// <summary>
 	/// Execute the operation asynchronously.
 	/// </summary>

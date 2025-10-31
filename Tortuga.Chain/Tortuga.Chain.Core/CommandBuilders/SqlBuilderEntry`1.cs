@@ -32,9 +32,14 @@ public struct SqlBuilderEntry<TDbType>
 		UseParameter2 = 512,
 
 		/// <summary>
-		/// The use Clr name as alias when reading. Used for object materialization purposes.
+		/// The use CLR name as alias when reading. Used for object materialization purposes.
 		/// </summary>
-		UseClrNameAsAlias = 1024
+		UseClrNameAsAlias = 1024,
+
+		/// <summary>
+		/// The use Standardized CLR name as alias when reading. Used for object materialization purposes.
+		/// </summary>
+		UseClrNameStandardizedAsAlias = 2048
 	}
 
 	/// <summary>
@@ -162,6 +167,22 @@ public struct SqlBuilderEntry<TDbType>
 				m_Flags |= Flags.UseClrNameAsAlias;
 			else
 				m_Flags &= ~Flags.UseClrNameAsAlias;
+		}
+	}
+
+	/// <summary>
+	/// Gets a value indicating whether the SQL generator should produce an AS clause for this column.
+	/// </summary>
+	/// <remarks>This is used when the actual column name doesn't match the CLR-compatible version of the column name. This could happen when the real column name has spaces.</remarks>
+	public bool UseClrNameStandardizedAsAlias
+	{
+		readonly get { return (m_Flags & Flags.UseClrNameStandardizedAsAlias) > 0; }
+		internal set
+		{
+			if (value)
+				m_Flags |= Flags.UseClrNameStandardizedAsAlias;
+			else
+				m_Flags &= ~Flags.UseClrNameStandardizedAsAlias;
 		}
 	}
 

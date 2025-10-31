@@ -600,6 +600,11 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ISupportsDeletedRecords.htm" target="_self">ISupportsDeletedRecords Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.htm" target="_self">ITableDbCommandBuilder Interface</a>
 <div class="Hidden">
 </div>
@@ -898,6 +903,11 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteSet.htm" target="_self">ISupportsDeleteSet Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDisableIndexes.htm" target="_self">ISupportsDisableIndexes Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1509,7 +1519,7 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="N-Tortuga.Chain.SqlServer.htm" target="_self">Tortuga.Chain.SqlServer Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractOleDbSqlServerMetadataCache.htm" target="_self">AbstractOleDbSqlServerMetadataCache Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1517,6 +1527,9 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.SqlServer.HistoryQueryMode.htm" target="_self">HistoryQueryMode Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.MetadataException.htm" target="_self">MetadataException Class</a>
@@ -1676,17 +1689,6 @@
                         <img src="../icons/pubclass.gif" alt="Public class" title="Public class" />
                       </td>
                       <td>
-                        <a href="T-Tortuga.Chain.SqlServer.AbstractOleDbSqlServerMetadataCache.htm">AbstractOleDbSqlServerMetadataCache</a>
-                      </td>
-                      <td>
-                        <div class="summary">Class AbstractSqlServerMetadataCache.</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <img src="../icons/pubclass.gif" alt="Public class" title="Public class" />
-                      </td>
-                      <td>
                         <a href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm">AbstractSqlServerMetadataCache</a>
                       </td>
                       <td>
@@ -1771,9 +1773,7 @@
                         <a href="T-Tortuga.Chain.SqlServer.SqlServerAppenders.htm">SqlServerAppenders</a>
                       </td>
                       <td>
-                        <div class="summary">
-   Class SqlServerAppenders.
-   </div>
+                        <div class="summary"> Class SqlServerAppenders. </div>
                       </td>
                     </tr>
                     <tr>
@@ -1917,6 +1917,39 @@ Class SqlServerMetadataCache.
                       <td>
                         <div class="summary">
    Represents an object in SQL Server (e.g. table, view, procedure)
+   </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="LW_CollapsibleArea_Container">
+                  <div class="LW_CollapsibleArea_TitleDiv">
+                    <h2 class="LW_CollapsibleArea_Title">Enumerations</h2>
+                    <div class="LW_CollapsibleArea_HrDiv">
+                      <hr class="LW_CollapsibleArea_Hr" />
+                    </div>
+                  </div>
+                  <a id="enumerationSection">
+                    <!---->
+                  </a>
+                  <table id="typeList" class="members">
+                    <tr>
+                      <th class="iconColumn">
+           
+       </th>
+                      <th class="nameColumn">Enumeration</th>
+                      <th class="descriptionColumn">Description</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <img src="../icons/pubenumeration.gif" alt="Public enumeration" title="Public enumeration" />
+                      </td>
+                      <td>
+                        <a href="T-Tortuga.Chain.SqlServer.HistoryQueryMode.htm">HistoryQueryMode</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Used to control which type of query will be used for system versioned tables
    </div>
                       </td>
                     </tr>

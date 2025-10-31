@@ -47,25 +47,27 @@ public static class Setup
 			//DROP SCHEMA IF EXISTS hr;";
 
 			string sql2 = @"
-CREATE SCHEMA hr;
-CREATE TABLE hr.employee
+create schema hr;
+create table hr.employee
 (
-	EmployeeKey SERIAL PRIMARY KEY,
-	FirstName VARCHAR(50) NOT NULL,
-	MiddleName VARCHAR(50) NULL,
-	LastName VARCHAR(50) NOT NULL,
-	Title VARCHAR(100) null,
-	ManagerKey INTEGER NULL REFERENCES HR.Employee(EmployeeKey),
-	OfficePhone VARCHAR(15) NULL ,
-	CellPhone VARCHAR(15) NULL ,
-	CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	UpdatedDate TIMESTAMP NULL,
-	EmployeeId VARCHAR(50) NOT NULL,
-	Gender Char(1) NOT NULL,
-	Status Char(1) NULL
+	employee_key serial primary key,
+	first_name varchar(50) not null,
+	middle_name varchar(50) null,
+	last_name varchar(50) not null,
+	title varchar(100) null,
+	manager_key integer null references hr.employee(employee_key),
+	office_phone varchar(15) null ,
+	cell_phone varchar(15) null ,
+	created_date timestamp not null default current_timestamp,
+	updated_date timestamp null,
+	employee_id varchar(50) not null,
+	gender char(1) not null,
+	status char(1) null
 )";
 
-			string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(EmployeeId);";
+
+
+			string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(employee_id);";
 
 			string sql2b = @"
 CREATE SCHEMA public;
@@ -121,31 +123,31 @@ CREATE TABLE sales.location
 
 			string viewSql = @"CREATE VIEW HR.EmployeeWithManager
 AS
-SELECT  e.EmployeeKey ,
-		e.FirstName ,
-		e.MiddleName ,
-		e.LastName ,
+SELECT  e.Employee_Key ,
+		e.First_Name ,
+		e.Middle_Name ,
+		e.Last_Name ,
 		e.Title ,
-		e.ManagerKey ,
-		e.OfficePhone ,
-		e.CellPhone ,
-		e.CreatedDate ,
-		e.UpdatedDate ,
+		e.Manager_Key ,
+		e.Office_Phone ,
+		e.Cell_Phone ,
+		e.Created_Date ,
+		e.Updated_Date ,
 		e.Gender ,
-		m.EmployeeKey AS ManagerEmployeeKey ,
-		m.FirstName AS ManagerFirstName ,
-		m.MiddleName AS ManagerMiddleName ,
-		m.LastName AS ManagerLastName ,
-		m.Title AS ManagerTitle ,
-		m.ManagerKey AS ManagerManagerKey ,
-		m.OfficePhone AS ManagerOfficePhone ,
-		m.CellPhone AS ManagerCellPhone ,
-		m.CreatedDate AS ManagerCreatedDate ,
-		m.UpdatedDate AS ManagerUpdatedDate,
-		m.Gender AS ManagerGender,
-		e.EmployeeId
+		m.Employee_Key AS Manager_Employee_Key ,
+		m.First_Name AS Manager_First_Name ,
+		m.Middle_Name AS Manager_Middle_Name ,
+		m.Last_Name AS Manager_Last_Name ,
+		m.Title AS Manager_Title ,
+		m.Manager_Key AS Manager_Manager_Key ,
+		m.Office_Phone AS Manager_Office_Phone ,
+		m.Cell_Phone AS Manager_Cell_Phone ,
+		m.Created_Date AS Manager_Created_Date ,
+		m.Updated_Date AS Manager_Updated_Date,
+		m.Gender AS Manager_Gender,
+		e.Employee_Id
 FROM    HR.Employee e
-		LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
+		LEFT JOIN HR.Employee m ON m.Employee_Key = e.Manager_Key;";
 
 			var orderSql = @"CREATE TABLE sales.order
 (
@@ -224,7 +226,7 @@ FROM    HR.Employee e
 		IF (p_managerKey IS NOT NULL) THEN
 			result := COUNT(*)
 			FROM HR.Employee e
-			WHERE	e.ManagerKey = p_managerKey;
+			WHERE	e.Manager_Key = p_managerKey;
 		ELSE
 			result := COUNT(*)
 			FROM	HR.Employee e;

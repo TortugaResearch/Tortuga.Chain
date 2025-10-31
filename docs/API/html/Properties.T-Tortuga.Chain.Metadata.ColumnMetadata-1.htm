@@ -600,6 +600,11 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ISupportsDeletedRecords.htm" target="_self">ISupportsDeletedRecords Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.htm" target="_self">ITableDbCommandBuilder Interface</a>
 <div class="Hidden">
 </div>
@@ -898,6 +903,11 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteSet.htm" target="_self">ISupportsDeleteSet Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDisableIndexes.htm" target="_self">ISupportsDisableIndexes Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1528,7 +1538,7 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="N-Tortuga.Chain.SqlServer.htm" target="_self">Tortuga.Chain.SqlServer Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractOleDbSqlServerMetadataCache.htm" target="_self">AbstractOleDbSqlServerMetadataCache Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1536,6 +1546,9 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.AbstractSqlServerMetadataCache.htm" target="_self">AbstractSqlServerMetadataCache Class</a>
 <div class="Hidden">
 </div>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.SqlServer.HistoryQueryMode.htm" target="_self">HistoryQueryMode Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.SqlServer.MetadataException.htm" target="_self">MetadataException Class</a>
@@ -1696,6 +1709,18 @@
                         <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
                       </td>
                       <td>
+                        <a href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrBaseType.htm">ClrBaseType</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   The CLR type of the column or NULL if the type is unknown. Nullable types will return the underlying type (e.g. Nullable&lt;int&gt; becomes int)
+   </div> (Inherited from <a href="T-Tortuga.Chain.Metadata.ColumnMetadata.htm">ColumnMetadata</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+                      </td>
+                      <td>
                         <a href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrName.htm">ClrName</a>
                       </td>
                       <td>
@@ -1708,11 +1733,23 @@
                         <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
                       </td>
                       <td>
+                        <a href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrNameStandardized.htm">ClrNameStandardized</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Gets the used by CLR objects using standardized naming conventions..
+   </div> (Inherited from <a href="T-Tortuga.Chain.Metadata.ColumnMetadata.htm">ColumnMetadata</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+                      </td>
+                      <td>
                         <a href="P-Tortuga.Chain.Metadata.ColumnMetadata.ClrType.htm">ClrType</a>
                       </td>
                       <td>
                         <div class="summary">
-   The CLR type of the column or NULL if the type is unknown.
+   The CLR type of the column or System.Object if the type is unknown.
    </div> (Inherited from <a href="T-Tortuga.Chain.Metadata.ColumnMetadata.htm">ColumnMetadata</a>.)</td>
                     </tr>
                     <tr data="public;declared;notNetfw;">
