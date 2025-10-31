@@ -1,3 +1,11 @@
+## Version 5.8.2
+
+### Bugs
+
+PostgreSQL was returning a column type `bpchar`. This will be mapped to `NpgsqlDbType.Char`.
+
+Refine behavior of the `ClrNameStandardized` operation.
+
 ## Version 5.8
 
 ### Features 

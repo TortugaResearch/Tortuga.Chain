@@ -27,6 +27,8 @@
     <ReadCommittedSnapshot>True</ReadCommittedSnapshot>
     <AllowSnapshotIsolation>True</AllowSnapshotIsolation>
     <TargetFrameworkProfile />
+    <Recovery>SIMPLE</Recovery>
+    <AutoShrink>False</AutoShrink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>

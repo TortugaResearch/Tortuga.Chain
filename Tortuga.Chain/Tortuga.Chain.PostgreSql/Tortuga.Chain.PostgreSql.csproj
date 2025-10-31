@@ -13,7 +13,7 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<AnalysisLevel>latest</AnalysisLevel>
 		
-		<Version>5.8.0</Version>
+		<Version>5.8.2</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 

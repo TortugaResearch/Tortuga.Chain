@@ -43,7 +43,7 @@ internal static class Utilities
 		var output = new StringBuilder();
 		var fragments = result.Split('_', StringSplitOptions.RemoveEmptyEntries);
 		foreach (var fragment in fragments)
-			if (fragment.Length <= 2)
+			if (fragment.Length == 1)
 				output.Append(fragment.ToUpperInvariant());
 			else
 				output.Append(char.ToUpperInvariant(fragment[0]) + fragment[1..]);

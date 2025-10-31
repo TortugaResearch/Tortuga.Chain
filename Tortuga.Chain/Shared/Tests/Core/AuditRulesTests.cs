@@ -3,7 +3,7 @@ using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 
-namespace Tests.shared.Core;
+namespace Tests.Core;
 
 [TestClass]
 public class AuditRulesTests : TestBase
