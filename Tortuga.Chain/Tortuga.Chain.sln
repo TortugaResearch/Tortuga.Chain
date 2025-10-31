@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.CompiledMater
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentationDocNet", "DocumentationDocNet\DocumentationDocNet.csproj", "{64697C8B-60FD-4EE7-8560-37C4BD58580A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scratch", "Scratch\Scratch.csproj", "{670E649D-439C-46BA-9067-12B7E6859DBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{64697C8B-60FD-4EE7-8560-37C4BD58580A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64697C8B-60FD-4EE7-8560-37C4BD58580A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64697C8B-60FD-4EE7-8560-37C4BD58580A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{670E649D-439C-46BA-9067-12B7E6859DBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{670E649D-439C-46BA-9067-12B7E6859DBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{670E649D-439C-46BA-9067-12B7E6859DBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{670E649D-439C-46BA-9067-12B7E6859DBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

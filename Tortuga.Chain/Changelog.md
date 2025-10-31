@@ -1,3 +1,12 @@
+## Version 5.8.4
+
+### Bugs
+
+PostgreSQL was returning the wrong value for column MaxLength.
+
+SQLite was not returning a value for column MaxLength.
+SQLite was returning the column full type name in place of the short name. #292
+
 ## Version 5.8.2
 
 ### Bugs

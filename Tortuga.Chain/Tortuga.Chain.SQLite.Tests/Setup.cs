@@ -42,9 +42,9 @@ public static class Setup
 CREATE TABLE Employee
 (
 	EmployeeKey INTEGER PRIMARY KEY,
-	FirstName nvarChar(25) NOT NULL,
-	MiddleName nvarChar(25) NULL,
-	LastName nVarChar(25) NOT NULL,
+	FirstName nvarChar(50) NOT NULL,
+	MiddleName nvarChar(50) NULL,
+	LastName nVarChar(50) NOT NULL,
 	Title nVarChar(100) null,
 	ManagerKey INT NULL REferences Employee(EmployeeKey),
 	OfficePhone VARCHAR(15) NULL UNIQUE ,

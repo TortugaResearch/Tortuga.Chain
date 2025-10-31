@@ -49,9 +49,9 @@ public static class Setup
 CREATE TABLE Employee
 (
 	EmployeeKey COUNTER PRIMARY KEY,
-	FirstName TEXT(30) NOT NULL,
-	MiddleName TEXT(30) NULL,
-	LastName TEXT(30) NOT NULL,
+	FirstName TEXT(50) NOT NULL,
+	MiddleName TEXT(50) NULL,
+	LastName TEXT(50) NOT NULL,
 	Title TEXT(100) null,
 	ManagerKey LONG NULL REFERENCES Employee(EmployeeKey),
 	OfficePhone TEXT(15) NULL,

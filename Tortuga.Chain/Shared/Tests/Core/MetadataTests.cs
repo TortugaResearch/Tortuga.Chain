@@ -626,4 +626,32 @@ public class MetadataTests : TestBase
 			Release(dataSource);
 		}
 	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ColumnLength(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			dataSource.DatabaseMetadata.Reset();
+			var columns = dataSource.DatabaseMetadata.GetTableOrViewFromClass<Employee>().Columns;
+
+			Assert.AreEqual(50, columns["FirstName"].MaxLength, "FirstName");
+			Assert.AreEqual(50, columns["MiddleName"].MaxLength, "MiddleName");
+			Assert.AreEqual(50, columns["LastName"].MaxLength, "LastName");
+			Assert.AreEqual(100, columns["Title"].MaxLength, "Title");
+			Assert.AreEqual(15, columns["OfficePhone"].MaxLength, "OfficePhone");
+			Assert.AreEqual(15, columns["CellPhone"].MaxLength, "CellPhone");
+			Assert.AreEqual(50, columns["EmployeeId"].MaxLength, "EmployeeId");
+			Assert.AreEqual(1, columns["Gender"].MaxLength, "Gender");
+			Assert.AreEqual(1, columns["Status"].MaxLength, "Status");
+
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 }

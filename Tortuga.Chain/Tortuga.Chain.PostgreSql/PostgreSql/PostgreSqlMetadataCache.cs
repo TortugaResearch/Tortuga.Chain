@@ -29,7 +29,7 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 	Version? m_ServerVersion;
 	string? m_ServerVersionName;
 
-	static Regex s_DecimalMatcher = new(@"\d", RegexOptions.Compiled);
+	static Regex s_DecimalMatcher = new(@"\d+", RegexOptions.Compiled);
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.

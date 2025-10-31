@@ -1,6 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Data;
 using System.Data.SQLite;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 
@@ -347,6 +350,9 @@ WHERE  (m.name = '{tableName.Name}') OR (p.""table"" = '{tableName.Name}')", con
 			}
 		}
 
+		static Regex s_DecimalMatcher = new(@"\d+", RegexOptions.Compiled);
+
+
 		[SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
 		ColumnMetadataCollection<DbType> GetColumns(SQLiteObjectName tableName, bool isTable)
 		{
@@ -367,12 +373,50 @@ WHERE  (m.name = '{tableName.Name}') OR (p.""table"" = '{tableName.Name}')", con
 						while (reader.Read())
 						{
 							var name = reader.GetString("name");
-							var typeName = reader.GetString("type");
+							var fullTypeName = reader.GetString("type");
 							var isPrimaryKey = reader.GetInt32("pk") != 0 ? true : false;
 							var isnNullable = !reader.GetBoolean("notnull");
 							hasPrimarykey = hasPrimarykey || isPrimaryKey;
-							string fullTypeName = ""; //Task-292: Add support for full name
-							columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isnNullable, null, null, null, fullTypeName, ToClrType(typeName, isnNullable, null)));
+
+							var dbType = SqlTypeNameToDbType(fullTypeName);
+							var typeName = fullTypeName;
+
+							if (typeName.Contains('(', StringComparison.OrdinalIgnoreCase))
+								typeName = typeName[..typeName.IndexOf('(', StringComparison.OrdinalIgnoreCase)];
+
+
+
+
+							var match1 = s_DecimalMatcher.Match(fullTypeName);
+							var match2 = match1.Success ? match1.NextMatch() : null;
+							var value1 = match1.Success ? int.Parse(match1.Value, CultureInfo.InvariantCulture) : (int?)null;
+							var value2 = match2?.Success == true ? int.Parse(match2.Value, CultureInfo.InvariantCulture) : (int?)null;
+
+							int? maxLength = null;
+							int? precision = null;
+							int? scale = null;
+
+							switch (dbType)
+							{
+								case DbType.AnsiString:
+								case DbType.AnsiStringFixedLength:
+								case DbType.StringFixedLength:
+								case DbType.String:
+								case DbType.Binary:
+									maxLength = value1;
+									break;
+
+								case DbType.Decimal:
+								case DbType.VarNumeric:
+									precision = value1;
+									scale = value2;
+									if (precision.HasValue && scale == null)
+										scale = 0;
+									break;
+
+							}
+
+							columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, dbType, QuoteColumnName(name), isnNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isnNullable, maxLength)));
 						}
 					}
 				}
