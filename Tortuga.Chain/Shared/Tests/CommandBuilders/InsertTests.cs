@@ -25,7 +25,6 @@ public class InsertTests : TestBase
 		}
 	}
 
-#if !POSTGRESQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Identity_Insert(string dataSourceName, DataSourceType mode)
@@ -54,6 +53,10 @@ public class InsertTests : TestBase
 
 			Assert.AreEqual(nextKey, keyForOverriddenRow, "Identity column was not correctly overridden");
 
+#if POSTGRESQL
+			dataSource.ReseedIdentityColumn(EmployeeTableName).Execute();
+#endif
+
 #if SQLITE
 			var keyForNewRow = dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "0001", LastName = "Z" + (int.MaxValue - 1), Title = lookupKey, MiddleName = null }).ToInt64().Execute();
 #elif MYSQL
@@ -70,7 +73,7 @@ public class InsertTests : TestBase
 		}
 	}
 
-#endif
+
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoObject(string dataSourceName, DataSourceType mode)

@@ -810,7 +810,8 @@ LEFT JOIN (SELECT cnst.conrelid,
 		   WHERE cnst.contype='p') pk ON att.attnum=ANY(pk.conkey) AND
 										 pk.conrelid=c.oid
 WHERE c.relname ILIKE @Name AND
-	  ns.nspname ILIKE @Schema;";
+	  ns.nspname ILIKE @Schema
+ORDER BY att.attnum;";
 
 		var columns = new List<ColumnMetadata<NpgsqlDbType>>();
 		var sequenceColumns = GetSequenceColumns(tableName);
