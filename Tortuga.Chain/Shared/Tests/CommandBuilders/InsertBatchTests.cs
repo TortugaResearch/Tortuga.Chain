@@ -61,7 +61,7 @@ public class InsertBatchTests : TestBase
 
 #endif
 
-#if SQL_SERVER_MDS || SQLITE || MYSQL
+#if SQL_SERVER_MDS || SQLITE || MYSQL || POSTGRESQL
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatch_IdentityInsert(string dataSourceName, DataSourceType mode)
@@ -77,6 +77,8 @@ public class InsertBatchTests : TestBase
 			var maxKey = dataSource.Sql("SELECT Max(EmployeeKey) FROM " + EmployeeTableName).ToInt64().Execute() + 10;
 #elif MYSQL
 			var maxKey = dataSource.Sql("SELECT Max(EmployeeKey) FROM " + EmployeeTableName).ToUInt64().Execute() + 10;
+#elif POSTGRESQL
+			var maxKey = dataSource.Sql("SELECT Max(employee_key) FROM " + EmployeeTableName).ToInt32().Execute() + 10;
 #else
 			var maxKey = dataSource.Sql("SELECT Max(EmployeeKey) FROM " + EmployeeTableName).ToInt32().Execute() + 10;
 #endif
@@ -87,6 +89,10 @@ public class InsertBatchTests : TestBase
 				employeeList.Add(new Employee() { EmployeeKey = maxKey + (KeyType)i, FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key });
 
 			var count = dataSource.InsertBatch(EmployeeTableName, employeeList, InsertOptions.IdentityInsert).AsNonQuery().SetStrictMode(true).Execute();
+
+#if POSTGRESQL
+			dataSource.ReseedIdentityColumn(EmployeeTableName).Execute();
+#endif
 
 			Assert.AreEqual(maxRows, count);
 

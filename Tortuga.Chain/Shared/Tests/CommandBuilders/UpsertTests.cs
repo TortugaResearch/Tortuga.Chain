@@ -76,7 +76,7 @@ public class UpsertTests : TestBase
 		}
 	}
 
-#if !POSTGRESQL
+
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void UpsertTest_Identity_Insert(string dataSourceName, DataSourceType mode)
@@ -106,12 +106,15 @@ public class UpsertTests : TestBase
 				EmployeeKey = nextKey
 			};
 
-			var inserted = dataSource.Upsert(EmployeeTableName, original, Tortuga.Chain.UpsertOptions.IdentityInsert).ToObject<Employee>().Execute();
+			var inserted = dataSource.Upsert(EmployeeTableName, original, UpsertOptions.IdentityInsert).ToObject<Employee>().Execute();
 
+#if POSTGRESQL
+			dataSource.ReseedIdentityColumn(EmployeeTableName).Execute();
+#endif
 			inserted.FirstName = "Changed";
 			inserted.Title = "Also Changed";
 
-			var updated = dataSource.Upsert(EmployeeTableName, inserted, Tortuga.Chain.UpsertOptions.IdentityInsert).ToObject<Employee>().Execute();
+			var updated = dataSource.Upsert(EmployeeTableName, inserted, UpsertOptions.IdentityInsert).ToObject<Employee>().Execute();
 			Assert.AreEqual(inserted.FirstName, updated.FirstName, "FirstName shouldn't have changed");
 			Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
 			Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
@@ -122,7 +125,7 @@ public class UpsertTests : TestBase
 		}
 	}
 
-#endif
+
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 

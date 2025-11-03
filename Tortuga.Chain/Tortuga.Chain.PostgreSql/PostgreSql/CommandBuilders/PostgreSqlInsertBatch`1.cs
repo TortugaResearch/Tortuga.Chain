@@ -45,8 +45,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 				throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
 			var identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
-			if (identityInsert)
-				throw new NotImplementedException("See issue 256. https://github.com/TortugaResearch/Tortuga.Chain/issues/256");
 
 			var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
@@ -57,7 +55,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			var sql = new StringBuilder();
 
 			sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {m_Table.Name.ToQuotedString()} (", null, ")", identityInsert);
-			sql.AppendLine("VALUES");
+			if (identityInsert)
+				sql.Append(" OVERRIDING SYSTEM VALUE"); 
+			sql.AppendLine(" VALUES");
 
 			var parameters = new List<NpgsqlParameter>();
 			for (var i = 0; i < m_SourceList.Count; i++)

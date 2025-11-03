@@ -37,8 +37,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 				throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
 			var identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
-			if (identityInsert)
-				throw new NotImplementedException("See issue 256. https://github.com/TortugaResearch/Tortuga.Chain/issues/256");
 
 			var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
 			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
@@ -49,6 +47,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 			var sql = new StringBuilder();
 			sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")", identityInsert);
+			if (identityInsert)
+				sql.Append(" OVERRIDING SYSTEM VALUE");
+			
 			sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
 			sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
