@@ -108,6 +108,22 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	}
 
 	/// <summary>
+	/// Gets or sets a value indicating whether to use Npgsql.EnableLegacyTimestampBehavior.
+	/// </summary>
+	/// <remarks>Turn this on if you are getting this error: "Cannot write DateTime with Kind=UTC to PostgreSQL type 'timestamp without time zone'
+	/// .</remarks>
+	public static bool EnableLegacyTimestampBehavior
+	{
+		get => AppContext.TryGetSwitch("Npgsql.EnableLegacyTimestampBehavior", out var value) ? value : false;
+		set
+		{
+			if (DatasourceCreated)
+				throw new InvalidOperationException("EnableLegacyTimestampBehavior must be set before creating any PostgreSqlDataSource or NpgsqlConnection objects.");
+			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", value);
+		}
+	}
+
+	/// <summary>
 	/// Gets the database metadata.
 	/// </summary>
 	/// <value>The database metadata.</value>
