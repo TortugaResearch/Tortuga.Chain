@@ -1,6 +1,8 @@
-## Version 5.8.6
+## Version 5.8.7
 
 Add support for converting `NpgsqlDbType.TimestampTz` to a CLR type. This is used in the code generator.
+
+Remove the `Kind` property when using the `DateTimeRule` so it will be compatible with PostgreSQL. 
 
 ## Version 5.8.5
 

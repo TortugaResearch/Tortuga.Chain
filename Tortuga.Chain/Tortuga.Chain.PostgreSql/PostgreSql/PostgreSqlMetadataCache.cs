@@ -924,7 +924,8 @@ ORDER BY att.attnum;";
 			NpgsqlDbType.Interval => isNullable ? typeof(TimeSpan?) : typeof(TimeSpan),
 			NpgsqlDbType.Bit => typeof(BitArray),
 			NpgsqlDbType.Uuid => isNullable ? typeof(Guid?) : typeof(Guid),
-			NpgsqlDbType.TimestampTz => isNullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset),
+			//TimestampTz is really just a Timestamp stored in UTC time, but converted to local time on read.
+			NpgsqlDbType.TimestampTz => isNullable ? typeof(DateTime?) : typeof(DateTime),
 			NpgsqlDbType.Xml or NpgsqlDbType.Json or NpgsqlDbType.Jsonb => typeof(string),
 			_ => null
 		};
