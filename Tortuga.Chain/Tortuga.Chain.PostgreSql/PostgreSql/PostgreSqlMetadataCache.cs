@@ -924,9 +924,9 @@ ORDER BY att.attnum;";
 			NpgsqlDbType.Interval => isNullable ? typeof(TimeSpan?) : typeof(TimeSpan),
 			NpgsqlDbType.Bit => typeof(BitArray),
 			NpgsqlDbType.Uuid => isNullable ? typeof(Guid?) : typeof(Guid),
+			NpgsqlDbType.TimestampTz => isNullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset),
 			NpgsqlDbType.Xml or NpgsqlDbType.Json or NpgsqlDbType.Jsonb => typeof(string),
-			NpgsqlDbType.Inet or NpgsqlDbType.Cidr or NpgsqlDbType.MacAddr or NpgsqlDbType.MacAddr8 or NpgsqlDbType.Varbit or NpgsqlDbType.TsVector or NpgsqlDbType.TsQuery or NpgsqlDbType.Regconfig or NpgsqlDbType.Hstore or NpgsqlDbType.Array or NpgsqlDbType.Range or NpgsqlDbType.Refcursor or NpgsqlDbType.Oidvector or NpgsqlDbType.Int2Vector or NpgsqlDbType.Oid or NpgsqlDbType.Xid or NpgsqlDbType.Cid or NpgsqlDbType.Regtype or NpgsqlDbType.Tid or NpgsqlDbType.Unknown or NpgsqlDbType.Geometry or NpgsqlDbType.Geography or NpgsqlDbType.Box or NpgsqlDbType.Circle or NpgsqlDbType.Line or NpgsqlDbType.LSeg or NpgsqlDbType.Path or NpgsqlDbType.Point or NpgsqlDbType.Polygon or NpgsqlDbType.Name or NpgsqlDbType.Citext or NpgsqlDbType.InternalChar => null,
-			_ => null,
+			_ => null
 		};
 	}
 

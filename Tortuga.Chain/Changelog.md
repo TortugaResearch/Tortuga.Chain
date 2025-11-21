@@ -1,3 +1,7 @@
+## Version 5.8.6
+
+Add support for converting `NpgsqlDbType.TimestampTz` to a CLR type. This is used in the code generator.
+
 ## Version 5.8.5
 
 ### Features 
