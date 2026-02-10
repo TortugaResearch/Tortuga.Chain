@@ -29,7 +29,7 @@ sealed class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpe
 	/// </summary>
 	/// <remarks>This is created and cached by a ConnectionStringBuilder.</remarks>
 	[Expose(Accessibility = Accessibility.Internal)]
-	public string ConnectionString => m_ConnectionBuilder.ConnectionString;
+	public string ConnectionString => m_ConnectionStringBuilder.ConnectionString;
 
 	/// <summary>
 	/// The extension cache is used by extensions to store data source specific information.
@@ -47,7 +47,7 @@ sealed class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpe
 	/// This object can be used to access the database connection string.
 	/// </summary>
 	[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
-	public TConnectionStringBuilder m_ConnectionBuilder { get; set; } = null!;
+	public TConnectionStringBuilder m_ConnectionStringBuilder { get; set; } = null!;
 
 	[Expose(Accessibility = Accessibility.Internal)]
 	public ConcurrentDictionary<Type, object> m_ExtensionCache { get; set; } = null!;

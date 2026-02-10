@@ -31,13 +31,13 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 		if (string.IsNullOrEmpty(connectionString))
 			throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
-		m_ConnectionBuilder = new OleDbConnectionStringBuilder(connectionString);
+		m_ConnectionStringBuilder = new OleDbConnectionStringBuilder(connectionString);
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new OleDbSqlServerMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new OleDbSqlServerMetadataCache(m_ConnectionStringBuilder);
 
 		if (settings != null)
 		{
@@ -69,13 +69,13 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 	/// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
 	public OleDbSqlServerDataSource(string? name, OleDbConnectionStringBuilder connectionStringBuilder, SqlServerDataSourceSettings? settings = null) : base(settings)
 	{
-		m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
+		m_ConnectionStringBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new OleDbSqlServerMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new OleDbSqlServerMetadataCache(m_ConnectionStringBuilder);
 
 		if (settings != null)
 		{
@@ -98,9 +98,9 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 
 	OleDbSqlServerDataSource(string? name, OleDbConnectionStringBuilder connectionStringBuilder, SqlServerDataSourceSettings settings, OleDbSqlServerMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
 	{
-		m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
+		m_ConnectionStringBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
@@ -305,7 +305,7 @@ public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 			XactAbort = settings?.XactAbort ?? XactAbort,
 			ArithAbort = settings?.ArithAbort ?? ArithAbort
 		};
-		var result = new OleDbSqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+		var result = new OleDbSqlServerDataSource(Name, m_ConnectionStringBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
 		result.AuditRules = AuditRules;
 		result.UserValue = UserValue;

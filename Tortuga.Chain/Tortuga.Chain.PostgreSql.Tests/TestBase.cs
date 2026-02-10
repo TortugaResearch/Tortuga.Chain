@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Configuration;
+using Npgsql;
+using System.Xml.Linq;
 using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
@@ -13,7 +15,8 @@ public abstract partial class TestBase
 	public const string EmployeeViewName = "HR.EmployeeWithManager";
 	static public readonly string AssemblyName = "PostgreSql";
 	public string DefaultSchema = "public";
-	internal static readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
+	internal static readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new();
+	internal static readonly Dictionary<string, NpgsqlDataSource> s_ConnectionSources = new();
 	internal static PostgreSqlDataSource s_PrimaryDataSource;
 
 	public static string CustomerTableName { get { return "Sales.Customer"; } }
@@ -61,13 +64,18 @@ public abstract partial class TestBase
 		var ds = s_DataSources[name];
 		switch (mode)
 		{
-			case DataSourceType.Normal: return AttachTracers(ds);
+			case DataSourceType.Normal:
+				return AttachTracers(ds);
 			case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new PostgreSqlDataSourceSettings() { StrictMode = true });
 			case DataSourceType.SequentialAccess: return AttachTracers(ds).WithSettings(new PostgreSqlDataSourceSettings() { SequentialAccessMode = true });
 			case DataSourceType.Transactional: return AttachTracers(ds.BeginTransaction());
 			case DataSourceType.Open:
 				var root = (IRootDataSource)ds;
 				return AttachTracers((PostgreSqlDataSourceBase)root.CreateOpenDataSource(root.CreateConnection(), null));
+#if COMMON_DB_DATA_SOURCE
+			case DataSourceType.CommonDBDataSource:
+				return AttachTracers(new PostgreSqlDataSource(s_ConnectionSources[name]));
+#endif
 		}
 		throw new ArgumentException($"Unknown mode {mode}");
 	}
@@ -86,6 +94,10 @@ public abstract partial class TestBase
 			case DataSourceType.Open:
 				var root = (IRootDataSource)ds;
 				return AttachTracers((PostgreSqlDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync().ConfigureAwait(false), null));
+#if COMMON_DB_DATA_SOURCE
+			case DataSourceType.CommonDBDataSource:
+				return AttachTracers(new PostgreSqlDataSource(s_ConnectionSources[name]));
+#endif
 		}
 		throw new ArgumentException($"Unknown mode {mode}");
 	}
@@ -108,6 +120,11 @@ public abstract partial class TestBase
 				s_PrimaryDataSource = ds;
 
 			s_DataSources.Add(con.Key, ds);
+
+			var builder = new NpgsqlDataSourceBuilder(con.Value);
+			var commonDataSource = builder.Build();
+
+			s_ConnectionSources.Add(con.Key, commonDataSource);
 		}
 		BuildEmployeeSearchKey1000(s_PrimaryDataSource);
 	}

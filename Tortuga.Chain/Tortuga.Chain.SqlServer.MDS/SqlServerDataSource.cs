@@ -14,7 +14,7 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 	readonly object m_SyncRoot = new();
 	SqlServerMetadataCache m_DatabaseMetadata;
 	bool m_IsSqlDependencyActive;
-
+	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
 	/// </summary>
@@ -27,13 +27,13 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 		if (string.IsNullOrEmpty(connectionString))
 			throw new ArgumentException("connectionString is null or empty.", nameof(connectionString));
 
-		m_ConnectionBuilder = new SqlConnectionStringBuilder(connectionString);
+		m_ConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.InitialCatalog ?? m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.InitialCatalog ?? m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionStringBuilder);
 
 		if (settings != null)
 		{
@@ -72,13 +72,13 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 		if (connectionStringBuilder == null)
 			throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 
-		m_ConnectionBuilder = connectionStringBuilder;
+		m_ConnectionStringBuilder = connectionStringBuilder;
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.InitialCatalog ?? m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.InitialCatalog ?? m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionStringBuilder);
 
 		if (settings != null)
 		{
@@ -108,9 +108,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 		if (connectionStringBuilder == null)
 			throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 
-		m_ConnectionBuilder = connectionStringBuilder;
+		m_ConnectionStringBuilder = connectionStringBuilder;
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.InitialCatalog ?? m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.InitialCatalog ?? m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
@@ -392,7 +392,7 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 			DefaultNVarCharLength = settings?.DefaultNVarCharLength
 		};
 
-		var result = new SqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+		var result = new SqlServerDataSource(Name, m_ConnectionStringBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
 		result.AuditRules = AuditRules;
 		result.UserValue = UserValue;

@@ -44,9 +44,9 @@ public class DateTimeRule : ColumnRule
 	public override object GenerateValue(object? argumentValue, object? userValue, object? currentValue)
 	{
 		return Kind switch
-		{
-			DateTimeKind.Local => DateTime.Now,
-			DateTimeKind.Utc => DateTime.UtcNow,
+		{			
+			DateTimeKind.Local => DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified),
+			DateTimeKind.Utc => DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified),
 			_ => throw new InvalidOperationException("kind is set incorrectly"),
 		};
 	}

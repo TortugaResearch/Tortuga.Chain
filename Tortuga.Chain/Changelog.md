@@ -1,3 +1,34 @@
+## Version 5.8.9
+
+Add support to PostgreSQL for a .NET 7 `DbDataSource`, a new class that generates database connections.
+
+Note: A `DbDataSource` implementation is not available for the other databases.
+
+## Version 5.8.7
+
+Add support for converting `NpgsqlDbType.TimestampTz` to a CLR type. This is used in the code generator.
+
+Remove the `Kind` property when using the `DateTimeRule` so it will be compatible with PostgreSQL. 
+
+## Version 5.8.5
+
+### Features 
+
+[#578 PostgreSQL: Reseed identity column](https://github.com/TortugaResearch/Tortuga.Chain/issues/578)
+
+* `dataSource.ReseedIdentityColumn(tableName)`
+* `dataSource.ReseedIdentityColumn(tableName, seed)`
+
+[#256 Add support for Identity Insert in PostgreSQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/256)
+
+Call `ReseedIdentityColumn` after performing an identity insert to ensure the sequence is correct.
+
+### Bugs
+
+* Column order is incorrect in PostgreSQL tables.
+* Indexes list the wrong columns in PostgreSQL.
+
+
 ## Version 5.8.4
 
 ### Bugs
