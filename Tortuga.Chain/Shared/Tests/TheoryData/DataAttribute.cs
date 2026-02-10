@@ -24,10 +24,21 @@ namespace Tests;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public abstract class DataAttribute : Attribute, ITestDataSource
 {
+
+#if COMMON_DB_DATA_SOURCE
+	static DataSourceType[] s_DataSourceTypeList = new DataSourceType[] { DataSourceType.Normal,
+													 DataSourceType.Open,
+													 DataSourceType.Transactional,
+													 DataSourceType.Strict,
+													 DataSourceType.CommonDBDataSource
+	};
+#else
 	static DataSourceType[] s_DataSourceTypeList = new DataSourceType[] { DataSourceType.Normal,
 													 DataSourceType.Open,
 													 DataSourceType.Transactional,
 													 DataSourceType.Strict };
+#endif
+
 
 	protected DataSourceType[] DataSourceTypeList = s_DataSourceTypeList;
 

@@ -26,13 +26,13 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 		if (string.IsNullOrEmpty(connectionString))
 			throw new ArgumentException("Connection string is null or empty.", nameof(connectionString));
 
-		m_ConnectionBuilder = new SQLiteConnectionStringBuilder(connectionString);
+		m_ConnectionStringBuilder = new SQLiteConnectionStringBuilder(connectionString);
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 
@@ -62,13 +62,13 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 		if (connectionStringBuilder == null)
 			throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 
-		m_ConnectionBuilder = connectionStringBuilder;
+		m_ConnectionStringBuilder = connectionStringBuilder;
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 	}
@@ -88,9 +88,9 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 		if (connectionStringBuilder == null)
 			throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 
-		m_ConnectionBuilder = connectionStringBuilder;
+		m_ConnectionStringBuilder = connectionStringBuilder;
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
@@ -255,7 +255,7 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 			DisableLocks = settings?.DisableLocks ?? DisableLocks,
 			EnforceForeignKeys = settings?.EnforceForeignKeys ?? EnforceForeignKeys
 		};
-		var result = new SQLiteDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+		var result = new SQLiteDataSource(Name, m_ConnectionStringBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
 		result.AuditRules = AuditRules;
 		result.UserValue = UserValue;

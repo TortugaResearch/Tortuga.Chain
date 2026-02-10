@@ -7,5 +7,8 @@ public enum DataSourceType
 	Open,
 	Strict,
 	SequentialAccess
+#if COMMON_DB_DATA_SOURCE
+	,CommonDBDataSource
+#endif
 }
 

@@ -39,9 +39,13 @@ partial class PostgreSqlDataSource
 
 	private partial AbstractConnection OnCreateConnection()
 	{
-		var con = new NpgsqlConnection(ConnectionString);
+		NpgsqlConnection con;
+		if (m_ConnectionSource != null)
+			con = m_ConnectionSource.CreateConnection();
+		else
+			con = new NpgsqlConnection(ConnectionString); 
 		con.Open();
-
+		
 		//TODO: Research server settings.
 
 		return con;
@@ -49,7 +53,11 @@ partial class PostgreSqlDataSource
 
 	private partial async Task<AbstractConnection> OnCreateConnectionAsync(CancellationToken cancellationToken)
 	{
-		var con = new NpgsqlConnection(ConnectionString);
+		NpgsqlConnection con;
+		if (m_ConnectionSource != null)
+			con = m_ConnectionSource.CreateConnection();
+		else
+			con = new NpgsqlConnection(ConnectionString);
 		await con.OpenAsync(cancellationToken).ConfigureAwait(false);
 
 		//TODO: Research server settings.

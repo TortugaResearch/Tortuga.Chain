@@ -10,3 +10,4 @@ global using AbstractTableFunction = Tortuga.Chain.PostgreSql.CommandBuilders.Po
 global using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
 global using AbstractDataSource = Tortuga.Chain.PostgreSqlDataSource;
 global using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
+global using AbstractConnectionFactory = Npgsql.NpgsqlDataSource;

@@ -26,14 +26,14 @@ public partial class MySqlDataSource : MySqlDataSourceBase
 		if (string.IsNullOrEmpty(connectionString))
 			throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
-		m_ConnectionBuilder = new MySqlConnectionStringBuilder(connectionString);
+		m_ConnectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
 
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.Database;
+			Name = m_ConnectionStringBuilder.Database;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new MySqlMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new MySqlMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 	}
@@ -61,13 +61,13 @@ public partial class MySqlDataSource : MySqlDataSourceBase
 		if (connectionBuilder == null)
 			throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
 
-		m_ConnectionBuilder = connectionBuilder;
+		m_ConnectionStringBuilder = connectionBuilder;
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.Database;
+			Name = m_ConnectionStringBuilder.Database;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new MySqlMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new MySqlMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 	}
@@ -88,9 +88,9 @@ public partial class MySqlDataSource : MySqlDataSourceBase
 		if (connectionBuilder == null)
 			throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
 
-		m_ConnectionBuilder = connectionBuilder;
+		m_ConnectionStringBuilder = connectionBuilder;
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.Database;
+			Name = m_ConnectionStringBuilder.Database;
 		else
 			Name = name;
 
@@ -218,7 +218,7 @@ public partial class MySqlDataSource : MySqlDataSourceBase
 			StrictMode = settings?.StrictMode ?? StrictMode,
 			SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
 		};
-		var result = new MySqlDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+		var result = new MySqlDataSource(Name, m_ConnectionStringBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
 		result.AuditRules = AuditRules;
 		result.UserValue = UserValue;

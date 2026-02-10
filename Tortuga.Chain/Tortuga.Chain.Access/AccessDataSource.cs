@@ -25,13 +25,13 @@ public partial class AccessDataSource : AccessDataSourceBase
 		if (string.IsNullOrEmpty(connectionString))
 			throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
-		m_ConnectionBuilder = new OleDbConnectionStringBuilder(connectionString);
+		m_ConnectionStringBuilder = new OleDbConnectionStringBuilder(connectionString);
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 	}
@@ -55,14 +55,14 @@ public partial class AccessDataSource : AccessDataSourceBase
 	/// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
 	public AccessDataSource(string? name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings? settings = null) : base(settings)
 	{
-		m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
+		m_ConnectionStringBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 	}
@@ -82,9 +82,9 @@ public partial class AccessDataSource : AccessDataSourceBase
 		if (connectionStringBuilder == null)
 			throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
 
-		m_ConnectionBuilder = connectionStringBuilder;
+		m_ConnectionStringBuilder = connectionStringBuilder;
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.DataSource;
+			Name = m_ConnectionStringBuilder.DataSource;
 		else
 			Name = name;
 
@@ -257,7 +257,7 @@ public partial class AccessDataSource : AccessDataSourceBase
 			StrictMode = settings?.StrictMode ?? StrictMode,
 			SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
 		};
-		var result = new AccessDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+		var result = new AccessDataSource(Name, m_ConnectionStringBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
 		result.AuditRules = AuditRules;
 		result.UserValue = UserValue;

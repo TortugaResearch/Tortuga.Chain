@@ -26,16 +26,19 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 		if (string.IsNullOrEmpty(connectionString))
 			throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
-		m_ConnectionBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+		m_ConnectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.Database;
+			Name = m_ConnectionStringBuilder.Database;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new PostgreSqlMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new PostgreSqlMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 	}
+
+	private readonly AbstractConnectionFactory? m_ConnectionSource;
+
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PostgreSqlDataSource"/> class.
@@ -48,6 +51,34 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	}
 
 	/// <summary>
+	/// Initializes a new instance of the <see cref="PostgreSqlDataSource"/> class.
+	/// </summary>
+	/// <param name="name">The name.</param>
+	/// <param name="connectionSource">The AbstractConnectionFactory used to create connections.</param>
+	/// <param name="settings">The settings.</param>
+	public PostgreSqlDataSource(string? name, AbstractConnectionFactory connectionSource, PostgreSqlDataSourceSettings? settings = null)
+		: base(settings)
+	{
+		m_ConnectionSource = connectionSource;
+
+		m_ConnectionStringBuilder = new NpgsqlConnectionStringBuilder(m_ConnectionSource.ConnectionString);
+		Name = name ?? m_ConnectionStringBuilder.Database;
+
+		m_DatabaseMetadata = new PostgreSqlMetadataCache(connectionSource);
+		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+		m_Cache = DefaultCache;
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="PostgreSqlDataSource"/> class.
+	/// </summary>
+	/// <param name="connectionSource">The AbstractConnectionFactory used to create connections.</param>
+	/// <param name="settings">The settings.</param>
+	public PostgreSqlDataSource(AbstractConnectionFactory connectionSource, PostgreSqlDataSourceSettings? settings = null)
+		: this(null, connectionSource, settings)
+	{ }
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="PostgreSqlDataSource" /> class.
 	/// </summary>
 	/// <param name="name">The name.</param>
@@ -57,13 +88,13 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	public PostgreSqlDataSource(string? name, NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings? settings = null)
 		: base(settings)
 	{
-		m_ConnectionBuilder = connectionBuilder ?? throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
+		m_ConnectionStringBuilder = connectionBuilder ?? throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.Database;
+			Name = m_ConnectionStringBuilder.Database;
 		else
 			Name = name;
 
-		m_DatabaseMetadata = new PostgreSqlMetadataCache(m_ConnectionBuilder);
+		m_DatabaseMetadata = new PostgreSqlMetadataCache(m_ConnectionStringBuilder);
 		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 		m_Cache = DefaultCache;
 	}
@@ -81,9 +112,9 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	PostgreSqlDataSource(string? name, NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings settings, PostgreSqlMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache)
 				: base(settings)
 	{
-		m_ConnectionBuilder = connectionBuilder ?? throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
+		m_ConnectionStringBuilder = connectionBuilder ?? throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
 		if (string.IsNullOrEmpty(name))
-			Name = m_ConnectionBuilder.Database;
+			Name = m_ConnectionStringBuilder.Database;
 		else
 			Name = name;
 
@@ -231,7 +262,13 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 			StrictMode = settings?.StrictMode ?? StrictMode,
 			SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
 		};
-		var result = new PostgreSqlDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+
+		PostgreSqlDataSource result;
+		if (m_ConnectionSource != null)
+			result = new PostgreSqlDataSource(Name, m_ConnectionSource, mergedSettings);
+		else
+			result = new PostgreSqlDataSource(Name, m_ConnectionStringBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+
 		result.m_DatabaseMetadata = m_DatabaseMetadata;
 		result.AuditRules = AuditRules;
 		result.UserValue = UserValue;

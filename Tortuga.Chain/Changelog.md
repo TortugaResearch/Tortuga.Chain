@@ -1,3 +1,9 @@
+## Version 5.8.9
+
+Add support to PostgreSQL for a .NET 7 `DbDataSource`, a new class that generates database connections.
+
+Note: A `DbDataSource` implementation is not available for the other databases.
+
 ## Version 5.8.7
 
 Add support for converting `NpgsqlDbType.TimestampTz` to a CLR type. This is used in the code generator.

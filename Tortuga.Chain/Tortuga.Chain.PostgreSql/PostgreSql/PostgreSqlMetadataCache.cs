@@ -17,7 +17,9 @@ namespace Tortuga.Chain.PostgreSql;
 /// </summary>
 public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectName, NpgsqlDbType>
 {
-	readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
+	readonly NpgsqlConnectionStringBuilder? m_ConnectionStringBuilder;
+	readonly AbstractConnectionFactory? m_ConnectionSource;
+
 	readonly ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_ScalarFunctions = new();
 	readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new();
 	readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new();
@@ -34,10 +36,34 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
 	/// </summary>
-	/// <param name="connectionBuilder">The connection builder.</param>
-	public PostgreSqlMetadataCache(NpgsqlConnectionStringBuilder connectionBuilder)
+	/// <param name="connectionStringBuilder">The connection string builder.</param>
+	public PostgreSqlMetadataCache(NpgsqlConnectionStringBuilder connectionStringBuilder)
 	{
-		m_ConnectionBuilder = connectionBuilder;
+		ArgumentNullException.ThrowIfNull(connectionStringBuilder);
+		m_ConnectionStringBuilder = connectionStringBuilder;
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
+	/// </summary>
+	/// <param name="connectionSource">The connection source.</param>
+	public PostgreSqlMetadataCache(AbstractConnectionFactory? connectionSource)
+	{
+		ArgumentNullException.ThrowIfNull(connectionSource);
+		m_ConnectionSource = connectionSource;
+	}
+
+	NpgsqlConnection CreateConnection()
+	{
+		NpgsqlConnection con;
+
+		if (m_ConnectionSource != null)
+			con = m_ConnectionSource.CreateConnection();
+		else
+			con = new NpgsqlConnection(m_ConnectionStringBuilder!.ConnectionString);
+
+		con.Open();
+		return con;
 	}
 
 	/// <summary>
@@ -50,9 +76,8 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 		{
 			if (m_DatabaseName == null)
 			{
-				using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+				using (var con = CreateConnection())
 				{
-					con.Open();
 					using (var cmd = new NpgsqlCommand("select current_database()", con))
 					{
 						m_DatabaseName = (string)cmd.ExecuteScalar()!;
@@ -73,10 +98,8 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 		{
 			if (m_DefaultSchemaList == default)
 			{
-				using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+				using (var con = CreateConnection())
 				{
-					con.Open();
-
 					string currentUser;
 					string defaultSchema;
 
@@ -106,10 +129,8 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 		{
 			if (m_ServerVersion == null)
 			{
-				using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+				using (var con = CreateConnection())
 				{
-					con.Open();
-
 					using (var cmd = new NpgsqlCommand("SHOW server_version;", con))
 					{
 						var versionString = (string)cmd.ExecuteScalar()!;
@@ -132,10 +153,8 @@ public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectNam
 		{
 			if (m_ServerVersionName == null)
 			{
-				using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+				using (var con = CreateConnection())
 				{
-					con.Open();
-
 					using (var cmd = new NpgsqlCommand("SELECT version();", con))
 						m_ServerVersionName = (string)cmd.ExecuteScalar()!;
 				}
@@ -205,11 +224,9 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 		var table = GetTableOrView(tableName);
 
 		var results = new List<IndexMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
-		using (var con2 = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
+		using (var con2 = CreateConnection())
 		{
-			con.Open();
-			con2.Open();
 			using (var cmd = new NpgsqlCommand(indexSql, con))
 			{
 				cmd.Parameters.AddWithValue("@Schema", tableName.Schema!);
@@ -290,9 +307,8 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 
 		var scratch = new List<FKTemp>();
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
 			using (var cmd = new NpgsqlCommand(@$"SELECT *
 FROM (
 	SELECT
@@ -477,9 +493,8 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 	{
 		const string TvfSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type<>'record';";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
 			using (var cmd = new NpgsqlCommand(TvfSql, con))
 			{
 				using (var reader = cmd.ExecuteReader())
@@ -502,9 +517,8 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 	{
 		const string procSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='refcursor';";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
 			using (var cmd = new NpgsqlCommand(procSql, con))
 			{
 				using (var reader = cmd.ExecuteReader())
@@ -527,9 +541,8 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 	{
 		const string TvfSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='record';";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
 			using (var cmd = new NpgsqlCommand(TvfSql, con))
 			{
 				using (var reader = cmd.ExecuteReader())
@@ -560,9 +573,8 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 					  table_schema<>'pg_catalog' AND
 					  table_schema<>'information_schema';";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
 			using (var cmd = new NpgsqlCommand(TableSql, con))
 			{
 				using (var reader = cmd.ExecuteReader())
@@ -593,9 +605,8 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 					  table_schema<>'pg_catalog' AND
 					  table_schema<>'information_schema';";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
 			using (var cmd = new NpgsqlCommand(ViewSql, con))
 			{
 				using (var reader = cmd.ExecuteReader())
@@ -935,10 +946,8 @@ ORDER BY att.attnum;";
 	{
 		const string functionSql = @"SELECT routine_schema, routine_name, specific_name, data_type FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type<>'record' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
-
 			foreach (var schema in GetSchemasToCheck(tableFunctionName))
 			{
 				string actualSchema;
@@ -992,10 +1001,8 @@ where s.relkind='S' and d.deptype='a'";
 
 		if (m_SequenceColumns == null)
 		{
-			using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+			using (var con = CreateConnection())
 			{
-				con.Open();
-
 				using (var cmd = new NpgsqlCommand(sql, con))
 				{
 					using (var reader = cmd.ExecuteReader())
@@ -1028,10 +1035,8 @@ where s.relkind='S' and d.deptype='a'";
 	{
 		const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type='refcursor' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
-
 			foreach (var schema in GetSchemasToCheck(storedProcedureName))
 			{
 				string actualSchema;
@@ -1064,10 +1069,8 @@ where s.relkind='S' and d.deptype='a'";
 	{
 		const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type='record' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
-
 			foreach (var schema in GetSchemasToCheck(tableFunctionName))
 			{
 				string actualSchema;
@@ -1127,10 +1130,8 @@ WHERE table_schema ILIKE @Schema AND
 		(table_type='BASE TABLE' OR
 		table_type='VIEW');";
 
-		using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+		using (var con = CreateConnection())
 		{
-			con.Open();
-
 			foreach (var schmea in GetSchemasToCheck(tableName))
 			{
 				string actualSchema;
