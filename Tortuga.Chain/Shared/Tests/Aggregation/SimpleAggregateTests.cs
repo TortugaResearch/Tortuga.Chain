@@ -11,7 +11,7 @@ public class SimpleAggregateTests : TestBase
 	const string Filter = "EmployeeKey < 100"; //So we don't overlfow on Sum/Avg
 #endif
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AsMax(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -26,7 +26,7 @@ public class SimpleAggregateTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AsMin(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -41,7 +41,7 @@ public class SimpleAggregateTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AsAverage(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -56,7 +56,7 @@ public class SimpleAggregateTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AsSum(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -73,7 +73,7 @@ public class SimpleAggregateTests : TestBase
 
 #if !ACCESS
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AsSumTest_Distinct(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

@@ -83,116 +83,158 @@ public class MaterializerTypeConverter
 			}
 
 			//some database return strings when we want strong types
-			if (value is string stringValue)
+			switch (value)
 			{
-				if (targetType == typeof(char))
-				{
-					value = stringValue.Length >= 1 ? stringValue[0] : default;
-					return true;
-				}
-				else if (targetType == typeof(XElement))
-				{
-					value = XElement.Parse(stringValue);
-					return true;
-				}
-				else if (targetType == typeof(XDocument))
-				{
-					value = XDocument.Parse(stringValue);
-					return true;
-				}
-				else if (targetTypeInfo.IsEnum)
-				{
-					value = Enum.Parse(targetType, stringValue);
-					return true;
-				}
-				else if (targetType == typeof(bool))
-				{
-					value = bool.Parse(stringValue);
-					return true;
-				}
-				else if (targetType == typeof(short))
-				{
-					value = short.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(int))
-				{
-					value = int.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(long))
-				{
-					value = long.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(float))
-				{
-					value = float.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(double))
-				{
-					value = double.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(decimal))
-				{
-					value = decimal.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(DateTime))
-				{
-					value = DateTime.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(DateTimeOffset))
-				{
-					value = DateTimeOffset.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(TimeSpan))
-				{
-					value = TimeSpan.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
-				else if (targetType == typeof(TimeOnly))
-				{
-					value = TimeOnly.Parse(stringValue, CultureInfo.InvariantCulture);
-					return true;
-				}
+				case string stringValue:
+					if (targetType == typeof(char))
+					{
+						value = stringValue.Length >= 1 ? stringValue[0] : default;
+						return true;
+					}
+					else if (targetType == typeof(XElement))
+					{
+						value = XElement.Parse(stringValue);
+						return true;
+					}
+					else if (targetType == typeof(XDocument))
+					{
+						value = XDocument.Parse(stringValue);
+						return true;
+					}
+					else if (targetTypeInfo.IsEnum)
+					{
+						value = Enum.Parse(targetType, stringValue);
+						return true;
+					}
+					else if (targetType == typeof(bool))
+					{
+						value = bool.Parse(stringValue);
+						return true;
+					}
+					else if (targetType == typeof(short))
+					{
+						value = short.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(int))
+					{
+						value = int.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(long))
+					{
+						value = long.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(float))
+					{
+						value = float.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(double))
+					{
+						value = double.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(decimal))
+					{
+						value = decimal.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(DateTime))
+					{
+						value = DateTime.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(DateTimeOffset))
+					{
+						value = DateTimeOffset.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(TimeSpan))
+					{
+						value = TimeSpan.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(TimeOnly))
+					{
+						value = TimeOnly.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
+					else if (targetType == typeof(DateOnly))
+					{
+						value = DateOnly.Parse(stringValue, CultureInfo.InvariantCulture);
+						return true;
+					}
 
-				return false;
+					return false;
+
+				case DateTime dt:
+					if (targetType == typeof(DateOnly))
+					{
+						value = DateOnly.FromDateTime(dt);
+						return true;
+					}
+					else if (targetType == typeof(TimeOnly))
+					{
+						value = TimeOnly.FromDateTime(dt);
+						return true;
+					}
+					else if (targetType == typeof(TimeSpan))
+					{
+						value = dt.TimeOfDay;
+						return true;
+					}
+
+					break;
+
+				case TimeSpan ts:
+					if (targetType == typeof(TimeOnly))
+					{
+						value = TimeOnly.FromTimeSpan(ts);
+						return true;
+					}
+
+					break;
+
+				case DateOnly dto:
+					if (targetType == typeof(DateTime))
+					{
+						value = new DateTime(dto, default);
+						return true;
+					}
+					else if (targetType == typeof(DateTimeOffset))
+					{
+						value = new DateTimeOffset(dto, default, default);
+						return true;
+					}
+
+					break;
+
+				case TimeOnly to:
+					if (targetType == typeof(TimeSpan))
+					{
+						value = to.ToTimeSpan();
+						return true;
+					}
+					else if (targetType == typeof(DateTime))
+					{
+						value = new DateTime(default, to);
+						return true;
+					}
+					else if (targetType == typeof(DateTimeOffset))
+					{
+						value = new DateTimeOffset(default, to, default);
+						return true;
+					}
+
+					break;
 			}
 
 			if (targetTypeInfo.IsEnum)
+			{
 				value = Enum.ToObject(targetType, value);
-
-			if (value is DateTime dt)
-			{
-				if (targetType == typeof(DateOnly))
-				{
-					value = DateOnly.FromDateTime(dt);
-					return true;
-				}
-				if (targetType == typeof(TimeOnly))
-				{
-					value = TimeOnly.FromDateTime(dt);
-					return true;
-				}
-				if (targetType == typeof(TimeSpan))
-				{
-					value = dt.TimeOfDay;
-					return true;
-				}
-			}
-
-			if (value is TimeSpan ts)
-			{
-				if (targetType == typeof(TimeOnly))
-				{
-					value = TimeOnly.FromTimeSpan(ts);
-					return true;
-				}
+				return true;
 			}
 
 			//this will handle numeric conversions

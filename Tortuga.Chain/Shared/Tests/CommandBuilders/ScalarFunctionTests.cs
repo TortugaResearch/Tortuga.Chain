@@ -16,7 +16,7 @@ public class ScalarFunctionTests : TestBase
 	static object Filter_Integer = new { p_managerKey = 1 };
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ScalarFunction1_Integer_WithNullParameter(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -32,7 +32,7 @@ public class ScalarFunctionTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ScalarFunction1_Integer(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0</TargetFrameworks>
+		<TargetFrameworks>net10.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for PostgreSQL.</Description>
 		<PackageTags>ORM Fluent DB Reflection PostgreSQL</PackageTags>
-		<LangVersion>13.0</LangVersion>
+		<LangVersion>14.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<AnalysisLevel>latest</AnalysisLevel>
-		
-		<Version>5.8.9</Version>
+
+		<Version>6.0.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -43,7 +43,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+	<PropertyGroup>
 		<DefineConstants>POSTGRESQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
@@ -52,7 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="5.8.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -60,7 +60,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="Npgsql" Version="10.0.3" />
 	</ItemGroup>
 
 	<!-- Code Generator -->

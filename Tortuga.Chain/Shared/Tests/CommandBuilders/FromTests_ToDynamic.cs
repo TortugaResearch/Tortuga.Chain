@@ -5,7 +5,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class FromTests_ToDynamic : TestBase
 {
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToDynamicCollection(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -27,7 +27,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToDynamicCollection_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
@@ -51,7 +51,7 @@ public class FromTests_ToDynamic : TestBase
 
 #if POSTGRESQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicCollection_IncludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -86,7 +86,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicObject_ExcludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -113,7 +113,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicObject_IncludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -140,7 +140,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicObjectOrNull_IncludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -171,7 +171,7 @@ public class FromTests_ToDynamic : TestBase
 
 #else
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicCollection_IncludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -206,7 +206,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicObject_ExcludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -233,7 +233,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicObject_IncludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -260,7 +260,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDynamicObjectOrNull_IncludeColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -291,7 +291,7 @@ public class FromTests_ToDynamic : TestBase
 
 #endif
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToDynamicObject(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -312,7 +312,7 @@ public class FromTests_ToDynamic : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToDynamicObject_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode);

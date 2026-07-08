@@ -6,7 +6,7 @@ namespace Tests.Materializers;
 [TestClass]
 public class ToDataTableTests : TestBase
 {
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToDataRow(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -26,7 +26,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToDataRow_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -46,7 +46,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToDataTable(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -64,7 +64,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToDataTable_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
@@ -82,7 +82,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToRow(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -102,7 +102,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToRow_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -122,7 +122,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToTable(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -140,7 +140,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task ToTable_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -158,7 +158,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
+	[TestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
 	public void ToTable_WithLimit(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -187,7 +187,7 @@ public class ToDataTableTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToTable_NoColumnNames(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -209,7 +209,7 @@ public class ToDataTableTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToTable_NoColumnName(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -232,7 +232,7 @@ public class ToDataTableTests : TestBase
 	}
 #endif
 
-	[DataTestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
+	[TestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
 	public async Task ToTable_WithLimit_Async(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode);

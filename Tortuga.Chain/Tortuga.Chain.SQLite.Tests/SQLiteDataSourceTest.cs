@@ -5,7 +5,7 @@ namespace Tests.Core
 	[TestClass]
 	public class SQLiteDataSourceTest : TestBase
 	{
-		[DataTestMethod, RootData(DataSourceGroup.Primary)]
+		[TestMethod, RootData(DataSourceGroup.Primary)]
 		public void FK_Disabled(string dataSourceName)
 		{
 			var dataSource = DataSource(dataSourceName).WithSettings(new SQLiteDataSourceSettings() { EnforceForeignKeys = false });
@@ -19,7 +19,7 @@ namespace Tests.Core
 			}
 		}
 
-		[DataTestMethod, RootData(DataSourceGroup.Primary)]
+		[TestMethod, RootData(DataSourceGroup.Primary)]
 		public void FK_Enabled(string dataSourceName)
 		{
 			var dataSource = DataSource(dataSourceName).WithSettings(new SQLiteDataSourceSettings() { EnforceForeignKeys = true });

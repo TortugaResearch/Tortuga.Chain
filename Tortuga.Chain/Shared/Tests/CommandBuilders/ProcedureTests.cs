@@ -47,7 +47,7 @@ public class ProcedureTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Tuncation_Test(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -74,7 +74,7 @@ public class ProcedureTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Object(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -95,7 +95,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task Proc1_Object_Async(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -116,7 +116,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Dictionary(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -137,7 +137,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task Proc1_Dictionary_Async(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -159,7 +159,7 @@ public class ProcedureTests : TestBase
 
 #if !MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Dictionary2(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -183,7 +183,7 @@ public class ProcedureTests : TestBase
 
 #if !MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task Proc1_Dictionary2_Async(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -205,7 +205,7 @@ public class ProcedureTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task Proc1_ToCollectionSet(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -224,7 +224,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
+	[TestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
 	public async Task Proc1_ToCollectionSet_Join_Expression_1(string dataSourceName, DataSourceType mode, JoinOptions options)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -243,7 +243,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
+	[TestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
 	public async Task Proc1_ToCollectionSet_Join_Expression_2(string dataSourceName, DataSourceType mode, JoinOptions options)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -262,7 +262,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
+	[TestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
 	public async Task Proc1_ToCollectionSet_Join_Keys_1(string dataSourceName, DataSourceType mode, JoinOptions options)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -281,7 +281,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
+	[TestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
 	public async Task Proc1_ToCollectionSet_Join_Keys_2(string dataSourceName, DataSourceType mode, JoinOptions options)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -300,7 +300,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
+	[TestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
 	public async Task Proc1_ToCollectionSet_Join_Keys_3(string dataSourceName, DataSourceType mode, JoinOptions options)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -319,7 +319,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
+	[TestMethod, BasicDataWithJoinOptions(DataSourceGroup.Primary)]
 	public async Task Proc1_ToCollectionSet_Join_Keys_4(string dataSourceName, DataSourceType mode, JoinOptions options)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -338,7 +338,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Object_DataSet(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -358,7 +358,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task Proc1_Object_Async_DataSet(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -378,7 +378,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Dictionary_DataSet(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -398,7 +398,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task Proc1_Dictionary_Async_DataSet(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -420,7 +420,7 @@ public class ProcedureTests : TestBase
 
 #if !MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Proc1_Dictionary2_DataSet(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -444,7 +444,7 @@ public class ProcedureTests : TestBase
 
 #if !MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task Proc1_Dictionary2_Async_DataSet(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -468,7 +468,7 @@ public class ProcedureTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_IgnoreOutputs(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -524,7 +524,7 @@ public class ProcedureTests : TestBase
 	}
 
 	/*
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_CaptureOutputsInParameter(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource2(dataSourceName, mode);
@@ -542,7 +542,7 @@ public class ProcedureTests : TestBase
 	}
 	*/
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_CaptureOutputsAsObject(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -558,7 +558,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_CaptureOutputsAsObject_MappedInput(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -574,7 +574,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_CaptureOutputsAsObject_Mapped(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -590,7 +590,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_CaptureOutputsAsDictionary(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -608,7 +608,7 @@ public class ProcedureTests : TestBase
 	}
 
 	/*
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_CaptureOutputsInObject(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource2(dataSourceName, mode);
@@ -628,7 +628,7 @@ public class ProcedureTests : TestBase
 	}
 	*/
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_WorkAround(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource2(dataSourceName, mode);
@@ -664,7 +664,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task SystemStoredProcedure_ManualOutputs(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);
@@ -693,7 +693,7 @@ public class ProcedureTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task MasterStoredProcedure(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource3(dataSourceName, mode);

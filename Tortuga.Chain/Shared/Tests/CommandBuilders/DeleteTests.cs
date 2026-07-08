@@ -6,7 +6,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class DeleteTests : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Delete(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -30,7 +30,7 @@ public class DeleteTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Delete_Attribute(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -61,7 +61,7 @@ public class DeleteTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Delete_Implied(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -93,7 +93,7 @@ public class DeleteTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Delete_Trigger(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -119,7 +119,7 @@ public class DeleteTests : TestBase
 
 #endif
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void Delete_TableAndView_Strict(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName, DataSourceType.Strict);
@@ -143,7 +143,7 @@ public class DeleteTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void Delete_TableAndView_Strict_ReadDeleted(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName, DataSourceType.Strict);

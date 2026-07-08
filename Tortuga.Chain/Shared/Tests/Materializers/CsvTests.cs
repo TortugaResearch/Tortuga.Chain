@@ -5,7 +5,7 @@ namespace Tests.CommandBuilders
     {
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        [TestMethod, BasicData(DataSourceGroup.Primary)]
         public void SerializeToString(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -36,7 +36,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        [TestMethod, BasicData(DataSourceGroup.Primary)]
         public async Task SerializeToStringAsync(string dataSourceName, DataSourceType mode)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);

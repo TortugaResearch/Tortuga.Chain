@@ -8,7 +8,7 @@ public class IndexTests : TestBase
 {
 #if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void TableIndexes(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -41,7 +41,7 @@ public class IndexTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, ViewData(DataSourceGroup.All)]
+	[TestMethod, ViewData(DataSourceGroup.All)]
 	public void ViewIndexes(string dataSourceName, DataSourceType mode, string viewName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -70,7 +70,7 @@ public class IndexTests : TestBase
 
 #if SQL_SERVER_MDS || POSTGRESQL
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void DisableIndexes(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

@@ -35,7 +35,7 @@ public struct CompiledMultipleRow<TCommand, TParameter>
 		where TObject : class, new()
 	{
 		return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, List<TObject>>(m_CommandBuilder, collectionOptions);
-	}
+}
 
 	/// <summary>
 	/// Materializes the result as a list of objects.

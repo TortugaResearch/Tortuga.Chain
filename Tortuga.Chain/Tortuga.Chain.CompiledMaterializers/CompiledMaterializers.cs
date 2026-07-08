@@ -149,6 +149,8 @@ public static class CompiledMaterializers
 			else if (columnType == typeof(UInt16)) getter = "(System.UInt16)reader.GetValue";
 			else if (columnType == typeof(UInt32)) getter = "(System.UInt32)reader.GetValue";
 			else if (columnType == typeof(UInt64)) getter = "(System.UInt64)reader.GetValue";
+			else if (columnType == typeof(DateOnly)) getter = "(System.DateOnly)reader.GetValue";
+			else if (columnType == typeof(TimeOnly)) getter = "(System.TimeOnly)reader.GetValue";
 			else getter = "reader.GetValue";
 
 			var isNullable = !nonNullableColumns.Any(c => c.SqlName == columnName); //Assume column is nullable unless proven otherwise
@@ -332,6 +334,21 @@ public static class CompiledMaterializers
 					getterWithConversion = $"TimeOnly.FromDateTime({column.Getter}({column.Index}))";
 				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(TimeSpan))
 					getterWithConversion = $"TimeOnly.FromTimeSpan({column.Getter}({column.Index}))";
+
+				else if ((property.PropertyType == typeof(TimeSpan) || property.PropertyType == typeof(TimeSpan?)) && column.ColumnType == typeof(TimeOnly))
+					getterWithConversion = $"({column.Getter}({column.Index})).ToTimeSpan()";
+
+				else if ((property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?)) && column.ColumnType == typeof(DateOnly))
+					getterWithConversion = $"new System.DateTime({column.Getter}({column.Index}), default)";
+
+				else if ((property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?)) && column.ColumnType == typeof(TimeOnly))
+					getterWithConversion = $"new System.DateTime(default, {column.Getter}({column.Index}))";
+
+				else if ((property.PropertyType == typeof(DateTimeOffset) || property.PropertyType == typeof(DateTimeOffset?)) && column.ColumnType == typeof(DateOnly))
+					getterWithConversion = $"new System.DateTimeOffset({column.Getter}({column.Index}), default, default)";
+
+				else if ((property.PropertyType == typeof(DateTimeOffset) || property.PropertyType == typeof(DateTimeOffset?)) && column.ColumnType == typeof(TimeOnly))
+					getterWithConversion = $"new System.DateTimeOffset(default, {column.Getter}({column.Index}), default)";
 
 				//special handling for OleDB
 				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(string))

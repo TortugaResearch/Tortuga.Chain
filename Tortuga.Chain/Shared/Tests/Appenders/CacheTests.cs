@@ -6,7 +6,7 @@ namespace Tests.Appenders;
 [TestClass]
 public class CacheTests : TestBase
 {
-	[DataTestMethod, RootData(DataSourceGroup.All)]
+	[TestMethod, RootData(DataSourceGroup.All)]
 	public void CacheTest(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

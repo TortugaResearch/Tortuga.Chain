@@ -12,7 +12,7 @@ public class ComplexAggregateTests : TestBase
 	const string Filter = "EmployeeKey < 100"; //So we don't overlfow on Sum/Avg
 #endif
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void MinMaxAvg(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -39,7 +39,7 @@ public class ComplexAggregateTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void MinMaxAvg_WithGroup(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -70,7 +70,7 @@ public class ComplexAggregateTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AggregateObject(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -89,7 +89,7 @@ public class ComplexAggregateTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void AggregateObject_WithGroup(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

@@ -15,7 +15,7 @@ public class CommandTimeoutTests : TestBase
 {
 	const string TimeoutSql = "WAITFOR DELAY '00:00:03'";
 
-	[DataTestMethod, RootData(DataSourceGroup.All)]
+	[TestMethod, RootData(DataSourceGroup.All)]
 	public void TimeoutTriggeredTest(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -31,7 +31,7 @@ public class CommandTimeoutTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.All)]
+	[TestMethod, RootData(DataSourceGroup.All)]
 	public async Task TimeoutTriggeredAsyncTest(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

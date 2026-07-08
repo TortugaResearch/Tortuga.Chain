@@ -7,7 +7,7 @@ public class TableCountTests : TestBase
 {
 #if POSTGRESQL || MYSQL
 
-	[DataTestMethod, TableData(DataSourceGroup.Primary)]
+	[TestMethod, TableData(DataSourceGroup.Primary)]
 	public void GetTableApproximateCount(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -22,7 +22,7 @@ public class TableCountTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetTableApproximateCount_Auto(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -37,7 +37,7 @@ public class TableCountTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TableData(DataSourceGroup.Primary)]
+	[TestMethod, TableData(DataSourceGroup.Primary)]
 	public async Task GetTableApproximateCount_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

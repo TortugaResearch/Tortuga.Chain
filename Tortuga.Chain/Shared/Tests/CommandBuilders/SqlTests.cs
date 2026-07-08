@@ -52,7 +52,7 @@ public class SqlCallTests : TestBase
 	static SQLiteParameter SqlParameter1 => new SQLiteParameter("@param_state", "CA") { Size = 100, DbType = DbType.String };
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Object(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -69,7 +69,7 @@ public class SqlCallTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, RootData(DataSourceGroup.All)]
+	[TestMethod, RootData(DataSourceGroup.All)]
 	public void Sql_Object_TypeDefault(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName).WithSettings(new() { DefaultStringType = SqlDbType.NChar });
@@ -84,7 +84,7 @@ public class SqlCallTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.All)]
+	[TestMethod, RootData(DataSourceGroup.All)]
 	public void Sql_Object_SizeDefault(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName).WithSettings(new() { DefaultVarCharLength = 80, DefaultNVarCharLength = 40 });
@@ -99,7 +99,7 @@ public class SqlCallTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Object_SizeOverride(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -114,7 +114,7 @@ public class SqlCallTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Object_SizeOverride_TooSmall(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -129,7 +129,7 @@ public class SqlCallTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Object_SizeOverride_Max(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -147,7 +147,7 @@ public class SqlCallTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Object_TypeOverride(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -164,7 +164,7 @@ public class SqlCallTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Dictionary(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -179,7 +179,7 @@ public class SqlCallTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sql_Param(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
