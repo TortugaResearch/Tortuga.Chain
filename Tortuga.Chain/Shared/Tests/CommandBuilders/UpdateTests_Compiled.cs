@@ -8,7 +8,7 @@ public class UpdateTests_Compiled : TestBase
 {
 #if !SQLite
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ChangeTrackingTest_Compiled(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -38,7 +38,7 @@ public class UpdateTests_Compiled : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ChangeTrackingTest_NothingChanged_Compiled(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

@@ -8,7 +8,7 @@ public class TruncateTests : TestBase
 {
 
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Truncate(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName);

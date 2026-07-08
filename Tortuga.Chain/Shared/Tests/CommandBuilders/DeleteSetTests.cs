@@ -5,7 +5,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class DeleteSetTests : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void DeleteSet_Where(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -37,7 +37,7 @@ public class DeleteSetTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void DeleteSet_WhereArg(string dataSourceName, DataSourceType mode)
 	{
 #if SQL_SERVER_OLEDB
@@ -71,7 +71,7 @@ public class DeleteSetTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void DeleteSet_Filter(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -97,7 +97,7 @@ public class DeleteSetTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void DeleteSet_Where_SoftDelete(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -125,7 +125,7 @@ public class DeleteSetTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void DeleteSet_WhereArg_SoftDelete(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -159,7 +159,7 @@ public class DeleteSetTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void DeleteSet_Filter_SoftDelete(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

@@ -6,7 +6,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class InsertTests : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Insert(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -26,7 +26,7 @@ public class InsertTests : TestBase
 	}
 
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Identity_Insert(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -75,7 +75,7 @@ public class InsertTests : TestBase
 
 
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoObject(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -95,7 +95,7 @@ public class InsertTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoObject_CheckChar(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -117,7 +117,7 @@ public class InsertTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoObject_CheckChar_Compiled(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -140,7 +140,7 @@ public class InsertTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoNewKey(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -162,7 +162,7 @@ public class InsertTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Insert_Trigger(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -181,7 +181,7 @@ public class InsertTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoObject_Trigger(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -201,7 +201,7 @@ public class InsertTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoNewKey_Trigger(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

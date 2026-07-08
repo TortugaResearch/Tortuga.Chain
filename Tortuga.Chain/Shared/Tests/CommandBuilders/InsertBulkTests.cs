@@ -26,7 +26,7 @@ public class InsertBulkTests : TestBase
 
 #if SQL_SERVER_MDS || MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_List_WithBatches(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -52,7 +52,7 @@ public class InsertBulkTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_Dictionary(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -82,7 +82,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_List(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -107,7 +107,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_List_Empty(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -130,7 +130,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_List_ImpliedTableName(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -154,7 +154,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_Enumeration(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -181,7 +181,7 @@ public class InsertBulkTests : TestBase
 
 #if SQL_SERVER_MDS || MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task InsertBulkAsync_List_WithBatches(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -207,7 +207,7 @@ public class InsertBulkTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task InsertBulkAsync_List(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -231,7 +231,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task InsertBulkAsync_List_Empty(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -252,7 +252,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public async Task InsertBulkAsync_Enumeration(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -281,7 +281,7 @@ public class InsertBulkTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	[Obsolete]
 	public void InsertBulk_IdentityInsert(string dataSourceName, DataSourceType mode)
 	{
@@ -315,7 +315,7 @@ public class InsertBulkTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_WithStreaming(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -340,7 +340,7 @@ public class InsertBulkTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)
 	{
 		long runningCount = 0;
@@ -370,7 +370,7 @@ public class InsertBulkTests : TestBase
 
 #elif POSTGRESQL || MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)
 	{
 		long runningCount = 0;

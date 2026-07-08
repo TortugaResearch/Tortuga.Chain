@@ -5,7 +5,7 @@ namespace Tests.Core;
 [TestClass]
 public class DataSourceTest : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void TestConnection(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -19,7 +19,7 @@ public class DataSourceTest : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public async Task TestConnectionAsync(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -33,7 +33,7 @@ public class DataSourceTest : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void Transaction_Dispose(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -49,7 +49,7 @@ public class DataSourceTest : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public async Task Transaction_DisposeAsync(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -65,7 +65,7 @@ public class DataSourceTest : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public async Task Transaction_DisposeAsync_Using(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

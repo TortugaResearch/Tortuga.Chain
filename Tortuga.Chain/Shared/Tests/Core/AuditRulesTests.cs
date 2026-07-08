@@ -8,7 +8,7 @@ namespace Tests.Core;
 [TestClass]
 public class AuditRulesTests : TestBase
 {
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void AuditRulesTests_AddUser(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -23,7 +23,7 @@ public class AuditRulesTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void AuditRulesTests_CheckValidation(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -52,7 +52,7 @@ public class AuditRulesTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void AuditRulesTests_InsertUpdateRules(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -94,7 +94,7 @@ public class AuditRulesTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void AuditRulesTests_SoftDelete(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -170,7 +170,7 @@ public class AuditRulesTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void AuditRulesTests_SoftDelete_2(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -230,7 +230,7 @@ public class AuditRulesTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void AuditRulesTests_RestrictedColumn(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -279,7 +279,7 @@ public class AuditRulesTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SoftDeleteByKey(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

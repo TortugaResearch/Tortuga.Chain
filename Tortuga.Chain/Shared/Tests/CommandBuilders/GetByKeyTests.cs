@@ -7,7 +7,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class GetByKeyTests : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetByKey(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -32,7 +32,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetByKeyList(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -63,7 +63,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	[Obsolete]
 	public void GetByKeyList_2(string dataSourceName, DataSourceType mode)
 	{
@@ -94,7 +94,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetByKeyList_InferredTableName(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -125,7 +125,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetByKeyListWithRecord(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -156,7 +156,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetByKeyListWithTableAndView(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -187,7 +187,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetByKeyWithRecord(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -212,7 +212,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetByKeyWithTableAndView(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -239,7 +239,7 @@ public class GetByKeyTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void HistoricalTests(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -291,7 +291,7 @@ public class GetByKeyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void HistoricalTests_ByObject(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

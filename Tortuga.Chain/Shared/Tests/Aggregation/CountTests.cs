@@ -13,7 +13,7 @@ namespace Tests.Aggregate;
 [TestClass]
 public class DistinctTests : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToStringList_WithDistinct_WithTopAndSort(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -33,7 +33,7 @@ public class DistinctTests : TestBase
 [TestClass]
 public class CountTests : TestBase
 {
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void Count(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -51,7 +51,7 @@ public class CountTests : TestBase
 
 #if COUNT64
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void Count64(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -71,7 +71,7 @@ public class CountTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void AsCountDistinctApproximate_Auto(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -89,7 +89,7 @@ public class CountTests : TestBase
 
 #endif
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task Count_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
@@ -106,7 +106,7 @@ public class CountTests : TestBase
 
 #if COUNT64
 
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public async Task Count64_Async(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
@@ -125,7 +125,7 @@ public class CountTests : TestBase
 
 #if NO_DISTINCT_COUNT
 
-    [DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+    [TestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
     public void CountByColumn(string dataSourceName, DataSourceType mode, string tableName, string columnName)
     {
         var dataSource = DataSource(dataSourceName, mode);
@@ -147,7 +147,7 @@ public class CountTests : TestBase
 
 #else
 
-	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
 	public void CountByColumn(string dataSourceName, DataSourceType mode, string tableName, string columnName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -173,7 +173,7 @@ public class CountTests : TestBase
 
 #if COUNT64
 
-	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
 	public void Count64ByColumn(string dataSourceName, DataSourceType mode, string tableName, string columnName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -195,7 +195,7 @@ public class CountTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
 	public async Task Count64ByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
@@ -221,7 +221,7 @@ public class CountTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
 	public void CountByColumn_DistinctApproximate(string dataSourceName, DataSourceType mode, string tableName, string columnName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -245,7 +245,7 @@ public class CountTests : TestBase
 
 #if NO_DISTINCT_COUNT
 
-    [DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+    [TestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
     public async Task CountByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
     {
         var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
@@ -267,7 +267,7 @@ public class CountTests : TestBase
 
 #else
 
-	[DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+	[TestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
 	public async Task CountByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
 	{
 		var dataSource = await DataSourceAsync(dataSourceName, mode).ConfigureAwait(false);
@@ -291,7 +291,7 @@ public class CountTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void AsCount(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -339,7 +339,7 @@ public class CountTests : TestBase
 
 #if !NO_DISTINCT_COUNT
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Counts(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

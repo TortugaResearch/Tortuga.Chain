@@ -15,7 +15,7 @@ using Microsoft.Data.SqlClient;
 [TestClass]
 public class SqlDependencyTests : TestBase
 {
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlServerDataSourceTests_SqlDependency(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -31,7 +31,7 @@ public class SqlDependencyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlServerDataSourceTests_WithChangeNotification_Fired(string dataSourceName)
 	{
 		int eventCount = 0;
@@ -65,7 +65,7 @@ public class SqlDependencyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public async Task SqlServerDataSourceTests_WithChangeNotification_Fired_Async(string dataSourceName)
 	{
 		int eventCount = 0;
@@ -100,7 +100,7 @@ public class SqlDependencyTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlServerDataSourceTests_WithCaching(string dataSourceName)
 	{
 		const string CacheKey = "All_Customer";

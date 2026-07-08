@@ -9,7 +9,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class FromTests_ToDictionary : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDictionary_InferredObject(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -96,7 +96,7 @@ public class FromTests_ToDictionary : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDictionary_AutoTableSelection(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -176,7 +176,7 @@ public class FromTests_ToDictionary : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDictionary(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -258,7 +258,7 @@ public class FromTests_ToDictionary : TestBase
 
 #if SQLITE
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -340,7 +340,7 @@ public class FromTests_ToDictionary : TestBase
 
 #elif MYSQL
 
-		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		[TestMethod, BasicData(DataSourceGroup.Primary)]
 		public void ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
 		{
 			var dataSource = DataSource(dataSourceName, mode);
@@ -422,7 +422,7 @@ public class FromTests_ToDictionary : TestBase
 
 #else
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -504,7 +504,7 @@ public class FromTests_ToDictionary : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToDictionary_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -556,7 +556,7 @@ public class FromTests_ToDictionary : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToImmutableDictionary_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -592,7 +592,7 @@ public class FromTests_ToDictionary : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToFrozenDictionary_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

@@ -7,7 +7,7 @@ public class ObjectNameTests : TestBase
 {
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("Employee", "employee")]
 	[DataRow("HR.Employee", "hr.employee")]
 	[DataRow("HR.Employee", "employee")]
@@ -18,7 +18,7 @@ public class ObjectNameTests : TestBase
 		Assert.AreEqual(a.GetHashCode(), b.GetHashCode(), "Hash codes do not match");
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("Employee", "employee", true)]
 	[DataRow("HR.Employee", "hr.employee", true)]
 	[DataRow("HR.Employee", "employee", false)]

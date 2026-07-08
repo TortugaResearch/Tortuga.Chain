@@ -9,7 +9,7 @@ using Tortuga.Chain.SqlServer;
 [TestClass]
 public class SqlInfoMessageEventTests : TestBase
 {
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlInfoMessageEventTests_InfoMessageEvents(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

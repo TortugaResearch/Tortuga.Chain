@@ -8,7 +8,7 @@ public class UpdateTests_Views : TestBase
 {
 
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void FailedUpdate_ViewNeedsKeys(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -44,7 +44,7 @@ public class UpdateTests_Views : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void UpdateViaView(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

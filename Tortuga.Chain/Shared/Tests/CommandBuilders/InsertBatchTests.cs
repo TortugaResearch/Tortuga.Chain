@@ -10,7 +10,7 @@ public class InsertBatchTests : TestBase
 
 #if SQL_SERVER_MDS || SQLITE || POSTGRESQL || MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertMultipleBatch(string dataSourceName, DataSourceType mode)
 	{
 		var key = Guid.NewGuid().ToString();
@@ -35,7 +35,7 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertMultipleBatch_Empty(string dataSourceName, DataSourceType mode)
 	{
 		var key = Guid.NewGuid().ToString();
@@ -63,7 +63,7 @@ public class InsertBatchTests : TestBase
 
 #if SQL_SERVER_MDS || SQLITE || MYSQL || POSTGRESQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatch_IdentityInsert(string dataSourceName, DataSourceType mode)
 	{
 		var key = Guid.NewGuid().ToString();
@@ -114,7 +114,7 @@ public class InsertBatchTests : TestBase
 
 #if SQL_SERVER_MDS || POSTGRESQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatch_ReturnKeys(string dataSourceName, DataSourceType mode)
 	{
 		var key = Guid.NewGuid().ToString();
@@ -144,7 +144,7 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatch_ReturnKeys_Empty(string dataSourceName, DataSourceType mode)
 	{
 		var key = Guid.NewGuid().ToString();
@@ -172,7 +172,7 @@ public class InsertBatchTests : TestBase
 
 #if SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatchTable(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -193,7 +193,7 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatchTable_Identity(string dataSourceName, DataSourceType mode)
 	{
 		const string TableType = "HR.EmployeeTable";
@@ -228,7 +228,7 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatchTable_Streaming(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -254,7 +254,7 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatchTable_SelectBack(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -276,7 +276,7 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertBatchTable_SelectKeys(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();
@@ -298,7 +298,7 @@ public class InsertBatchTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void InsertBatchTable_AuditRules(string dataSourceName)
 	{
 		var key1000 = Guid.NewGuid().ToString();

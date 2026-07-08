@@ -7,7 +7,7 @@ namespace Tests.CommandBuilders;
 public class UpdateTests : TestBase
 {
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void FailedUpdateTest(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

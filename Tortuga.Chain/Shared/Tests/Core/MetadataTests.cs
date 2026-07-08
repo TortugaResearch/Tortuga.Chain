@@ -9,7 +9,7 @@ public class MetadataTests : TestBase
 {
 #if SQL_SERVER_MDS || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void TableIndexes(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -42,7 +42,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || POSTGRESQL || MYSQL || SQLITE || ACCESS
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void TableForeignKeyConstraints(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -67,7 +67,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void DatabaseName(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -86,7 +86,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || MYSQL || SQL_SERVER_OLEDB
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void DefaultSchema(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -105,7 +105,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void PreloadBySchema(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -142,7 +142,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void Preload(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -156,7 +156,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_Tables(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -181,7 +181,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_Views(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -208,7 +208,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_TableFunctions(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -244,7 +244,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_StoredProcedures(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -273,7 +273,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.All)]
+	[TestMethod, BasicData(DataSourceGroup.All)]
 	public void SqlTypeNameToDbType_ScalarFunctions(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -305,7 +305,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void TryGetTable(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -323,7 +323,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TryGetTable_Failed(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -340,7 +340,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void GetTable(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -357,7 +357,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void BuildDto(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		//this isn't building a real DTO, just exercising some of the functionality
@@ -401,7 +401,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void GetTable_LowerCase(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -418,7 +418,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, TableData(DataSourceGroup.All)]
+	[TestMethod, TableData(DataSourceGroup.All)]
 	public void GetTable_UpperCase(string dataSourceName, DataSourceType mode, string tableName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -435,7 +435,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, ViewData(DataSourceGroup.All)]
+	[TestMethod, ViewData(DataSourceGroup.All)]
 	public void GetView(string dataSourceName, DataSourceType mode, string viewName)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -454,7 +454,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void VerifyFunction1(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -474,7 +474,7 @@ public class MetadataTests : TestBase
 
 #if POSTGRESQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetTableWithDefaultSchema(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -490,7 +490,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetSchemaList(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -518,7 +518,7 @@ public class MetadataTests : TestBase
 
 #if SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void VerifyFunction2(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -534,7 +534,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GeneratedColumns(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -551,7 +551,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void SystemVersionedTables(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -570,7 +570,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void GetTableById(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -602,7 +602,7 @@ public class MetadataTests : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ColumnOrder(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -627,7 +627,7 @@ public class MetadataTests : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ColumnLength(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

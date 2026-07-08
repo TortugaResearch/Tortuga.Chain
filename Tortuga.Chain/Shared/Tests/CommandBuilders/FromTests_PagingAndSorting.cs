@@ -6,7 +6,7 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class FromTests_PagingAndSorting : TestBase
 {
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Take_NoSort(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -27,7 +27,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Take(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -50,7 +50,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #if SQLITE
 
-		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		[TestMethod, BasicData(DataSourceGroup.Primary)]
 		public void TakeRandom(string dataSourceName, DataSourceType mode)
 		{
 			var dataSource = DataSource(dataSourceName, mode);
@@ -73,7 +73,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #if SQL_SERVER_OLEDB || SQL_SERVER_MDS
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TakePercent(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -94,7 +94,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TakePercentWithTies(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -115,7 +115,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TakeWithTies(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -136,7 +136,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TableSampleSystemPercentage(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -156,7 +156,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TableSampleSystemRows(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -176,7 +176,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TableSampleSystemPercentage_Repeatable(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -194,7 +194,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void TableSampleSystemRows_Repeatable(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -214,7 +214,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting_BadColumn(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -236,7 +236,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -320,7 +320,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #if !NO_ROW_SKIPPING
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void SkipTake(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -345,7 +345,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #if SQLITE
 
-		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		[TestMethod, BasicData(DataSourceGroup.Primary)]
 		public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
 		{
 			var dataSource = DataSource(dataSourceName, mode);
@@ -389,7 +389,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #elif MYSQL
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -433,7 +433,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #else
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -477,7 +477,7 @@ public class FromTests_PagingAndSorting : TestBase
 
 #endif
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting_InferredCollection_AutoTableSelection(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
@@ -519,7 +519,7 @@ public class FromTests_PagingAndSorting : TestBase
 		}
 	}
 
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[TestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting_InferredCollection(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

@@ -6,7 +6,7 @@ namespace Tests.Appenders;
 [TestClass]
 public class TagTests : TestBase
 {
-	[DataTestMethod, RootData(DataSourceGroup.All)]
+	[TestMethod, RootData(DataSourceGroup.All)]
 	public void TagTest(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -20,7 +20,7 @@ public class TagTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.All)]
+	[TestMethod, RootData(DataSourceGroup.All)]
 	public void TagSourceTest(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);

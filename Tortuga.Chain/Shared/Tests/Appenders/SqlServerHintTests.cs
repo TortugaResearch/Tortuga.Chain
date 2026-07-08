@@ -15,7 +15,7 @@ public class SqlServerHintTests : TestBase
 	const string IndexName = "IX_Customer_State";
 	const string IndexedTableName = "Sales.Customer";
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlServerHintTests_IsolationLevels(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -35,7 +35,7 @@ public class SqlServerHintTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlServerHintTests_IsolationLevels_Object(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -54,7 +54,7 @@ public class SqlServerHintTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlServerHintTests_IndexHint(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
@@ -68,7 +68,7 @@ public class SqlServerHintTests : TestBase
 		}
 	}
 
-	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	[TestMethod, RootData(DataSourceGroup.Primary)]
 	public void SqlServerHintTests_IndexHint2(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
