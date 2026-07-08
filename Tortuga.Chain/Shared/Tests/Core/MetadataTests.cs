@@ -498,7 +498,6 @@ public class MetadataTests : TestBase
 		{
 			var schemaList = dataSource.DatabaseMetadata.DefaultSchemaList;
 
-			Assert.IsNotNull(schemaList, "Schema list is null");
 			Assert.AreNotEqual(0, schemaList.Length, "Schema list is empty");
 
 			foreach (var schema in schemaList)
