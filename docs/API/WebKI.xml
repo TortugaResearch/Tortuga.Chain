@@ -1606,6 +1606,7 @@
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.PostgreSql.PostgreSqlObjectName.Empty.htm" />
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.SQLite.SQLiteObjectName.Empty.htm" />
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.SqlServer.SqlServerObjectName.Empty.htm" />
+  <HelpKINode Title="EnableLegacyTimestampBehavior property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableLegacyTimestampBehavior.htm" />
   <HelpKINode Title="EnableStoredProcedureCompatMode property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableStoredProcedureCompatMode.htm" />
   <HelpKINode Title="EndTime property" Url="html/P-Tortuga.Chain.ExecutionEventArgs.EndTime.htm" />
   <HelpKINode Title="EnforceForeignKeys property" Url="html/P-Tortuga.Chain.SQLite.SQLiteDataSourceSettings.EnforceForeignKeys.htm" />
@@ -4530,6 +4531,7 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.PostgreSqlDataSource.htm" />
   </HelpKINode>
   <HelpKINode Title="PostgreSqlDataSource.DatabaseMetadata property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.DatabaseMetadata.htm" />
+  <HelpKINode Title="PostgreSqlDataSource.EnableLegacyTimestampBehavior property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableLegacyTimestampBehavior.htm" />
   <HelpKINode Title="PostgreSqlDataSource.EnableStoredProcedureCompatMode property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableStoredProcedureCompatMode.htm" />
   <HelpKINode Title="PostgreSqlDataSource.ExecuteStream method" Url="html/M-Tortuga.Chain.PostgreSqlDataSource.ExecuteStream.htm" />
   <HelpKINode Title="PostgreSqlDataSource.ExecuteStream method" Url="html/Overload-Tortuga.Chain.PostgreSqlDataSource.ExecuteStream.htm" />
