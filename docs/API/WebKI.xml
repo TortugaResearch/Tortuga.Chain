@@ -4547,6 +4547,7 @@
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.htm" />
   </HelpKINode>
   <HelpKINode Title="PostgreSqlDataSourceBase.DatabaseMetadata property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.DatabaseMetadata.htm" />
+  <HelpKINode Title="PostgreSqlDataSourceBase.ReseedIdentityColumn method" Url="html/Overload-Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.ReseedIdentityColumn.htm" />
   <HelpKINode Title="PostgreSqlDataSourceSettings class" Url="html/AllMembers.T-Tortuga.Chain.PostgreSql.PostgreSqlDataSourceSettings.htm" />
   <HelpKINode Title="PostgreSqlDataSourceSettings class" Url="html/T-Tortuga.Chain.PostgreSql.PostgreSqlDataSourceSettings.htm" />
   <HelpKINode Title="PostgreSqlDataSourceSettings class">
@@ -4586,7 +4587,7 @@
   <HelpKINode Title="PostgreSqlMetadataCache class">
     <HelpKINode Title="about PostgreSqlMetadataCache class" Url="html/T-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.htm" />
     <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.htm" />
-    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.-ctor.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.-ctor.htm" />
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.htm" />
     <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.htm" />
   </HelpKINode>
@@ -4610,7 +4611,7 @@
   <HelpKINode Title="PostgreSqlMetadataCache.GetTableOrViewInternal method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetTableOrViewInternal.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.GetTablesAndViews method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetTablesAndViews.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.MaxParameters property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.MaxParameters.htm" />
-  <HelpKINode Title="PostgreSqlMetadataCache.PostgreSqlMetadataCache constructor" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.-ctor.htm" />
+  <HelpKINode Title="PostgreSqlMetadataCache.PostgreSqlMetadataCache constructor" Url="html/Overload-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.-ctor.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.Preload method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.Preload.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.PreloadScalarFunctions method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.PreloadScalarFunctions.htm" />
   <HelpKINode Title="PostgreSqlMetadataCache.PreloadStoredProcedures method" Url="html/M-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.PreloadStoredProcedures.htm" />
@@ -4854,6 +4855,7 @@
   <HelpKINode Title="RegisterType method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.RegisterType.htm" />
   <HelpKINode Title="RepeatableRead enumeration member" Url="html/T-Tortuga.Chain.SqlServerIsolationLevel.htm" />
   <HelpKINode Title="RepeatableRead field" Url="html/F-Tortuga.Chain.SqlServerIsolationLevel.RepeatableRead.htm" />
+  <HelpKINode Title="ReseedIdentityColumn method" Url="html/Overload-Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.ReseedIdentityColumn.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.Reset.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.Reset.htm" />
   <HelpKINode Title="Reset method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.Reset.htm" />
