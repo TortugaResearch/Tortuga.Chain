@@ -62,7 +62,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core.OleDb" Version="5.9.0" />
+		<PackageReference Include="Tortuga.Chain.Core.OleDb" Version="6.0.0" />
 	</ItemGroup>
 
 	<!-- Code Generator -->
