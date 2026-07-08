@@ -515,7 +515,11 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 	/// </summary>
 	public void PreloadStoredProcedures()
 	{
-		const string procSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='refcursor';";
+		const string procSql = @"SELECT proname AS procedure_name, 
+       n.nspname AS schema_name
+FROM pg_proc p
+JOIN pg_namespace n ON p.pronamespace = n.oid
+WHERE p.prokind = 'p';";
 
 		using (var con = CreateConnection())
 		{
@@ -525,8 +529,8 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 				{
 					while (reader.Read())
 					{
-						var schema = reader.GetString("routine_schema");
-						var name = reader.GetString("routine_name");
+						var schema = reader.GetString("schema_name");
+						var name = reader.GetString("procedure_name");
 						GetStoredProcedure(new PostgreSqlObjectName(schema, name));
 					}
 				}
