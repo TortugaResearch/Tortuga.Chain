@@ -111,6 +111,7 @@
     <Build Include="dbo\Programability\NoColumnName.sql" />
     <Build Include="dbo\Tables\Address.sql" />
     <Build Include="dbo\Tables\Address_History.sql" />
+    <Build Include="dbo\Tables\DoubleKey.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />
