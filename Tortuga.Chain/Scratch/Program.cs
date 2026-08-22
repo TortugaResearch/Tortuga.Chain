@@ -7,13 +7,15 @@ Console.WriteLine("Hello, World!");
 var connectionString = "User ID=chain; Password=toor; Host=localhost; Port=5433; Database=Scratch; Pooling=true;";
 var dataSource = new PostgreSqlDataSource(connectionString);
 
-var table = dataSource.DatabaseMetadata.GetTableOrView("cl_content.training");
+dataSource.DatabaseMetadata.Preload();
 
-var columns = table.Columns;
+//var table = dataSource.DatabaseMetadata.GetTableOrView("cl_content.training");
 
-foreach (var column in columns)
+//var columns = table.Columns;
 
-{
-	Console.WriteLine($"{column.SqlName}\t{column.DbType}\t{column.MaxLength}\t{column.ClrTypeName(NameGenerationOptions.CSharp | NameGenerationOptions.NullableReferenceTypes)}");
-}
-	
+//foreach (var column in columns)
+
+//{
+//	Console.WriteLine($"{column.SqlName}\t{column.DbType}\t{column.MaxLength}\t{column.ClrTypeName(NameGenerationOptions.CSharp | NameGenerationOptions.NullableReferenceTypes)}");
+//}
+//	

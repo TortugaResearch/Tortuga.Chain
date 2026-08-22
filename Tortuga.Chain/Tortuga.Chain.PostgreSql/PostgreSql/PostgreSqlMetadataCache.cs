@@ -749,8 +749,51 @@ WHERE p.prokind = 'p';";
 		return new PostgreSqlObjectName(schema, name);
 	}
 
+
 	[SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "<Pending>")]
-	Tuple<ParameterMetadataCollection<NpgsqlDbType>, ColumnMetadataCollection<NpgsqlDbType>> GetParametersAndColumns(string specificName, NpgsqlConnection connection)
+	ParameterMetadataCollection<NpgsqlDbType> GetProcedureParameters(PostgreSqlObjectName storedProcedureName, NpgsqlConnection connection)
+	{
+		const string parameterSql = @"SELECT 
+unnest(proargnames) as argument_name, 
+trim(unnest(string_to_array((oidvectortypes(proargtypes)), ','))) as 
+arguments_type
+FROM    pg_catalog.pg_namespace n
+JOIN    pg_catalog.pg_proc p   ON    pronamespace = n.oid     
+JOIN    pg_type t ON p.prorettype = t.oid  
+WHERE   nspname = @SchemaName and proname = @ProcedureName
+group by proname, proargtypes, proargnames;";
+
+		var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
+		using (var cmd = new NpgsqlCommand(parameterSql, connection))
+		{
+			cmd.Parameters.AddWithValue("@SchemaName", storedProcedureName.Schema!);
+			cmd.Parameters.AddWithValue("@ProcedureName", storedProcedureName.Name!);
+			using (var reader = cmd.ExecuteReader())
+			{
+				while (reader.Read())
+				{
+					var parameterName = reader.GetStringOrNull("argument_name") ?? "Parameter" + reader.GetInt32("ordinal_position");
+
+					var typeName = reader.GetString("arguments_type");
+					var isNullable = true;
+					int? maxLength = null;
+					int? precision = null;
+					int? scale = null;
+					var fullTypeName = ""; //Task-291: Add support for full name
+
+					//Task-120: Add support for length, precision, and scale
+					//Task-384: OUTPUT Parameters for PostgreSQL
+					var direction = ParameterDirection.Input;
+
+					parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName, direction));
+				}
+			}
+		}
+		return new ParameterMetadataCollection<NpgsqlDbType>(storedProcedureName.ToString(), parameters);
+	}
+
+	[SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "<Pending>")]
+	Tuple<ParameterMetadataCollection<NpgsqlDbType>, ColumnMetadataCollection<NpgsqlDbType>> GetFunctionParametersAndColumns(string specificName, NpgsqlConnection connection)
 	{
 		const string parameterSql = @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
 
@@ -812,7 +855,7 @@ SELECT att.attname as column_name,
 	   att.attnotnull as not_null,
 	   att.attidentity as is_identity,
 	   format_type(att.atttypid, att.atttypmod) as data_type_full,
-	   COL_DESCRIPTION(CONCAT(ns.nspname, '.', c.relname)::regclass, att.attnum) as description
+	   col_description(c.oid, att.attnum) as description
 FROM pg_class as c
 JOIN pg_namespace as ns on ns.oid=c.relnamespace
 JOIN pg_attribute as att on c.oid=att.attrelid AND
@@ -975,7 +1018,7 @@ ORDER BY att.attnum;";
 					}
 				}
 
-				var pAndC = GetParametersAndColumns(specificName, con);
+				var pAndC = GetFunctionParametersAndColumns(specificName, con);
 				var isNullable = true;
 				int? maxLength = null;
 				int? precision = null;
@@ -1037,7 +1080,13 @@ where s.relkind='S' and d.deptype='a'";
 
 	StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInternal(PostgreSqlObjectName storedProcedureName)
 	{
-		const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type='refcursor' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
+
+		const string procSql = @"SELECT proname AS procedure_name, n.nspname AS schema_name
+		FROM pg_proc p 
+		JOIN pg_namespace n ON p.pronamespace = n.oid
+		WHERE p.prokind = 'p' AND n.nspname ILIKE @Schema AND proname ILIKE @Name;";
+
+		//const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type='refcursor' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
 
 		using (var con = CreateConnection())
 		{
@@ -1045,8 +1094,7 @@ where s.relkind='S' and d.deptype='a'";
 			{
 				string actualSchema;
 				string actualName;
-				string specificName;
-				using (var cmd = new NpgsqlCommand(functionSql, con))
+				using (var cmd = new NpgsqlCommand(procSql, con))
 				{
 					cmd.Parameters.AddWithValue("@Schema", schema);
 					cmd.Parameters.AddWithValue("@Name", storedProcedureName.Name);
@@ -1054,19 +1102,18 @@ where s.relkind='S' and d.deptype='a'";
 					{
 						if (!reader.Read())
 							continue;
-						actualSchema = reader.GetString("routine_schema");
-						actualName = reader.GetString("routine_name");
-						specificName = reader.GetString("specific_name");
+						actualSchema = reader.GetString("schema_name");
+						actualName = reader.GetString("procedure_name");
 					}
 				}
 
-				var pAndC = GetParametersAndColumns(specificName, con);
+				var parameters = GetProcedureParameters(storedProcedureName, con);
 
-				return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), pAndC.Item1);
+				return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), parameters);
 			}
 		}
 
-		throw new MissingObjectException($"Could not find function {storedProcedureName}");
+		throw new MissingObjectException($"Could not find stored procedure {storedProcedureName}");
 	}
 
 	TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableFunctionInternal(PostgreSqlObjectName tableFunctionName)
@@ -1096,7 +1143,7 @@ where s.relkind='S' and d.deptype='a'";
 					}
 				}
 
-				var pAndC = GetParametersAndColumns(specificName, con);
+				var pAndC = GetFunctionParametersAndColumns(specificName, con);
 
 				return new TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), pAndC.Item1, pAndC.Item2);
 			}
@@ -1124,13 +1171,15 @@ where s.relkind='S' and d.deptype='a'";
 	{
 		const string TableSql =
 @"SELECT
-	table_schema as schemaname,
-	table_name as tablename,
-	table_type as type,
-	OBJ_DESCRIPTION(CONCAT(table_schema, '.', table_name)::regclass) as description
-FROM information_schema.tables
-WHERE table_schema ILIKE @Schema AND
-		table_name ILIKE @Name AND
+    n.nspname                                   AS schemaname,
+    c.relname                                   AS tablename,
+	t.table_type as type,
+    obj_description(c.oid, 'pg_class')           AS description
+FROM pg_catalog.pg_class c
+JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+INNER JOIN information_schema.tables t on t.table_schema = n.nspname AND t.table_name = c.relname
+WHERE n.nspname ILIKE @Schema AND
+		c.relname ILIKE @Name AND
 		(table_type='BASE TABLE' OR
 		table_type='VIEW');";
 
