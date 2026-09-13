@@ -155,10 +155,6 @@ namespace Tortuga.Chain.PostgreSql
 			catch (Exception ex)
 			{
 				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-
-				if (ex is PostgresException npgsqlEx && npgsqlEx.SqlState == PostgresErrorCodes.WrongObjectType && executionToken.CommandType == CommandType.StoredProcedure)
-					throw new InvalidOperationException("Enable EnableStoredProcedureCompatMode or convert your stored functions into stored procedures.", npgsqlEx);
-
 				throw;
 			}
 		}
@@ -241,10 +237,6 @@ namespace Tortuga.Chain.PostgreSql
 				else
 				{
 					OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-
-					if (ex is PostgresException npgsqlEx && npgsqlEx.SqlState == PostgresErrorCodes.WrongObjectType && executionToken.CommandType == CommandType.StoredProcedure)
-						throw new InvalidOperationException("Enable EnableStoredProcedureCompatMode or convert your stored functions into stored procedures.", npgsqlEx);
-
 					throw;
 				}
 			}

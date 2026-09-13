@@ -53,8 +53,11 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 
 			var sql = new StringBuilder();
 			using (var reader = cmd.ExecuteReader())
-				while (reader.Read())
-					sql.AppendLine($"FETCH ALL IN \"{reader.GetString(0)}\";");
+			{
+				reader.Read();
+				for (var i = 0; i < reader.FieldCount; i++)
+					sql.AppendLine($"FETCH ALL IN \"{reader.GetString(i)}\";");
+			}
 
 			using (var cmd2 = new NpgsqlCommand())
 			{
@@ -97,8 +100,11 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 
 		var sql = new StringBuilder();
 		using (var reader = cmd.ExecuteReader())
-			while (reader.Read())
-				sql.AppendLine($"FETCH ALL IN \"{reader.GetString(0)}\";");
+		{
+			reader.Read();
+			for (var i = 0; i < reader.FieldCount; i++)
+				sql.AppendLine($"FETCH ALL IN \"{reader.GetString(i)}\";");
+		}
 
 		using (var cmd2 = new NpgsqlCommand())
 		{
@@ -138,8 +144,11 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 
 			var sql = new StringBuilder();
 			using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
-				while (await reader.ReadAsync().ConfigureAwait(false))
-					sql.AppendLine($"FETCH ALL IN \"{reader.GetString(0)}\";");
+			{
+				await reader.ReadAsync().ConfigureAwait(false);
+				for (var i = 0; i < reader.FieldCount; i++)
+					sql.AppendLine($"FETCH ALL IN \"{reader.GetString(i)}\";");
+			}
 
 			using (var cmd2 = new NpgsqlCommand())
 			{
@@ -182,8 +191,11 @@ public abstract partial class PostgreSqlDataSourceBase : DataSource<NpgsqlConnec
 
 		var sql = new StringBuilder();
 		using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
-			while (await reader.ReadAsync().ConfigureAwait(false))
-				sql.AppendLine($"FETCH ALL IN \"{reader.GetString(0)}\";");
+		{
+			await reader.ReadAsync().ConfigureAwait(false);
+			for (var i = 0; i < reader.FieldCount; i++)
+				sql.AppendLine($"FETCH ALL IN \"{reader.GetString(i)}\";");
+		}
 
 		using (var cmd2 = new NpgsqlCommand())
 		{

@@ -66,6 +66,7 @@ public abstract partial class TestBase
 		{
 			case DataSourceType.Normal:
 				return AttachTracers(ds);
+
 			case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new PostgreSqlDataSourceSettings() { StrictMode = true });
 			case DataSourceType.SequentialAccess: return AttachTracers(ds).WithSettings(new PostgreSqlDataSourceSettings() { SequentialAccessMode = true });
 			case DataSourceType.Transactional: return AttachTracers(ds.BeginTransaction());
@@ -106,8 +107,6 @@ public abstract partial class TestBase
 	{
 		if (s_PrimaryDataSource != null)
 			return; //run once check
-
-		PostgreSqlDataSource.EnableStoredProcedureCompatMode = true;
 
 		Setup.CreateDatabase();
 

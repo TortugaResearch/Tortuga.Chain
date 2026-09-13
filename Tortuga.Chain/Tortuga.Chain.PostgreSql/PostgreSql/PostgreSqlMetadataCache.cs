@@ -515,7 +515,7 @@ WHERE (constrained_schema = '{tableName.Schema}' AND constrained_table = '{table
 	/// </summary>
 	public void PreloadStoredProcedures()
 	{
-		const string procSql = @"SELECT proname AS procedure_name, 
+		const string procSql = @"SELECT proname AS procedure_name,
        n.nspname AS schema_name
 FROM pg_proc p
 JOIN pg_namespace n ON p.pronamespace = n.oid
@@ -749,19 +749,24 @@ WHERE p.prokind = 'p';";
 		return new PostgreSqlObjectName(schema, name);
 	}
 
-
 	[SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "<Pending>")]
 	ParameterMetadataCollection<NpgsqlDbType> GetProcedureParameters(PostgreSqlObjectName storedProcedureName, NpgsqlConnection connection)
 	{
-		const string parameterSql = @"SELECT 
-unnest(proargnames) as argument_name, 
-trim(unnest(string_to_array((oidvectortypes(proargtypes)), ','))) as 
-arguments_type
-FROM    pg_catalog.pg_namespace n
-JOIN    pg_catalog.pg_proc p   ON    pronamespace = n.oid     
-JOIN    pg_type t ON p.prorettype = t.oid  
-WHERE   nspname = @SchemaName and proname = @ProcedureName
-group by proname, proargtypes, proargnames;";
+		const string parameterSql = @"SELECT
+    p.argument_name,
+    format_type(p.argument_type, NULL) AS argument_type,
+    p.argument_mode
+FROM pg_catalog.pg_proc pr
+JOIN pg_catalog.pg_namespace n ON pr.pronamespace = n.oid
+CROSS JOIN LATERAL unnest(
+        pr.proargnames,
+        COALESCE(pr.proallargtypes, pr.proargtypes::oid[]),
+        pr.proargmodes
+    ) WITH ORDINALITY AS p(argument_name, argument_type, argument_mode, ord)
+JOIN pg_catalog.pg_type t ON t.oid = p.argument_type
+WHERE n.nspname = @SchemaName
+  AND pr.proname = @ProcedureName
+ORDER BY p.ord;";
 
 		var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
 		using (var cmd = new NpgsqlCommand(parameterSql, connection))
@@ -774,16 +779,26 @@ group by proname, proargtypes, proargnames;";
 				{
 					var parameterName = reader.GetStringOrNull("argument_name") ?? "Parameter" + reader.GetInt32("ordinal_position");
 
-					var typeName = reader.GetString("arguments_type");
+					//Task-120: Add support for length, precision, and scale.
+					//Doesn't look like these are supported.
+
+					var typeName = reader.GetString("argument_type");
 					var isNullable = true;
 					int? maxLength = null;
 					int? precision = null;
 					int? scale = null;
 					var fullTypeName = ""; //Task-291: Add support for full name
 
-					//Task-120: Add support for length, precision, and scale
-					//Task-384: OUTPUT Parameters for PostgreSQL
-					var direction = ParameterDirection.Input;
+					var directionName = reader.GetCharOrNull("argument_mode");
+					var direction = directionName switch
+					{
+						'i' => ParameterDirection.Input,
+						'o' => ParameterDirection.Output,
+						'b' => ParameterDirection.InputOutput,
+						//"v" => VARIADIC is not supported
+						//"t" => TABLE is not supported
+						_ => default
+					};
 
 					parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName, direction));
 				}
@@ -1080,9 +1095,8 @@ where s.relkind='S' and d.deptype='a'";
 
 	StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInternal(PostgreSqlObjectName storedProcedureName)
 	{
-
 		const string procSql = @"SELECT proname AS procedure_name, n.nspname AS schema_name
-		FROM pg_proc p 
+		FROM pg_proc p
 		JOIN pg_namespace n ON p.pronamespace = n.oid
 		WHERE p.prokind = 'p' AND n.nspname ILIKE @Schema AND proname ILIKE @Name;";
 
@@ -1106,10 +1120,11 @@ where s.relkind='S' and d.deptype='a'";
 						actualName = reader.GetString("procedure_name");
 					}
 				}
+				var actualFullName = new PostgreSqlObjectName(actualSchema, actualName);
 
-				var parameters = GetProcedureParameters(storedProcedureName, con);
+				var parameters = GetProcedureParameters(actualFullName, con);
 
-				return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), parameters);
+				return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(actualFullName, parameters);
 			}
 		}
 

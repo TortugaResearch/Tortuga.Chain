@@ -12,8 +12,7 @@ namespace Tortuga.Chain.PostgreSql;
 [UseTrait(typeof(SupportsDeleteAllTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsTruncateTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
-[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
-MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
+[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, InsertBatchResult>))]
 [UseTrait(typeof(SupportsDeleteByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
