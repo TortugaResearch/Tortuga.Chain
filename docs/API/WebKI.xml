@@ -107,7 +107,6 @@
   <HelpKINode Title="AccessMetadataCache.AccessMetadataCache constructor" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.-ctor.htm" />
   <HelpKINode Title="AccessMetadataCache.CommentString property" Url="html/P-Tortuga.Chain.Access.AccessMetadataCache.CommentString.htm" />
   <HelpKINode Title="AccessMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="AccessMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="AccessMetadataCache.GetForeignKeysForTable method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="AccessMetadataCache.GetForeignKeysForTable method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetForeignKeysForTable.htm" />
   <HelpKINode Title="AccessMetadataCache.GetIndexesForTable method" Url="html/M-Tortuga.Chain.Access.AccessMetadataCache.GetIndexesForTable.htm" />
@@ -1607,7 +1606,6 @@
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.SQLite.SQLiteObjectName.Empty.htm" />
   <HelpKINode Title="Empty field" Url="html/F-Tortuga.Chain.SqlServer.SqlServerObjectName.Empty.htm" />
   <HelpKINode Title="EnableLegacyTimestampBehavior property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableLegacyTimestampBehavior.htm" />
-  <HelpKINode Title="EnableStoredProcedureCompatMode property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableStoredProcedureCompatMode.htm" />
   <HelpKINode Title="EndTime property" Url="html/P-Tortuga.Chain.ExecutionEventArgs.EndTime.htm" />
   <HelpKINode Title="EnforceForeignKeys property" Url="html/P-Tortuga.Chain.SQLite.SQLiteDataSourceSettings.EnforceForeignKeys.htm" />
   <HelpKINode Title="EnforceForeignKeys property" Url="html/P-Tortuga.Chain.SQLiteDataSource.EnforceForeignKeys.htm" />
@@ -1985,8 +1983,6 @@
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.Access.AccessMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="GetAsyncEnumerator method" Url="html/M-Tortuga.Chain.ObjectStream-1.GetAsyncEnumerator.htm" />
   <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.DictionaryDataReader.GetBoolean.htm" />
   <HelpKINode Title="GetBoolean method" Url="html/M-Tortuga.Chain.ObjectDataReader-1.GetBoolean.htm" />
@@ -3130,6 +3126,7 @@
     <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.DataSources.ISupportsUpdateByKey.htm" />
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.DataSources.ISupportsUpdateByKey.htm" />
   </HelpKINode>
+  <HelpKINode Title="ISupportsUpdateByKey.UpdateByKey method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsUpdateByKey.UpdateByKey-.htm" />
   <HelpKINode Title="ISupportsUpdateByKeyList interface" Url="html/AllMembers.T-Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.htm" />
   <HelpKINode Title="ISupportsUpdateByKeyList interface" Url="html/T-Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.htm" />
   <HelpKINode Title="ISupportsUpdateByKeyList interface">
@@ -4270,7 +4267,6 @@
   <HelpKINode Title="OleDbSqlServerMetadataCache.DatabaseName property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.DatabaseName.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.DefaultSchema property" Url="html/P-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.DefaultSchema.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetAggregateFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
-  <HelpKINode Title="OleDbSqlServerMetadataCache.GetAggregateFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetAggregateFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunction method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunction method" Url="html/Overload-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunction.htm" />
   <HelpKINode Title="OleDbSqlServerMetadataCache.GetScalarFunctions method" Url="html/M-Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetScalarFunctions.htm" />
@@ -4532,7 +4528,6 @@
   </HelpKINode>
   <HelpKINode Title="PostgreSqlDataSource.DatabaseMetadata property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.DatabaseMetadata.htm" />
   <HelpKINode Title="PostgreSqlDataSource.EnableLegacyTimestampBehavior property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableLegacyTimestampBehavior.htm" />
-  <HelpKINode Title="PostgreSqlDataSource.EnableStoredProcedureCompatMode property" Url="html/P-Tortuga.Chain.PostgreSqlDataSource.EnableStoredProcedureCompatMode.htm" />
   <HelpKINode Title="PostgreSqlDataSource.ExecuteStream method" Url="html/M-Tortuga.Chain.PostgreSqlDataSource.ExecuteStream.htm" />
   <HelpKINode Title="PostgreSqlDataSource.ExecuteStream method" Url="html/Overload-Tortuga.Chain.PostgreSqlDataSource.ExecuteStream.htm" />
   <HelpKINode Title="PostgreSqlDataSource.ExecuteStreamAsync method" Url="html/M-Tortuga.Chain.PostgreSqlDataSource.ExecuteStreamAsync.htm" />
@@ -7424,6 +7419,7 @@
   <HelpKINode Title="Update enumeration member" Url="html/T-Tortuga.Chain.AuditRules.OperationTypes.htm" />
   <HelpKINode Title="Update field" Url="html/F-Tortuga.Chain.AuditRules.OperationTypes.Update.htm" />
   <HelpKINode Title="Update method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsUpdate.Update-.htm" />
+  <HelpKINode Title="UpdateByKey method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsUpdateByKey.UpdateByKey-.htm" />
   <HelpKINode Title="UpdateByKeyList(Of TArgument, TKey) method" Url="html/M-Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.UpdateByKeyList--2.htm" />
   <HelpKINode Title="UpdateByKeyList&lt;TArgument, TKey&gt; method" Url="html/M-Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.UpdateByKeyList--2.htm" />
   <HelpKINode Title="UpdateOptions enumeration" Url="html/T-Tortuga.Chain.UpdateOptions.htm" />

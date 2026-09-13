@@ -5,7 +5,7 @@ using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.PostgreSql
 {
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	/// <seealso cref="CommandExecutionToken{NpgsqlCommand, NpgsqlParameter}" />
 	public class PostgreSqlCommandExecutionToken : CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>
@@ -17,7 +17,6 @@ namespace Tortuga.Chain.PostgreSql
 		{
 			DereferenceCursors = dereferenceCursors;
 		}
-
 
 		/// <summary>
 		/// Gets a value indicating whether cursors should be dereferenced.

@@ -1,3 +1,10 @@
+## Version 6.1.0
+
+Added `UpdateByKey` overloads that get the table name from a `System.Type` argument.
+
+Remove supprort for treating PostgreSQL function as if they are stored procedures. (This is a limitation of Npgsql.)
+
+
 ## Version 5.8.9
 
 Add support to PostgreSQL for a .NET 7 `DbDataSource`, a new class that generates database connections.

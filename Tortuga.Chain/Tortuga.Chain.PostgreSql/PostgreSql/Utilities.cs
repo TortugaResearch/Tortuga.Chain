@@ -28,6 +28,7 @@ internal static class Utilities
 		};
 		if (details.DbType.HasValue)
 			result.NpgsqlDbType = details.DbType.Value;
+		result.Direction = details.Direction;
 		return result;
 	}
 

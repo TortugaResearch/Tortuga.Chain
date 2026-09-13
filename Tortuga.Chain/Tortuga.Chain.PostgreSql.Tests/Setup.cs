@@ -188,10 +188,13 @@ FROM    HR.Employee e
 	$$ LANGUAGE plpgsql;
 ";
 
-			var proc1 = @"CREATE FUNCTION Sales.CustomerWithOrdersByState(param_state CHAR(2)) RETURNS SETOF refcursor AS $$
+			var proc1 = @"CREATE PROCEDURE Sales.CustomerWithOrdersByState(
+	  IN param_state CHAR(2),
+	  INOUT ref1 refcursor,           -- Declare cursor variables
+	  INOUT ref2 refcursor
+	) 
+	AS $$
 	DECLARE
-	  ref1 refcursor;           -- Declare cursor variables
-	  ref2 refcursor;
 	BEGIN
 	  OPEN ref1 FOR  SELECT  c.CustomerKey ,
 			c.FullName ,
@@ -205,7 +208,6 @@ FROM    HR.Employee e
 			c.DeletedByKey
 	FROM    Sales.Customer c
 	WHERE   c.State = param_state;
-	RETURN NEXT ref1;
 
 	OPEN ref2 FOR   SELECT  o.OrderKey ,
 			o.CustomerKey ,
@@ -213,7 +215,6 @@ FROM    HR.Employee e
 	FROM    Sales.Order o
 			INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey
 	WHERE   c.State = param_state;
-	RETURN NEXT ref2;
 
 	END;
 	$$ LANGUAGE plpgsql;
