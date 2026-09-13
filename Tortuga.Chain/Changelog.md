@@ -2,7 +2,7 @@
 
 Added `UpdateByKey` overloads that get the table name from a `System.Type` argument.
 
-Remove supprort for treating PostgreSQL function as if they are stored procedures. (This is a limitation of Npgsql.)
+Remove support for treating PostgreSQL function as if they are stored procedures. (This is a limitation of Npgsql.)
 
 
 ## Version 5.8.9
