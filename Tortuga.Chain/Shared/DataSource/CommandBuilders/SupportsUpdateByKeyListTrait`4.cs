@@ -81,4 +81,50 @@ sealed class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDb
 	{
 		return DataSource.OnUpdateByKeyList(tableName, newValues, keys, options);
 	}
+
+	ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument, TKey>(Type tableType, TArgument newValues, TKey key, UpdateOptions options)
+	{
+		var tableName = DataSource.DatabaseMetadata.GetTableOrViewFromClass(tableType).Name;
+		return DataSource.OnUpdateByKeyList(tableName, newValues, new List<TKey> { key }, options);
+	}
+
+	ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument>(Type tableType, TArgument newValues, string key, UpdateOptions options)
+	{
+		var tableName = DataSource.DatabaseMetadata.GetTableOrViewFromClass(tableType).Name;
+		return DataSource.OnUpdateByKeyList(tableName, newValues, new List<string> { key }, options);
+	}
+
+	/// <summary>
+	/// Update a record by its primary key.
+	/// </summary>
+	/// <typeparam name="TArgument">The type of the t argument.</typeparam>
+	/// <typeparam name="TKey"></typeparam>
+	/// <param name="tableType">Class used to find the name of the table.</param>
+	/// <param name="newValues">The new values to use.</param>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
+	[Expose]
+	public SingleRowDbCommandBuilder<TCommand, TParameter> UpdateByKey<TArgument, TKey>(Type tableType, TArgument newValues, TKey key, UpdateOptions options = UpdateOptions.None)
+		where TKey : struct
+	{
+		var tableName = DataSource.DatabaseMetadata.GetTableOrViewFromClass(tableType).Name;
+		return DataSource.OnUpdateByKeyList(tableName, newValues, new List<TKey> { key }, options);
+	}
+
+	/// <summary>
+	/// Update a record by its primary key.
+	/// </summary>
+	/// <typeparam name="TArgument">The type of the t argument.</typeparam>
+	/// <param name="tableType">Class used to find the name of the table.</param>
+	/// <param name="newValues">The new values to use.</param>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+	[Expose]
+	public SingleRowDbCommandBuilder<TCommand, TParameter> UpdateByKey<TArgument>(Type tableType, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None)
+	{
+		var tableName = DataSource.DatabaseMetadata.GetTableOrViewFromClass(tableType).Name;
+		return DataSource.OnUpdateByKeyList(tableName, newValues, new List<string> { key }, options);
+	}
 }

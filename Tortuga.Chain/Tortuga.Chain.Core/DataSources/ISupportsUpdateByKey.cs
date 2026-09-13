@@ -30,4 +30,30 @@ public interface ISupportsUpdateByKey
 	/// <param name="options">The options.</param>
 	/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
 	ISingleRowDbCommandBuilder UpdateByKey<TArgument>(string tableName, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None);
+
+
+	/// <summary>
+	/// Update a record by its primary key.
+	/// </summary>
+	/// <typeparam name="TArgument">The type of the t argument.</typeparam>
+	/// <typeparam name="TKey"></typeparam>
+	/// <param name="tableType">Class used to find the name of the table.</param>
+	/// <param name="newValues">The new values to use.</param>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+	ISingleRowDbCommandBuilder UpdateByKey<TArgument, TKey>(Type tableType, TArgument newValues, TKey key, UpdateOptions options = UpdateOptions.None)
+		where TKey : struct;
+
+	/// <summary>
+	/// Update a record by its primary key.
+	/// </summary>
+	/// <typeparam name="TArgument">The type of the t argument.</typeparam>
+	/// <param name="tableType">Class used to find the name of the table.</param>
+	/// <param name="newValues">The new values to use.</param>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+	ISingleRowDbCommandBuilder UpdateByKey<TArgument>(Type tableType, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None);
+
 }
